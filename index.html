@@ -23,10 +23,15 @@
     <script>
       var map;
       function initMap() {
+        var lhbt = {lat: 44.7807638, lng: -93.1897802};
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 44.7314341, lng: -93.1788},
           zoom: 13
         });
+        var marker1 = new google.maps.Marker({
+          position: lhbt,
+          map: map
+        })
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpm_kwULMu6NO9FxzkF210DhqfWdvDARI&callback=initMap"
