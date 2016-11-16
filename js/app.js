@@ -10,5 +10,13 @@ var mapLocations = [
     {
         "title": "Spring Lake Park (Bike Trailhead)",
         "coordinates": [44.768866, -92.928309]
+    },
+    {
+        "title": "Buck Hill (Skiing)",
+        "coordinates": [44.723454, -93.286449]
+    },
+    {
+        "title": "Valley Lake Park (Quick Drone Flights)",
+        "coordinates": [44.716920, -93.209812]
     }
 ];
