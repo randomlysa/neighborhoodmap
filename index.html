@@ -34,14 +34,28 @@
           var coords = mapLocations[i].coordinates;
           var title = mapLocations[i].title;
           var latLng = new google.maps.LatLng(coords[0],coords[1]);
+
+          var infoWindow = new google.maps.InfoWindow({
+          });
+
           var marker = new google.maps.Marker({
             title: title,
             position: latLng,
             map: map
           });
+
+          marker.addListener('click', (function(data) {
+              return function() {
+                infoWindow.setContent("<strong>" +
+                  this.title + "</strong><br>" +
+                  mapLocations[data].info);
+                infoWindow.open(map, this);
+              };
+            })(i));
         }
       }
     </script>
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpm_kwULMu6NO9FxzkF210DhqfWdvDARI&callback=initMap"
     async defer></script>
     <script src="js/lib/knockout-3.4.1.js"></script>
