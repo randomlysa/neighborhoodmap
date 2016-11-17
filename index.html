@@ -33,6 +33,9 @@
 
       <div id="map"></div>
       <div id="floating-panel">
+
+        <input data-bind="textInput: mapFilter" />
+
         <div data-bind="foreach: mapLocationsList">
         <a href="#" data-bind="text: title"></a><br />
         </div>

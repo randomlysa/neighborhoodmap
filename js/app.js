@@ -36,12 +36,32 @@ var Location = function(data) {
 
 var ViewModel = function() {
     var self = this;
+    mapFilter = ko.observable("");
     this.mapLocationsList = ko.observableArray([]);
-    mapLocations.forEach(function(mapItem){
-        self.mapLocationsList.push( new Location(mapItem) );
+
+    function makeMapList(inputText) {
+        mapLocations.forEach(function(mapItem){
+            if (typeof inputText !== 'undefined') {
+                // filter map based on input
+                if (mapItem.title.includes(inputText)) {
+                    self.mapLocationsList.push( new Location(mapItem) );
+                }
+            }
+            else {
+                // no letters input, return all items
+                self.mapLocationsList.push( new Location(mapItem) );
+            }
+        });
+    };
+
+    makeMapList();
+
+    // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
+    // check mapFilter for inputText and update makeMapList with inputText
+    mapFilter.subscribe(function (inputText) {
+        self.mapLocationsList.removeAll()
+        makeMapList(inputText);
     });
 }
-
-
 
 ko.applyBindings(new ViewModel());
