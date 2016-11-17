@@ -16,10 +16,28 @@
         margin: 0;
         padding: 0;
       }
+
+      #floating-panel {
+        top: 65px;
+        position: absolute;
+        z-index: 4;
+        background-color: #fff;
+        border: solid 2px 000;
+        padding: 15px;
+        margin-left: 10px;
+        line-height: 135%;
+      }
     </style>
   </head>
   <body>
-    <div id="map"></div>
+
+      <div id="map"></div>
+      <div id="floating-panel">
+        <div data-bind="foreach: mapLocationsList">
+        <a href="#" data-bind="text: title"></a><br />
+        </div>
+      </div>
+
     <script>
       var map;
       function initMap() {

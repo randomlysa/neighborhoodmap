@@ -25,3 +25,23 @@ var mapLocations = [
         "info": "Emergency launch site for taking sunset photos."
     }
 ];
+
+
+var Location = function(data) {
+    this.title = ko.observable(data.title);
+    this.coord = ko.observable(data.coordinates);
+    this.info = ko.observable(data.info);
+}
+
+
+var ViewModel = function() {
+    var self = this;
+    this.mapLocationsList = ko.observableArray([]);
+    mapLocations.forEach(function(mapItem){
+        self.mapLocationsList.push( new Location(mapItem) );
+    });
+}
+
+
+
+ko.applyBindings(new ViewModel());
