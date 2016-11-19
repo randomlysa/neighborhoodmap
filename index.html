@@ -37,7 +37,8 @@
         <input data-bind="textInput: mapFilter" />
 
         <div data-bind="foreach: mapLocationsList">
-        <a href="#" data-bind="text: title"></a><br />
+        <a href="#" class="overlayMapListLinks" data-bind="text: title,
+        attr: { id: $index }"></a><br />
         </div>
       </div>
 
@@ -49,6 +50,11 @@
           zoom: 12
         });
 
+
+        markersArray = [];
+        var infoWindow = new google.maps.InfoWindow({
+          });
+
         // Loop through the mapLocations object and place a marker for each
         // set of coordinates.
         for (var i = 0; i < mapLocations.length; i++) {
@@ -57,23 +63,36 @@
           var latLng = new google.maps.LatLng(coords[0],coords[1]);
           var marker = 'marker' + i;
 
-          var infoWindow = new google.maps.InfoWindow({
-          });
-
           marker = new google.maps.Marker({
             title: title,
             position: latLng,
             map: map
           });
 
-          marker.addListener('click', function() {
+          markersArray.push(marker);
+
+          marker.addListener('click', function () {
             infoWindow.setContent("<strong>" +
             this.title + "</strong><br>");
             infoWindow.open(map, this);
           });
         }; // close for loop
-      } // close function initMap
 
+
+        // http://stackoverflow.com/questions/688196/how-to-use-a-link-to-call-javascript#688228
+        var links = document.getElementsByClassName("overlayMapListLinks");
+        for (var i = 0; i < links.length; i++) {
+          var link = links[i];
+
+          link.onclick = function(hrefID) {
+            return function() {
+              infoWindow.setContent("<strong>" +
+                markersArray[hrefID].title + "</strong><br>");
+                infoWindow.open(map, markersArray[hrefID]);
+            };
+          }(i);
+        }
+      } // close function initMap
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpm_kwULMu6NO9FxzkF210DhqfWdvDARI&callback=initMap"
