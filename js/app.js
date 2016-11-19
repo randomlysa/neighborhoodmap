@@ -43,7 +43,7 @@ var ViewModel = function() {
         mapLocations.forEach(function(mapItem){
             if (typeof inputText !== 'undefined') {
                 // filter map based on input
-                if (mapItem.title.includes(inputText)) {
+                if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
                     self.mapLocationsList.push( new Location(mapItem) );
                 }
             }
