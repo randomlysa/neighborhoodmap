@@ -55,7 +55,7 @@
 
 
         markersArray = [];
-        var infoWindow = new google.maps.InfoWindow({
+        var infowindow = new google.maps.InfoWindow({
           });
 
         // Loop through the mapLocations object and place a marker for each
@@ -75,9 +75,9 @@
           markersArray.push(marker);
 
           marker.addListener('click', function () {
-            infoWindow.setContent("<strong>" +
+            infowindow.setContent("<strong>" +
             this.title + "</strong><br>");
-            infoWindow.open(map, this);
+            infowindow.open(map, this);
           });
         }; // close for loop
       } // close function initMap
