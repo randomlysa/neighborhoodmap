@@ -1,4 +1,4 @@
-var mapLocations = [
+var initialLocations = [
     {
         "title": "Orchard Lake (Sunset Photos)",
         "coordinates": [44.695938, -93.307176],
@@ -35,20 +35,20 @@ var Location = function(data) {
 
 var ViewModel = function() {
     var self = this;
-    mapFilter = ko.observable("");
-    this.mapLocationsList = ko.observableArray([]);
+    this.mapFilter = ko.observable("");
+    this.dynamicLocationsList = ko.observableArray([]);
 
     function makeMapList(inputText) {
-        mapLocations.forEach(function(mapItem){
+        initialLocations.forEach(function(mapItem){
             if (typeof inputText !== 'undefined') {
                 // filter map based on input
                 if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
-                    self.mapLocationsList.push( new Location(mapItem) );
+                    self.dynamicLocationsList.push( new Location(mapItem) );
                 }
             }
             else {
                 // no letters input, return all items
-                self.mapLocationsList.push( new Location(mapItem) );
+                self.dynamicLocationsList.push( new Location(mapItem) );
             }
         });
     };
@@ -57,8 +57,8 @@ var ViewModel = function() {
 
     // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
     // check mapFilter for inputText and update makeMapList with inputText
-    mapFilter.subscribe(function (inputText) {
-        self.mapLocationsList.removeAll()
+    this.mapFilter.subscribe(function (inputText) {
+        self.dynamicLocationsList.removeAll()
         makeMapList(inputText);
     });
 }
@@ -67,10 +67,10 @@ ko.bindingHandlers.addOpenInfoWindowToLink = {
     init: function(element, valueAccessor) {
         var value = ko.unwrap(valueAccessor());
 
-        // match link text to the mapLocations.Title and return index
+        // match link text to the initialLocations.Title and return index
         function matchtitles(elementTitle) {
-            for (var i = 0; i < mapLocations.length; i++) {
-                if (elementTitle == mapLocations[i].title) {
+            for (var i = 0; i < initialLocations.length; i++) {
+                if (elementTitle == initialLocations[i].title) {
                     return i;
                 }
             }
@@ -80,7 +80,7 @@ ko.bindingHandlers.addOpenInfoWindowToLink = {
             var infowindow = new google.maps.InfoWindow({});
             var itemindex = matchtitles(element.innerHTML);
             infowindow.setContent("<strong>" +
-                mapLocations[itemindex].title + "</strong><br>");
+                initialLocations[itemindex].title + "</strong><br>");
             infowindow.open(map, markersArray[itemindex]);
         });
     }

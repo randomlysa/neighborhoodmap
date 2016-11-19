@@ -36,7 +36,7 @@
 
         <input data-bind="textInput: mapFilter" />
 
-        <div data-bind="foreach: mapLocationsList">
+        <div data-bind="foreach: dynamicLocationsList">
         <a href="#"
           class="overlayMapListLinks"
           data-bind="text: title,
@@ -53,16 +53,17 @@
           zoom: 12
         });
 
+        console.log(map);
 
         markersArray = [];
         var infowindow = new google.maps.InfoWindow({
           });
 
-        // Loop through the mapLocations object and place a marker for each
+        // Loop through the initialLocations object and place a marker for each
         // set of coordinates.
-        for (var i = 0; i < mapLocations.length; i++) {
-          var coords = mapLocations[i].coordinates;
-          var title = mapLocations[i].title;
+        for (var i = 0; i < initialLocations.length; i++) {
+          var coords = initialLocations[i].coordinates;
+          var title = initialLocations[i].title;
           var latLng = new google.maps.LatLng(coords[0],coords[1]);
           var marker = 'marker' + i;
 
