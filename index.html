@@ -37,8 +37,11 @@
         <input data-bind="textInput: mapFilter" />
 
         <div data-bind="foreach: mapLocationsList">
-        <a href="#" class="overlayMapListLinks" data-bind="text: title,
-        attr: { id: $index }"></a><br />
+        <a href="#"
+          class="overlayMapListLinks"
+          data-bind="text: title,
+          attr: { id: $index },
+          addOpenInfoWindowToLink: true"></a><br />
         </div>
       </div>
 
@@ -77,26 +80,12 @@
             infoWindow.open(map, this);
           });
         }; // close for loop
-
-
-        // http://stackoverflow.com/questions/688196/how-to-use-a-link-to-call-javascript#688228
-        var links = document.getElementsByClassName("overlayMapListLinks");
-        for (var i = 0; i < links.length; i++) {
-          var link = links[i];
-
-          link.onclick = function(hrefID) {
-            return function() {
-              infoWindow.setContent("<strong>" +
-                markersArray[hrefID].title + "</strong><br>");
-                infoWindow.open(map, markersArray[hrefID]);
-            };
-          }(i);
-        }
       } // close function initMap
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpm_kwULMu6NO9FxzkF210DhqfWdvDARI&callback=initMap"
     async defer></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="js/lib/knockout-3.4.1.js"></script>
     <script src="js/app.js"></script>
   </body>

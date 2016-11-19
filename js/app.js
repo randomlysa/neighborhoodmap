@@ -26,7 +26,6 @@ var mapLocations = [
     }
 ];
 
-
 var Location = function(data) {
     this.title = ko.observable(data.title);
     this.coord = ko.observable(data.coordinates);
@@ -64,4 +63,26 @@ var ViewModel = function() {
     });
 }
 
+ko.bindingHandlers.addOpenInfoWindowToLink = {
+    init: function(element, valueAccessor) {
+        var value = ko.unwrap(valueAccessor());
+
+        // match link text to the mapLocations.Title and return index
+        function matchtitles(elementTitle) {
+            for (var i = 0; i < mapLocations.length; i++) {
+                if (elementTitle == mapLocations[i].title) {
+                    return i;
+                }
+            }
+        }
+
+        $(element).click( function() {
+            var infowindow = new google.maps.InfoWindow({});
+            var itemindex = matchtitles(element.innerHTML);
+            infowindow.setContent("<strong>" +
+                mapLocations[itemindex].title + "</strong><br>");
+            infowindow.open(map, markersArray[itemindex]);
+        });
+    }
+}
 ko.applyBindings(new ViewModel());
