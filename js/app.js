@@ -38,15 +38,15 @@ var ViewModel = function() {
     this.mapFilter = ko.observable("");
     this.dynamicLocationsList = ko.observableArray([]);
 
+    // remove items from dynamicLocationsList based on text input
     function makeMapList(inputText) {
         initialLocations.forEach(function(mapItem){
-            if (typeof inputText !== 'undefined') {
-                // filter map based on input
+            if (typeof inputText !== 'undefined' && inputText !== '') {
                 if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
                     self.dynamicLocationsList.push( new Location(mapItem) );
                 }
             }
-            else {
+            if (typeof inputText === 'undefined' || inputText === '') {
                 // no letters input, return all items
                 self.dynamicLocationsList.push( new Location(mapItem) );
             }
