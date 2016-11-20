@@ -27,9 +27,9 @@ var initialLocations = [
 ];
 
 var Location = function(data) {
-    this.title = ko.observable(data.title);
-    this.coord = ko.observable(data.coordinates);
-    this.info = ko.observable(data.info);
+    this.title = data.title;
+    this.coord = data.coordinates;
+    this.info = data.info;
 }
 
 
@@ -71,6 +71,29 @@ var ViewModel = function() {
                 self.dynamicLocationsList.push( new Location(mapItem) );
             }
         });
+
+        // add/remove markers from the map.
+        // first check if markersArray has been created
+        if (typeof markersArray !== 'undefined') {
+            // make an array of self.dynamicLocationsList TITLES
+            var dllTitles = [];
+            for (var i = 0; i < self.dynamicLocationsList().length; i++) {
+                dllTitles.push(self.dynamicLocationsList()[i].title);
+            }
+
+            // loop through markers array (array length shouldn't change)
+            // and check if the marker title is in the dLLtitles array
+            for (var i = 0; i < markersArray.length; i++) {
+                var title = markersArray[i].title;
+                var result = dllTitles.indexOf(title)
+                if (result === -1) {
+                    markersArray[i].setMap(null);
+                }
+                else {
+                    markersArray[i].setMap(map);
+                }
+            }
+        }
     };
 
     makeMapList();
