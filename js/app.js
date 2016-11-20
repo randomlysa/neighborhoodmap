@@ -38,6 +38,7 @@ var ViewModel = function() {
     this.mapFilter = ko.observable("");
     this.dynamicLocationsList = ko.observableArray([]);
 
+    // open InfoWindow for links in overlay
     self.openInfoWindow = function(data, event) {
         element = event.target;
         elementTitle = event.target.text;
@@ -55,7 +56,6 @@ var ViewModel = function() {
         infowindow.setContent("<strong>" +
             initialLocations[itemindex].title + "</strong><br>");
         infowindow.open(map, markersArray[itemindex]);
-        return infowindow;
     }
 
     // remove items from dynamicLocationsList based on text input
