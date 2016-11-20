@@ -58,8 +58,13 @@ var ViewModel = function() {
         infowindow.open(map, markersArray[itemindex]);
     }
 
-    // remove items from dynamicLocationsList based on text input
-    function makeMapList(inputText) {
+
+    function addRemoveLocations(inputText) {
+        // remove items from dynamicLocationsList
+        self.dynamicLocationsList.removeAll();
+
+        // loop through initialLocations (all locations) and push them
+        // back to dynamicLocationsList if they equal the input text
         initialLocations.forEach(function(mapItem){
             if (typeof inputText !== 'undefined' && inputText !== '') {
                 if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
@@ -96,13 +101,12 @@ var ViewModel = function() {
         }
     };
 
-    makeMapList();
+    addRemoveLocations();
 
     // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
     // check mapFilter for inputText and update makeMapList with inputText
     this.mapFilter.subscribe(function (inputText) {
-        self.dynamicLocationsList.removeAll()
-        makeMapList(inputText);
+        addRemoveLocations(inputText);
     });
 }
 
