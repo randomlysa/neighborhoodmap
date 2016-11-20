@@ -38,6 +38,26 @@ var ViewModel = function() {
     this.mapFilter = ko.observable("");
     this.dynamicLocationsList = ko.observableArray([]);
 
+    self.openInfoWindow = function(data, event) {
+        element = event.target;
+        elementTitle = event.target.text;
+
+        function matchtitles(elementTitle) {
+            for (var i = 0; i < initialLocations.length; i++) {
+                if (elementTitle == initialLocations[i].title) {
+                    return i;
+                }
+            }
+        }
+
+        var infowindow =  new google.maps.InfoWindow({});
+        var itemindex = matchtitles(element.innerHTML);
+        infowindow.setContent("<strong>" +
+            initialLocations[itemindex].title + "</strong><br>");
+        infowindow.open(map, markersArray[itemindex]);
+        return infowindow;
+    }
+
     // remove items from dynamicLocationsList based on text input
     function makeMapList(inputText) {
         initialLocations.forEach(function(mapItem){
@@ -63,26 +83,4 @@ var ViewModel = function() {
     });
 }
 
-ko.bindingHandlers.addOpenInfoWindowToLink = {
-    init: function(element, valueAccessor) {
-        var value = ko.unwrap(valueAccessor());
-
-        // match link text to the initialLocations.Title and return index
-        function matchtitles(elementTitle) {
-            for (var i = 0; i < initialLocations.length; i++) {
-                if (elementTitle == initialLocations[i].title) {
-                    return i;
-                }
-            }
-        }
-
-        $(element).click( function() {
-            var infowindow = new google.maps.InfoWindow({});
-            var itemindex = matchtitles(element.innerHTML);
-            infowindow.setContent("<strong>" +
-                initialLocations[itemindex].title + "</strong><br>");
-            infowindow.open(map, markersArray[itemindex]);
-        });
-    }
-}
 ko.applyBindings(new ViewModel());

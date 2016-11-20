@@ -40,8 +40,8 @@
         <a href="#"
           class="overlayMapListLinks"
           data-bind="text: title,
-          attr: { id: $index },
-          addOpenInfoWindowToLink: true"></a><br />
+          click: $parent.openInfoWindow,
+          attr: { id: $index }"></a><br />
         </div>
       </div>
 
