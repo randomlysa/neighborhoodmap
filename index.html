@@ -72,26 +72,6 @@
 
           markersArray.push(marker);
 
-          // get stuff from flickr
-          var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
-          // take the first part of the title (before first parenthesis),
-          // replace spaces with %20, and append %20Minnesota for better results
-          var flickrAPISearchQuery = title.split("(")[0].replace(/ /g, "%20") + "%20Minnesota";
-          var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
-
-          var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
-          // console.log(fullFlickrAPIsearch);
-
-          $.get("https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&method=flickr.photos.search&text=Buck%20Hill%20%20Minnesota", function(data) {
-            newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
-            fivePhotoIDs = [];
-            for (var i = 0; i < 5; i++) {
-              fivePhotos.push(newData.photos.photo[i].id);
-            }
-          })
-            .fail(function(){
-              console.log( "error" );
-            })
 
           marker.addListener('click', function () {
             infowindow.setContent("<strong>" +

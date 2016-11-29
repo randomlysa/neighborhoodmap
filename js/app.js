@@ -110,4 +110,44 @@ var ViewModel = function() {
     });
 }
 
+
+/* search flickr via flickr api for images for InfoWindow
+   photos.search docs:
+      https://www.flickr.com/services/api/flickr.photos.search.html
+   flickr photo source urls, or, working with results of photo.search :
+      https://www.flickr.com/services/api/misc.urls.html
+*/
+function searchFlickr(query, callback) {
+  console.log('searching flickr for ' + query)
+  // set the return format (json) and api_key for all api requests
+  var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
+  photosForInfoWindow = [];
+  // take the first part of the title (before first parenthesis),
+  // replace spaces with %20, and append %20Minnesota for better results
+  var flickrAPISearchQuery = query.split("(")[0].replace(/ /g, "%20") + "%20Minnesota";
+  var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
+
+  var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
+
+  var request = $.ajax(fullFlickrAPIsearch);
+  request.fail(function(){
+    // change this later
+    console.log( "error connecting to flickrrrr" );
+  });
+  request.done(function( data ){
+    newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
+    for (var i = 0; i < 5; i++) {
+
+      var farm = newData.photos.photo[i].farm;
+      var server_id = newData.photos.photo[i].server;
+      var id = newData.photos.photo[i].id;
+      var secret = newData.photos.photo[i].secret;
+
+      var image = "https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg";
+      photosForInfoWindow.push(image);
+    }
+    callback(photosForInfoWindow);
+  });
+} // end of searchFlickr()
+
 ko.applyBindings(new ViewModel());
