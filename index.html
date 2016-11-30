@@ -74,9 +74,12 @@
 
 
           marker.addListener('click', function () {
+            divIDflickr = this.title.split("(")[0].replace(/ /g, "_") + "flickr";
             infowindow.setContent("<strong>" +
-            this.title + "</strong><br>");
+            this.title + "</strong>" +
+            "<div id='" + divIDflickr + "'></div><br>");
             infowindow.open(map, this);
+            updateDiv(divIDflickr, this.title);
           });
         }; // close for loop
       } // close function initMap

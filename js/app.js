@@ -58,7 +58,6 @@ var ViewModel = function() {
         infowindow.open(map, markersArray[itemindex]);
     }
 
-
     function addRemoveLocations(inputText) {
         // remove items from dynamicLocationsList
         self.dynamicLocationsList.removeAll();
@@ -143,11 +142,18 @@ function searchFlickr(query, callback) {
       var id = newData.photos.photo[i].id;
       var secret = newData.photos.photo[i].secret;
 
-      var image = "https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg";
+      var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
       photosForInfoWindow.push(image);
     }
     callback(photosForInfoWindow);
   });
 } // end of searchFlickr()
+
+// update InfoWindow after opening it
+function updateDiv(divID, title) {
+  searchFlickr(title, function(result) {
+    $( "#" + divID ).append( result );
+  });
+}
 
 ko.applyBindings(new ViewModel());
