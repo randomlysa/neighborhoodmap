@@ -120,7 +120,7 @@ function searchFlickr(query, callback) {
   console.log('searching flickr for ' + query)
   // set the return format (json) and api_key for all api requests
   var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
-  photosForInfoWindow = [];
+  infowindowContent = [];
   // take the first part of the title (before first parenthesis),
   // replace spaces with %20, and append %20Minnesota for better results
   var flickrAPISearchQuery = query.split("(")[0].replace(/ /g, "%20") + "%20Minnesota";
@@ -130,13 +130,13 @@ function searchFlickr(query, callback) {
 
   var request = $.ajax(fullFlickrAPIsearch);
   request.fail(function(){
-    photosForInfoWindow.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
-    callback(photosForInfoWindow);
+    infowindowContent.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
+    callback(infowindowContent);
   });
   request.done(function( data ){
     newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
     if (newData.photos.total === '0') {
-      photosForInfoWindow.push("<span class='error text-center'>no photos found on flickr</span>");
+      infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
     }
     else {
       for (var i = 0; i < 5; i++) {
@@ -146,13 +146,13 @@ function searchFlickr(query, callback) {
         var secret = newData.photos.photo[i].secret;
 
         var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
-        photosForInfoWindow.push(image);
+        infowindowContent.push(image);
       }
-    photosForInfoWindow.push("<a href='https://www.flickr.com/search/?text=" +
+    infowindowContent.push("<a href='https://www.flickr.com/search/?text=" +
       flickrAPISearchQuery + "' target='_new' class='text-right'>Search for more photos on Flickr</a>");
     }
 
-    callback(photosForInfoWindow);
+    callback(infowindowContent);
   });
 } // end of searchFlickr()
 
