@@ -20,3 +20,23 @@ html, body {
     margin-left: 10px;
     line-height: 135%;
 }
+
+.flickr {
+    width: 375px;
+}
+
+.text-right {
+    display: block;
+    text-align: right;
+}
+
+.text-center {
+    display: block;
+    text-align: center;
+}
+
+.error {
+    font-size: 200%;
+    color: #ba3d36;
+    padding-top: 15px;
+}

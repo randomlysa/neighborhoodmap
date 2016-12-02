@@ -136,7 +136,7 @@ function searchFlickr(query, callback) {
   request.done(function( data ){
     newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
     if (newData.photos.total === '0') {
-      photosForInfoWindow.push("<span class='nophotos'>Sorry! No Photos found.</span>");
+      photosForInfoWindow.push("<span class='error text-center'>no photos found on flickr</span>");
     }
     else {
       for (var i = 0; i < 5; i++) {
@@ -148,6 +148,8 @@ function searchFlickr(query, callback) {
         var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
         photosForInfoWindow.push(image);
       }
+    photosForInfoWindow.push("<a href='https://www.flickr.com/search/?text=" +
+      flickrAPISearchQuery + "' target='_new' class='text-right'>Search for more photos on Flickr</a>");
     }
 
     callback(photosForInfoWindow);
