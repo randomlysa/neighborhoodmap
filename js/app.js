@@ -130,8 +130,8 @@ function searchFlickr(query, callback) {
 
   var request = $.ajax(fullFlickrAPIsearch);
   request.fail(function(){
-    // change this later
-    console.log( "error connecting to flickrrrr" );
+    photosForInfoWindow.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
+    callback(photosForInfoWindow);
   });
   request.done(function( data ){
     newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
