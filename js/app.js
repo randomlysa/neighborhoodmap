@@ -1,28 +1,23 @@
 var initialLocations = [
     {
-        "title": "Orchard Lake (Sunset Photos)",
-        "coordinates": [44.695938, -93.307176],
-        "info": "One of the better places I've found to take sunset photos."
+        "title": "New England Aquarium",
+        "coordinates": [42.359151,-71.049576]
     },
     {
-        "title": "Lebanon Hills Bike Trail (Mountain Biking)",
-        "coordinates": [44.78, -93.1897],
-        "info": "The beginner loop is enough for me..."
+        "title": "Frost Ice Loft",
+        "coordinates": [42.360325,-71.053310]
     },
     {
-        "title": "Spring Lake Park (Bike Trailhead)",
-        "coordinates": [44.768866, -92.928309],
-        "info": "One of the few trails I've found that I enjoy."
+        "title": "Central Wharf Company",
+        "coordinates": [42.358668, -71.052720]
     },
     {
-        "title": "Buck Hill (Skiing)",
-        "coordinates": [44.723454, -93.286449],
-        "info": "I really should go here."
+        "title": "Alamo Rent a Car",
+        "coordinates": [42.358328, -71.051116]
     },
     {
-        "title": "Valley Lake Park (Quick Drone Flights)",
-        "coordinates": [44.716920, -93.209812],
-        "info": "Emergency launch site for taking sunset photos."
+        "title": "Boston Harbor Hotel",
+        "coordinates": [42.356551, -71.050188]
     }
 ];
 
@@ -122,8 +117,9 @@ function searchFlickr(query, callback) {
   var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
   infowindowContent = [];
   // take the first part of the title (before first parenthesis),
-  // replace spaces with %20, and append %20Minnesota for better results
-  var flickrAPISearchQuery = query.split("(")[0].replace(/ /g, "%20") + "%20Minnesota";
+  // replace spaces with %20, and append %20Boston for better results
+  var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
+  console.log(flickrAPISearchQuery);
   var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
 
   var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
