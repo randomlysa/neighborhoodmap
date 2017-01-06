@@ -20,7 +20,7 @@
         <a href="#"
           class="overlayMapListLinks"
           data-bind="text: title,
-          click: $parent.openInfoWindow,
+          click: openInfoWindow,
           attr: { id: $index }"></a><br />
         </div>
       </div>
@@ -41,6 +41,7 @@
         $("#mapsError").css("display", "none");
         initMap();
         ko.applyBindings(new ViewModel());
+        var infowindow =  new google.maps.InfoWindow({});
       }
 
       var map;
@@ -69,14 +70,14 @@
 
           markersArray.push(marker);
 
-          marker.addListener('click', function () {
-            divID = this.title.split("(")[0].replace(/ /g, "_").slice(0, -1);
-            infowindow.setContent("<strong>" +
-            this.title + "</strong>" +
-            "<div id='" + divID + "' class='flickr'></div><br>");
-            infowindow.open(map, this);
-            updateDiv(divID, this.title);
-          });
+          var num = initialLocations[i];
+
+          marker.addListener('click', (function(marker) {
+            return function() {
+              self.openInfoWindow(marker.title);
+            };
+          })(num));
+
         }; // close for loop
       } // close function initMap
 

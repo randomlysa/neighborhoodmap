@@ -33,25 +33,6 @@ var ViewModel = function() {
     this.mapFilter = ko.observable("");
     this.dynamicLocationsList = ko.observableArray([]);
 
-    // open InfoWindow for links in overlay
-    self.openInfoWindow = function(data, event) {
-        element = event.target;
-        elementTitle = event.target.text;
-
-        function matchtitles(elementTitle) {
-            for (var i = 0; i < initialLocations.length; i++) {
-                if (elementTitle == initialLocations[i].title) {
-                    return i;
-                }
-            }
-        }
-
-        var infowindow =  new google.maps.InfoWindow({});
-        var itemindex = matchtitles(element.innerHTML);
-        infowindow.setContent("<strong>" +
-            initialLocations[itemindex].title + "</strong><br>");
-        infowindow.open(map, markersArray[itemindex]);
-    }
 
     function addRemoveLocations(inputText) {
         // remove items from dynamicLocationsList
@@ -104,6 +85,47 @@ var ViewModel = function() {
     });
 }
 
+
+// keep track of open infoWindows to close the previous one
+var openIW = [];
+function openInfoWindow (title) {
+    // the 'list view' sends the title as an object.
+    // in this case, the title is actually title.title
+    // the map marker sends the title as a string
+    if (typeof title === 'object' ) {
+        title = title.title;
+    }
+
+    // check if there's at least one openIW defined. if there is, close the last one.
+    if (openIW[0] !== undefined) {
+        openIW[openIW.length-1].close();
+    }
+
+    // find the title in initialLocations and return the 'id' (i)
+    // this is which marker # to attach the info window to
+    // (markers are stored in an array)
+    function matchtitles(title) {
+        for (var i = 0; i < initialLocations.length; i++) {
+            if (title == initialLocations[i].title) {
+                return i;
+            }
+        }
+    }
+
+    var infowindow =  new google.maps.InfoWindow({});
+    var itemindex = matchtitles(title);
+
+    // make the id of the div the same as the title, but with underscores instead of spaces
+    divID = title.replace(/ /g, "_");
+    infowindow.setContent("<strong>" +
+        title + "</strong><br>" +
+        "<div id='" + divID + "' class='flickr'></div><br>");
+    infowindow.open(map, markersArray[itemindex]);
+    // add the infoWindow to the array that keeps track of which IWs to close
+    openIW.push(infowindow);
+    // search flickr for images that are named 'title' and update the infoWindow id
+    updateDiv(divID, title);
+}
 
 /* search flickr via flickr api for images for InfoWindow
    photos.search docs:
