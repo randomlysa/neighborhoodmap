@@ -158,5 +158,3 @@ function updateDiv(divID, title) {
     $( "#" + divID ).append( result );
   });
 }
-
-ko.applyBindings(new ViewModel());
