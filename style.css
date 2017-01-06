@@ -39,6 +39,10 @@ input {
     line-height: 150%;
 }
 
+#maps-error {
+    visibility: hidden;
+}
+
 .flickr {
     width: 375px;
 }

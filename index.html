@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div id="mapsError" class="centered">
+      <div id="maps-error" class="centered">
           There Was an Error!
           Google Maps Didn't Load
       </div>
@@ -33,12 +33,13 @@
     <script>
 
       function mapsError() {
-        // if maps didn't load, hide the floating panel and don't load the viewmodel
-        $("#floating-panel").css("display", "none");
+        // if maps didn't load, hide the floating panel, don't load the viewmodel,
+        // and show an error message
+        $("#floating-panel").css("visibility", "hidden");
+        $("#maps-error").css("visibility", "visible");
 
       }
       function mapSuccess() {
-        $("#mapsError").css("display", "none");
         initMap();
         ko.applyBindings(new ViewModel());
       }
