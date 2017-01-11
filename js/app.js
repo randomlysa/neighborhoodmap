@@ -153,7 +153,7 @@ function searchFlickr(query, callback) {
   });
   request.done(function( data ){
     newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
-    if (newData.photos.total === '0') {
+    if (newData.photos.total < 5) {
       infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
     }
     else {
