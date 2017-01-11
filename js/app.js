@@ -169,7 +169,9 @@ function searchFlickr(query, callback) {
 
         // photo source url info, including size
         // https://www.flickr.com/services/api/misc.urls.html
-        var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
+        var image = "<img " +
+            "src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + ".jpg'" +
+            "class='img-responsive'>";
         infowindowContent.push(image);
       }
     infowindowContent.push("<a href='https://www.flickr.com/search/?text=" +
