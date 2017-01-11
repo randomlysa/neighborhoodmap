@@ -163,6 +163,8 @@ function searchFlickr(query, callback) {
         var id = newData.photos.photo[i].id;
         var secret = newData.photos.photo[i].secret;
 
+        // photo source url info, including size
+        // https://www.flickr.com/services/api/misc.urls.html
         var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
         infowindowContent.push(image);
       }
