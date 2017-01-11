@@ -121,10 +121,14 @@ function openInfoWindow (title) {
         title + "</strong><br>" +
         "<div id='" + divID + "' class='flickr'></div><br>");
     infowindow.open(map, markersArray[itemindex]);
+    infowindow.addListener('closeclick', function() {
+        $( "#collapse-locations" ).slideToggle();
+    });
     // add the infoWindow to the array that keeps track of which IWs to close
     openIW.push(infowindow);
     // search flickr for images that are named 'title' and update the infoWindow id
     updateDiv(divID, title);
+    $("#collapse-locations").slideUp();
 }
 
 /* search flickr via flickr api for images for InfoWindow
@@ -182,3 +186,8 @@ function updateDiv(divID, title) {
     $( "#" + divID ).append( result );
   });
 }
+
+// toggle location list
+    $( "#toggle-location-list" ).click(function() {
+      $( "#collapse-locations" ).slideToggle();
+    });

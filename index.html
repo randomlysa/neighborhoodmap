@@ -17,7 +17,12 @@
 
         <input data-bind="textInput: mapFilter" placeholder="filter locations" />
 
-        <div data-bind="foreach: dynamicLocationsList">
+        <button type="button" class="btn btn-default" id="toggle-location-list"
+          aria-label="Right Align">
+          <span class="glyphicon glyphicon-expand" aria-hidden="true"></span>
+        </button>
+
+        <div id="collapse-locations" data-bind="foreach: dynamicLocationsList">
         <a href="#"
           class="overlayMapListLinks"
           data-bind="text: title,
