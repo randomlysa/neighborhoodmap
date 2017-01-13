@@ -113,7 +113,15 @@ function openInfoWindow (title) {
     }
 
     var infowindow =  new google.maps.InfoWindow({});
+    // gets the index of the marker in markersArray
+    // ie, markersArray[itemindex] == marker that was clicked
     var itemindex = matchtitles(title);
+
+    // bounce the marker for 2800 ms
+    markersArray[itemindex].setAnimation(google.maps.Animation.BOUNCE);
+    window.setTimeout(function() {
+      markersArray[itemindex].setAnimation(null);
+    }, 2800);
 
     // make the id of the div the same as the title, but with underscores instead of spaces
     divID = title.replace(/ /g, "_");
