@@ -99,7 +99,6 @@ function closeIW(clickLocation) {
 }
 
 function openInfoWindow (title, clickLocation) {
-    console.log(clickLocation);
     // the 'list view' sends the title as an object.
     // in this case, the title is actually title.title
     // the map marker sends the title as a string
@@ -156,14 +155,14 @@ function openInfoWindow (title, clickLocation) {
       https://www.flickr.com/services/api/misc.urls.html
 */
 function searchFlickr(query, callback) {
-  console.log('searching flickr for ' + query)
+  // console.log('searching flickr for ' + query)
   // set the return format (json) and api_key for all api requests
   var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
   infowindowContent = [];
   // take the first part of the title (before first parenthesis),
   // replace spaces with %20, and append %20Boston for better results
   var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
-  console.log(flickrAPISearchQuery);
+  // console.log(flickrAPISearchQuery);
   var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
 
   var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
