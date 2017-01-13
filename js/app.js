@@ -137,12 +137,14 @@ function openInfoWindow (title, clickLocation) {
         "<div id='" + divID + "' class='flickr'></div><br>");
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
+        updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
     });
     // add the infoWindow to the array that keeps track of which IWs to close
     openIW.push(infowindow);
     // search flickr for images that are named 'title' and update the infoWindow id
     updateDiv(divID, title);
+    updateCollapseLocationsIcon();
     $("#collapse-locations").slideUp();
 }
 
@@ -201,6 +203,21 @@ function updateDiv(divID, title) {
     $( "#" + divID ).append( result );
   });
 }
+
+function updateCollapseLocationsIcon() {
+  window.setTimeout(function() {
+    var clDisplay = $( "#collapse-locations" ).css('display');
+    if (clDisplay === 'block') {
+      $( '#toggle-button').removeClass('glyphicon-expand')
+      $( '#toggle-button').addClass('glyphicon-collapse-up')
+    }
+    if (clDisplay === 'none') {
+      $( '#toggle-button').removeClass('glyphicon-collapse-up')
+      $( '#toggle-button').addClass('glyphicon-expand')
+    }
+  }, 450);
+}
+
 // toggle location list. this is needed for the button near the div
 $( "#toggle-location-list" ).click(function() {
   updateCollapseLocationsIcon();
