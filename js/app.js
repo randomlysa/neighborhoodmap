@@ -199,9 +199,9 @@ function searchFlickr(query, callback) {
 
 // update InfoWindow after opening it
 function updateDiv(divID, title) {
-  searchFlickr(title, function(result) {
-    $( "#" + divID ).append( result );
-  });
+    searchFlickr(title, function(result) {
+        $( "#" + divID ).append( result );
+    });
 }
 
 function updateCollapseLocationsIcon() {
@@ -220,6 +220,6 @@ function updateCollapseLocationsIcon() {
 
 // toggle location list. this is needed for the button near the div
 $( "#toggle-location-list" ).click(function() {
-  updateCollapseLocationsIcon();
-  $( "#collapse-locations" ).slideToggle();
+    updateCollapseLocationsIcon();
+    $( "#collapse-locations" ).slideToggle();
 });
