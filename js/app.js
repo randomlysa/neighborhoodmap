@@ -85,18 +85,20 @@ var ViewModel = function() {
     });
 }
 
-
 // keep track of open infoWindows to close the previous one
 var openIW = [];
-function closeIW() {
+function closeIW(clickLocation) {
     // check if there's at least one openIW defined. if there is, close the last one.
     if (openIW[0] !== undefined) {
         openIW[openIW.length-1].close();
     }
-    $("#collapse-locations").slideDown();
+    if (clickLocation !== 'map') {
+        $("#collapse-locations").slideDown();
+    }
 }
 
-function openInfoWindow (title) {
+function openInfoWindow (title, clickLocation) {
+    console.log(clickLocation);
     // the 'list view' sends the title as an object.
     // in this case, the title is actually title.title
     // the map marker sends the title as a string
@@ -104,7 +106,7 @@ function openInfoWindow (title) {
         title = title.title;
     }
 
-    closeIW();
+    closeIW(clickLocation);
 
     // find the title in initialLocations and return the 'id' (i)
     // this is which marker # to attach the info window to
