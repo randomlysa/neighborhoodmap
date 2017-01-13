@@ -93,6 +93,7 @@ function closeIW(clickLocation) {
         openIW[openIW.length-1].close();
     }
     if (clickLocation !== 'map') {
+        updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
     }
 }
