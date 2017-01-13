@@ -83,8 +83,9 @@
               self.openInfoWindow(marker.title);
             };
           })(num));
-
         }; // close for loop
+
+        google.maps.event.addDomListener(map, 'click', closeIW);
       } // close function initMap
 
     </script>
