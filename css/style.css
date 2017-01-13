@@ -46,6 +46,7 @@ input {
     width: 100%;
     padding: 0px;
     margin: 0px;
+    min-height: 95px;
 }
 
 .text-right {
