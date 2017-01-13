@@ -88,6 +88,13 @@ var ViewModel = function() {
 
 // keep track of open infoWindows to close the previous one
 var openIW = [];
+function closeIW() {
+    // check if there's at least one openIW defined. if there is, close the last one.
+    if (openIW[0] !== undefined) {
+        openIW[openIW.length-1].close();
+    }
+}
+
 function openInfoWindow (title) {
     // the 'list view' sends the title as an object.
     // in this case, the title is actually title.title
@@ -96,10 +103,7 @@ function openInfoWindow (title) {
         title = title.title;
     }
 
-    // check if there's at least one openIW defined. if there is, close the last one.
-    if (openIW[0] !== undefined) {
-        openIW[openIW.length-1].close();
-    }
+    closeIW();
 
     // find the title in initialLocations and return the 'id' (i)
     // this is which marker # to attach the info window to
