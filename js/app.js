@@ -93,6 +93,7 @@ function closeIW() {
     if (openIW[0] !== undefined) {
         openIW[openIW.length-1].close();
     }
+    $("#collapse-locations").slideDown();
 }
 
 function openInfoWindow (title) {
@@ -134,7 +135,7 @@ function openInfoWindow (title) {
         "<div id='" + divID + "' class='flickr'></div><br>");
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
-        $( "#collapse-locations" ).slideToggle();
+        $("#collapse-locations").slideDown();
     });
     // add the infoWindow to the array that keeps track of which IWs to close
     openIW.push(infowindow);
@@ -198,8 +199,3 @@ function updateDiv(divID, title) {
     $( "#" + divID ).append( result );
   });
 }
-
-// toggle location list
-    $( "#toggle-location-list" ).click(function() {
-      $( "#collapse-locations" ).slideToggle();
-    });
