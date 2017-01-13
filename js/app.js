@@ -201,3 +201,8 @@ function updateDiv(divID, title) {
     $( "#" + divID ).append( result );
   });
 }
+// toggle location list. this is needed for the button near the div
+$( "#toggle-location-list" ).click(function() {
+  updateCollapseLocationsIcon();
+  $( "#collapse-locations" ).slideToggle();
+});
