@@ -161,7 +161,7 @@ function searchFlickr(query, callback) {
       infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
     }
     else {
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 4; i++) {
         var farm = newData.photos.photo[i].farm;
         var server_id = newData.photos.photo[i].server;
         var id = newData.photos.photo[i].id;
@@ -169,13 +169,11 @@ function searchFlickr(query, callback) {
 
         // photo source url info, including size
         // https://www.flickr.com/services/api/misc.urls.html
-        var image = "<img " +
-            "src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + ".jpg'" +
-            "class='img-responsive'>";
+        var image = "<img src='https://farm" + farm + ".staticflickr.com/" + server_id + "/" + id + "_" + secret + "_s.jpg'>";
         infowindowContent.push(image);
       }
-    infowindowContent.push("<a href='https://www.flickr.com/search/?text=" +
-      flickrAPISearchQuery + "' target='_new' class='text-right'>Search for more photos on Flickr</a>");
+    infowindowContent.push("<br><a href='https://www.flickr.com/search/?text=" +
+      flickrAPISearchQuery + "' target='_new'>Search for more photos on Flickr</a>");
     }
 
     callback(infowindowContent);

@@ -43,7 +43,9 @@ input {
 }
 
 .flickr {
-    width: 375px;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
 }
 
 .text-right {
