@@ -1,3 +1,6 @@
+// get api info
+var getConfig = $.getJSON("js/config_secret.json");
+
 var initialLocations = [
     {
         "title": "New England Aquarium",
@@ -197,6 +200,32 @@ function searchFlickr(query, callback) {
   });
 } // end of searchFlickr()
 
+// search yelp via yelp api
+function searchYelp(query) {
+    getConfig.done( function( data ) {
+
+        var yelpAppID = data.config.yelpAppID;
+        var yelpAppSecret = data.config.yelpAppSecret;
+
+        var getToken = $.ajax({
+            url: 'https://api.yelp.com/oauth2/token',
+            method: 'POST',
+            data: {
+                grant_type: 'client_credentials',
+                client_id: yelpAppID,
+                client_secret: yelpAppSecret
+            }
+        });
+
+        getToken.done(function( response){
+            console.log(response.access_token);
+        });
+    });
+
+    var yelpAPIbase = "https://api.yelp.com/v3/businesses/search"
+}
+
+searchYelp();
 // update InfoWindow after opening it
 function updateDiv(divID, title) {
     searchFlickr(title, function(result) {
