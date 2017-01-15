@@ -216,9 +216,6 @@ function nonce_generate() {
     https://discussions.udacity.com/t/yelp-api-not-working/163965/4
 */
 function searchYelp(query, callback) {
-
-    console.log(query);
-
     $(document).ready(function() {
         var configBase = getConfig.responseJSON.config;
         var yelp_url = 'https://api.yelp.com/v2/search';
@@ -272,9 +269,7 @@ function updateDiv(divID, title) {
         $( "#" + divID + "_flickr" ).append( result );
     });
 
-    console.log(divID)
     searchYelp(title, function(result) {
-        console.log('searching yelp! for: ' + title);
         $( "#" + divID + "_yelp" ).append( result );
     });
 }
