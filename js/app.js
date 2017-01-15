@@ -200,32 +200,58 @@ function searchFlickr(query, callback) {
   });
 } // end of searchFlickr()
 
-// search yelp via yelp api
+/**
+ * Generates a random number and returns it as a string for OAuthentication
+ * @return {string}
+ */
+function nonce_generate() {
+  return (Math.floor(Math.random() * 1e12).toString());
+}
+
+/* search yelp via yelp api
+    https://discussions.udacity.com/t/how-to-make-ajax-request-to-yelp-api/13699/24
+    https://discussions.udacity.com/t/yelp-api-not-working/163965/4
+*/
 function searchYelp(query) {
-    getConfig.done( function( data ) {
 
-        var yelpAppID = data.config.yelpAppID;
-        var yelpAppSecret = data.config.yelpAppSecret;
-        // temporarily use yelp auth token in config file, good for 180 days
-        var yelpAuthToken = data.config.yelpAuthToken;
+    $(document).ready(function() {
+        var configBase = getConfig.responseJSON.config;
+        // var yelp_url = YELP_BASE_URL + 'business/' + self.selected_place().Yelp.business_id;
+        var yelp_url = 'https://api.yelp.com/v2/search';
+        // var yelp_url = YELP_BASE_URL + 'business/' + self.selected_place().Yelp.business_id;
 
-        // var getToken = $.ajax({
-        //     url: 'https://api.yelp.com/oauth2/token',
-        //     method: 'POST',
-        //     data: {
-        //         grant_type: 'client_credentials',
-        //         client_id: yelpAppID,
-        //         client_secret: yelpAppSecret
-        //     }
-        // });
+        var parameters = {
+          oauth_consumer_key: configBase.YELP_KEY,
+          oauth_token: configBase.YELP_TOKEN,
+          oauth_nonce: nonce_generate(),
+          oauth_timestamp: Math.floor(Date.now()/1000),
+          oauth_signature_method: 'HMAC-SHA1',
+          oauth_version : '1.0',
+          callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
+          term: 'vineyard',
+          location: '22630'
+        };
 
-        // getToken.done(function( response){
-        //     console.log(response.access_token);
-        // });
+        var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
+        parameters.oauth_signature = encodedSignature;
 
-        var yelpAPIbase = "https://api.yelp.com/v3/businesses/search"
+        var settings = {
+          url: yelp_url,
+          data: parameters,
+          cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+          dataType: 'jsonp',
+          success: function(results) {
+            // Do stuff with results
+            console.log( results );
+          },
+          fail: function() {
+            // Do stuff on fail
+            console.log('fail');
+          }
+        };
+        // Send AJAX query via jQuery library.
+        // var yelpQuery = $.ajax(settings);
     });
-
 }
 
 searchYelp();
