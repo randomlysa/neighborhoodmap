@@ -135,9 +135,12 @@ function openInfoWindow (title, clickLocation) {
 
     // make the id of the div the same as the title, but with underscores instead of spaces
     divID = title.replace(/ /g, "_");
-    infowindow.setContent("<strong>" +
+    infowindow.setContent("" +
+        "<strong>" +
         title + "</strong><br>" +
-        "<div id='" + divID + "' class='flickr'></div><br>");
+        "<div id='" + divID + "_flickr' class='flickr'></div><br>" +
+        "<div id='" + divID + "_yelp' class='yelp'></div>"
+        );
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
         updateCollapseLocationsIcon();
@@ -212,13 +215,14 @@ function nonce_generate() {
     https://discussions.udacity.com/t/how-to-make-ajax-request-to-yelp-api/13699/24
     https://discussions.udacity.com/t/yelp-api-not-working/163965/4
 */
-function searchYelp(query) {
+function searchYelp(query, callback) {
+
+    console.log(query);
 
     $(document).ready(function() {
         var configBase = getConfig.responseJSON.config;
-        // var yelp_url = YELP_BASE_URL + 'business/' + self.selected_place().Yelp.business_id;
         var yelp_url = 'https://api.yelp.com/v2/search';
-        // var yelp_url = YELP_BASE_URL + 'business/' + self.selected_place().Yelp.business_id;
+        var infowindowContent;
 
         var parameters = {
           oauth_consumer_key: configBase.YELP_KEY,
@@ -228,8 +232,8 @@ function searchYelp(query) {
           oauth_signature_method: 'HMAC-SHA1',
           oauth_version : '1.0',
           callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
-          term: 'vineyard',
-          location: '22630'
+          term: query,
+          location: 'Boston'
         };
 
         var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
@@ -242,7 +246,10 @@ function searchYelp(query) {
           dataType: 'jsonp',
           success: function(results) {
             // Do stuff with results
-            console.log( results );
+            var businessInfo = results.businesses[0];
+            infowindowContent = "" +
+            "<img src='" + businessInfo.rating_img_url +"'>";
+            callback(infowindowContent);
           },
           fail: function() {
             // Do stuff on fail
@@ -250,15 +257,20 @@ function searchYelp(query) {
           }
         };
         // Send AJAX query via jQuery library.
-        // var yelpQuery = $.ajax(settings);
+        var yelpQuery = $.ajax(settings);
     });
 }
 
-searchYelp();
 // update InfoWindow after opening it
 function updateDiv(divID, title) {
     searchFlickr(title, function(result) {
-        $( "#" + divID ).append( result );
+        $( "#" + divID + "_flickr" ).append( result );
+    });
+
+    console.log(divID)
+    searchYelp(title, function(result) {
+        console.log('searching yelp! for: ' + title);
+        $( "#" + divID + "_yelp" ).append( result );
     });
 }
 
