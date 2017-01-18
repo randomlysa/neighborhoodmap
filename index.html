@@ -48,8 +48,10 @@
 
       }
       function mapSuccess() {
-        initMap();
-        ko.applyBindings(new ViewModel());
+        $(document).ready(function() {
+          initMap();
+          ko.applyBindings(new ViewModel());
+        });
       }
 
       var map;
