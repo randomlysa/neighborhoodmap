@@ -15,12 +15,14 @@
       <div id="map"></div>
       <div id="floating-panel" class="col-xs-12 col-sm-6 col-md-4">
 
-        <input data-bind="textInput: mapFilter" placeholder="filter locations" />
+        <div id="floating-panel-header">
+          <input data-bind="textInput: mapFilter" placeholder="filter locations" />
 
-        <button type="button" class="btn btn-default" id="toggle-location-list"
-          aria-label="Right Align">
-          <span id="toggle-button" class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
-        </button>
+          <button type="button" class="btn btn-default" id="toggle-location-list"
+            aria-label="Right Align">
+            <span id="toggle-button" class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
+          </button>
+        </div>
 
         <div id="collapse-locations" data-bind="foreach: dynamicLocationsList">
         <a href="#"
