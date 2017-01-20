@@ -196,7 +196,7 @@ function searchFlickr(query, callback) {
         infowindowContent.push(image);
       }
     infowindowContent.push("<br><a href='https://www.flickr.com/search/?text=" +
-      flickrAPISearchQuery + "' target='_new'>Search for more photos on Flickr</a>");
+      flickrAPISearchQuery + "' target='_new'>More photos on Flickr</a>");
     }
 
     callback(infowindowContent);
