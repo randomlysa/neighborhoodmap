@@ -98,6 +98,7 @@ function closeIW(clickLocation) {
     if (clickLocation !== 'map') {
         updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
+        $( '#more-info' ).removeClass('open');
     }
 }
 
@@ -110,6 +111,9 @@ function openInfoWindow (title, clickLocation) {
     }
 
     closeIW(clickLocation);
+
+    // slide up the more info div
+    $( '#more-info' ).addClass('open');
 
     // find the title in initialLocations and return the 'id' (i)
     // this is which marker # to attach the info window to
@@ -145,6 +149,7 @@ function openInfoWindow (title, clickLocation) {
     infowindow.addListener('closeclick', function() {
         updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
+        $( '#more-info' ).removeClass('open');
     });
     // add the infoWindow to the array that keeps track of which IWs to close
     openIW.push(infowindow);
