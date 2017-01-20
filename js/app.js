@@ -186,11 +186,27 @@ function searchFlickr(query, callback) {
   });
   request.done(function( data ){
     newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
+
+    var numberOfPhotoResults = newData.photos.photo.length;
+    // calculate how much room there is on the page for photos
+    var availableWidth = $(document).width();
+
+    // for later use...
+    var availableHeight = $(window).height()
+
+    // determine how many 75px images will fit
+    var howManyImagesWillFit = Math.floor(availableWidth / 75);
+    if (howManyImagesWillFit > numberOfPhotoResults) {howManyImagesWillFit = numberOfPhotoResults}
+
+    // console.log(numberOfPhotoResults);
+    // console.log(availableWidth, availableHeight)
+    // console.log(howManyImagesWillFit);
+
     if (newData.photos.total < 5) {
       infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
     }
     else {
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < howManyImagesWillFit; i++) {
         var farm = newData.photos.photo[i].farm;
         var server_id = newData.photos.photo[i].server;
         var id = newData.photos.photo[i].id;
