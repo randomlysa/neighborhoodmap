@@ -144,7 +144,6 @@ function openInfoWindow (title, clickLocation) {
     infowindow.setContent("" +
         "<strong>" +
         title + "</strong><br>" +
-        "<div id='" + divID + "_flickr' class='flickr'></div><br>" +
         "<div id='" + divID + "_yelp' class='yelp'></div>"
         );
     infowindow.open(map, markersArray[itemindex]);
@@ -273,7 +272,7 @@ function searchYelp(query, callback) {
 // update InfoWindow after opening it
 function updateDiv(divID, title) {
     searchFlickr(title, function(result) {
-        $( "#" + divID + "_flickr" ).append( result );
+        $( "#flickr" ).html( result );
     });
 
     searchYelp(title, function(result) {
