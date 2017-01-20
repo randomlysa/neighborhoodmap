@@ -95,6 +95,8 @@ function closeIW(clickLocation) {
     if (openIW[0] !== undefined) {
         openIW[openIW.length-1].close();
     }
+    // this keeps the collapse-locations div from sliding down
+    // when clicking from one map marker directly on another one
     if (clickLocation !== 'map') {
         updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
