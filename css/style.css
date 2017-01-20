@@ -24,8 +24,7 @@ a:hover {
 }
 
 input {
-    width: 87%;
-    max-width: 88%;
+    width: calc(100% - 45px);
     padding: 5px;
     border-top: none;
     border-left: none;
