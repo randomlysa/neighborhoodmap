@@ -150,8 +150,8 @@ function openInfoWindow (title, clickLocation) {
   });
   // add the infoWindow to the array that keeps track of which IWs to close
   openIW.push(infowindow);
-  // search flickr for images that are named 'title' and update the infoWindow id
-  updateDiv(divID, title);
+  // search flickr for images and update #more-info
+  // search yelp for business review/info and update #yelp (located in the infoWindow)
   updateDiv(title);
   updateCollapseLocationsIcon();
   $("#collapse-locations").slideUp();
