@@ -286,16 +286,16 @@ function searchYelp(query, callback) {
       cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
       dataType: 'jsonp',
       success: function(results) {
-      // Do stuff with results
-      var businessInfo = results.businesses[0];
-      infowindowContent = "" +
-      "Category: " + businessInfo.categories[0][0] +
-      "&nbsp;&nbsp;<span class='glyphicon glyphicon-earphone' aria-hidden='true'></span>" +
-      businessInfo.display_phone +
-      "<br><img src='" + businessInfo.rating_img_url +"'>" +
-      "Rating based on " + businessInfo.review_count + " reviews.<br>" +
-      "<a href='" + businessInfo.url + "'>More info on Yelp</a>";
-      callback(infowindowContent);
+        // Do stuff with results
+        var businessInfo = results.businesses[0];
+        infowindowContent = "" +
+          "Category: " + businessInfo.categories[0][0] +
+          "&nbsp;&nbsp;<span class='glyphicon glyphicon-earphone' aria-hidden='true'></span>" +
+          businessInfo.display_phone +
+          "<br><img src='" + businessInfo.rating_img_url +"'>" +
+          "Rating based on " + businessInfo.review_count + " reviews.<br>" +
+          "<a href='" + businessInfo.url + "'>More info on Yelp</a>";
+        callback(infowindowContent);
       },
       fail: function() {
       // Do stuff on fail
