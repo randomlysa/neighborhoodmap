@@ -60,9 +60,9 @@ var ViewModel = function() {
         if (typeof markersArray !== 'undefined') {
             // make an array of self.dynamicLocationsList TITLES
             var dllTitles = [];
-            for (var i = 0; i < self.dynamicLocationsList().length; i++) {
-                dllTitles.push(self.dynamicLocationsList()[i].title);
-            }
+            self.dynamicLocationsList().forEach(function (Location) {
+                dllTitles.push(Location.title);
+            });
 
             // loop through markers array (array length shouldn't change)
             // and check if the marker title is in the dLLtitles array
@@ -71,8 +71,7 @@ var ViewModel = function() {
                 var result = dllTitles.indexOf(title)
                 if (result === -1) {
                     markersArray[i].setMap(null);
-                }
-                else {
+                } else {
                     markersArray[i].setMap(map);
                 }
             }
@@ -142,10 +141,9 @@ function openInfoWindow (title, clickLocation) {
     // make the id of the div the same as the title, but with underscores instead of spaces
     divID = title.replace(/ /g, "_");
     infowindow.setContent("" +
-        "<strong>" +
-        title + "</strong><br>" +
+        "<strong>" + title + "</strong><br>" +
         "<div id='" + divID + "_yelp' class='yelp'></div>"
-        );
+    );
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
         updateCollapseLocationsIcon();
