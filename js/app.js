@@ -138,11 +138,9 @@ function openInfoWindow (title, clickLocation) {
     markersArray[itemindex].setAnimation(null);
   }, 2800);
 
-  // make the id of the div the same as the title, but with underscores instead of spaces
-  divID = title.replace(/ /g, "_");
   infowindow.setContent("" +
     "<strong>" + title + "</strong><br>" +
-    "<div id='" + divID + "_yelp' class='yelp'></div>"
+    "<div id='yelp' class='yelp'></div>"
   );
   infowindow.open(map, markersArray[itemindex]);
   infowindow.addListener('closeclick', function() {
@@ -154,6 +152,7 @@ function openInfoWindow (title, clickLocation) {
   openIW.push(infowindow);
   // search flickr for images that are named 'title' and update the infoWindow id
   updateDiv(divID, title);
+  updateDiv(title);
   updateCollapseLocationsIcon();
   $("#collapse-locations").slideUp();
 }
@@ -284,14 +283,14 @@ function searchYelp(query, callback) {
   });
 }
 
-// update InfoWindow after opening it
-function updateDiv(divID, title) {
+// update bottom div with flickr info and infoWindow with yelp info
+function updateDiv(title) {
   searchFlickr(title, function(result) {
     $( "#flickr" ).html( result );
   });
 
   searchYelp(title, function(result) {
-    $( "#" + divID + "_yelp" ).append( result );
+    $( "#yelp" ).append( result );
   });
 }
 
