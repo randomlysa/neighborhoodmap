@@ -28,7 +28,7 @@ var Location = function(data) {
   this.title = data.title;
   this.coord = data.coordinates;
   this.info = data.info;
-}
+};
 
 
 var ViewModel = function() {
@@ -68,7 +68,7 @@ var ViewModel = function() {
       // and check if the marker title is in the dLLtitles array
       for (var i = 0; i < markersArray.length; i++) {
         var title = markersArray[i].title;
-        var result = dllTitles.indexOf(title)
+        var result = dllTitles.indexOf(title);
         if (result === -1) {
           markersArray[i].setMap(null);
         } else {
@@ -76,7 +76,7 @@ var ViewModel = function() {
         }
       }
     }
-  };
+  }
 
   addRemoveLocations();
 
@@ -85,7 +85,7 @@ var ViewModel = function() {
   this.mapFilter.subscribe(function (inputText) {
     addRemoveLocations(inputText);
   });
-}
+};
 
 // keep track of open infoWindows to close the previous one
 var openIW = [];
@@ -190,11 +190,11 @@ function searchFlickr(query, callback) {
   var availableWidth = $(document).width();
 
   // for later use...
-  var availableHeight = $(window).height()
+  var availableHeight = $(window).height();
 
   // determine how many 75px images will fit
   var howManyImagesWillFit = Math.floor(availableWidth / 75);
-  if (howManyImagesWillFit > numberOfPhotoResults) {howManyImagesWillFit = numberOfPhotoResults}
+  if (howManyImagesWillFit > numberOfPhotoResults) {howManyImagesWillFit = numberOfPhotoResults;}
 
   // console.log(numberOfPhotoResults);
   // console.log(availableWidth, availableHeight)
@@ -204,8 +204,6 @@ function searchFlickr(query, callback) {
     infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
   } else {
     pickRandomPhotoNumbers = [];
-    for (var i = 0; i < howManyImagesWillFit; i++) {
-    }
 
     for (var i = 0; i < howManyImagesWillFit; i++) {
       var farm = newData.photos.photo[i].farm;
@@ -256,7 +254,6 @@ function searchYelp(query, callback) {
       location: 'Boston'
     };
 
-
     var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
     parameters.oauth_signature = encodedSignature;
 
@@ -302,12 +299,12 @@ function updateCollapseLocationsIcon() {
   window.setTimeout(function() {
   var clDisplay = $( "#collapse-locations" ).css('display');
   if (clDisplay === 'block') {
-    $( '#toggle-button').removeClass('glyphicon-expand')
-    $( '#toggle-button').addClass('glyphicon-collapse-up')
+    $( '#toggle-button').removeClass('glyphicon-expand');
+    $( '#toggle-button').addClass('glyphicon-collapse-up');
   }
   if (clDisplay === 'none') {
-    $( '#toggle-button').removeClass('glyphicon-collapse-up')
-    $( '#toggle-button').addClass('glyphicon-expand')
+    $( '#toggle-button').removeClass('glyphicon-collapse-up');
+    $( '#toggle-button').addClass('glyphicon-expand');
   }
   }, 450);
 }
