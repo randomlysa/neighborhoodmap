@@ -52,27 +52,51 @@ input {
 }
 
 #more-info {
-    background-color: #fff;
-    width: 100%;
-    height: 100px;
+    margin: -15px;
     position: fixed;
     bottom: 0;
+    background-color: #fff;
+    width: 100%;
+    height: 200px;
     /* This trasform moves the drawer off canvas. */
-    -webkit-transform: translate(-15px, 100px);
-    transform: translate(-15px, 100px);
+    -webkit-transform: translate(0, 200px);
+    transform: translate(0, 200px);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
 }
 
 #more-info.open {
-    background-color: #fff;
-    width: 100%;
-    height: 100px;
     position: fixed;
     bottom: 0;
-     -webkit-transform: translate(-15px, 0);
-     transform: translate(-15px, 0);
- }
+    width: 100%;
+    height: 200px;
+     -webkit-transform: translate(0, 0);
+     transform: translate(0, 0);
+}
+
+#more-info-mobile {
+    margin: -15px;
+    position: fixed;
+    bottom: 0;
+    background-color: #fff;
+    width: 100%;
+    height: 110px;
+     /* This trasform moves the drawer off canvas. */
+    -webkit-transform: translate(0, 110px);
+    transform: translate(0, 110px);
+    /* Optionally, we animate the drawer. */
+    transition: transform 0.3s ease;
+}
+
+#more-info-mobile.open {
+    position: fixed;
+    bottom: 0;
+    background-color: #fff;
+    width: 100%;
+    height: 110px;
+     -webkit-transform: translate(0, 0);
+     transform: translate(0, 0);
+}
 
 .flickr {
     width: 100%;
