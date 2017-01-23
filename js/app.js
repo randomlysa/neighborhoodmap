@@ -76,23 +76,24 @@ var ViewModel = function() {
     // add/remove markers from the map.
     // first check if markersArray has been created
     if (typeof markersArray !== 'undefined') {
-      // make an array of self.dynamicLocationsList TITLES
-      var dllTitles = [];
+      // make an array of self.dynamicLocationsList titles
+      var dynamicLocationsListTitles = [];
       self.dynamicLocationsList().forEach(function (Location) {
-        dllTitles.push(Location.title);
+        dynamicLocationsListTitles.push(Location.title);
       });
 
       // loop through markers array (array length shouldn't change)
       // and check if the marker title is in the dLLtitles array
-      for (var i = 0; i < markersArray.length; i++) {
-        var title = markersArray[i].title;
-        var result = dllTitles.indexOf(title);
+      // for (var i = 0; i < markersArray.length; i++) {
+        markersArray.forEach( function(item, position) {
+        var title = markersArray[position].title;
+        var result = dynamicLocationsListTitles.indexOf(item.title);
         if (result === -1) {
-          markersArray[i].setMap(null);
+          markersArray[position].setMap(null);
         } else {
-          markersArray[i].setMap(map);
+          markersArray[position].setMap(map);
         }
-      }
+      });
     }
   }
 
