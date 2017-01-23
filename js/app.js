@@ -62,12 +62,12 @@ var ViewModel = function() {
     // loop through initialLocations (all locations) and push them
     // back to dynamicLocationsList if they equal the input text
     initialLocations.forEach(function(mapItem){
-      if (typeof inputText !== 'undefined' && inputText !== '') {
+      if (inputText) {
         if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
           self.dynamicLocationsList.push( new Location(mapItem) );
         }
       }
-      if (typeof inputText === 'undefined' || inputText === '') {
+      if (!inputText) {
         // no letters input, return all items
         self.dynamicLocationsList.push( new Location(mapItem) );
       }
