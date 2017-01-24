@@ -255,8 +255,15 @@ var ViewModel = function(data) {
           'class="img-responsive">';
         flickrDivContent.push(image);
       }
-    flickrDivContent.push('<div class="flickr-more"><a href="https://www.flickr.com/search/?text=' +
-     flickrAPISearchQuery + '" target="_new">More photos on Flickr</a></div>');
+    flickrDivContent.push('' +
+      '<div class="flickr-more">' +
+      '<a href="https://www.flickr.com/search/?text=' +
+      flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
+      '<a href="https://www.flickr.com/search/?text=' +
+      flickrAPISearchQuery + '" target="_new">' +
+      '<span class="glyphicon glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+      '</a></div>'
+     );
     }
 
     callback(flickrDivContent);
@@ -314,7 +321,14 @@ var ViewModel = function(data) {
           businessInfo.display_phone +
           '<br><img src="' + businessInfo.rating_img_url +'">' +
           '<br>Rating based on ' + businessInfo.review_count + ' reviews.<br>' +
-          '<a href="' + businessInfo.url + ' " target="_new">More info on Yelp</a>';
+          '<a href="' + businessInfo.url + '">More info on Yelp</a>&nbsp;&nbsp;' +
+          '<a href="' + businessInfo.url + ' " target="_new">' +
+          '<span class="glyphicon glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+          '</a>' ;
+
+
+
+
         callback(infowindowContent);
       }),
       yelpQuery.fail( function() {
