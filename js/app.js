@@ -247,11 +247,11 @@ function searchFlickr(query, callback) {
       // https://www.flickr.com/services/api/misc.urls.html
       var image = '<img src="https://farm' + farm + '.staticflickr.com/' +
         server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg"' +
-        'class="flickr-item">';
+        'class="img-responsive">';
       flickrDivContent.push(image);
     }
-  //flickrDivContent.push('<a href="https://www.flickr.com/search/?text="' +
-    // flickrAPISearchQuery + '" target="_new">More photos on Flickr</a>');
+  flickrDivContent.push('<div class="flickr-more"><a href="https://www.flickr.com/search/?text="' +
+   flickrAPISearchQuery + '" target="_new">More photos on Flickr</a></div>');
   }
 
   callback(flickrDivContent);
