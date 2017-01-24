@@ -86,13 +86,6 @@
 
           markersArray.push(marker);
 
-          var num = initialLocations[i];
-
-          marker.addListener('click', (function(marker) {
-            return function() {
-              self.openInfoWindow(marker.title, 'map');
-            };
-          })(num));
         }; // close for loop
 
         google.maps.event.addDomListener(map, 'click', closeIW);

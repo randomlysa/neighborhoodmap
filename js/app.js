@@ -54,6 +54,12 @@ var ViewModel = function() {
   this.mapFilter = ko.observable("");
   this.dynamicLocationsList = ko.observableArray([]);
 
+  markersArray.forEach( function( marker, position ) {
+    var title = markersArray[position].title;
+    marker.addListener('click', function() {
+      openInfoWindow(title, 'map');
+    });
+  });
 
   function addRemoveLocations(inputText) {
     // remove items from dynamicLocationsList
