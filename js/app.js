@@ -229,6 +229,9 @@ function searchFlickr(query, callback) {
   var howManyImagesWillFit = Math.floor(availableWidth / flickrImageWidth);
   if (howManyImagesWillFit > numberOfPhotoResults) {howManyImagesWillFit = numberOfPhotoResults;}
 
+  var calculatePhotoPadding = Math.floor((availableWidth - (flickrImageWidth * howManyImagesWillFit)) / (howManyImagesWillFit * 2));
+  console.log(calculatePhotoPadding);
+
   if (newData.photos.total < 5) {
     infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
   } else {
@@ -300,11 +303,11 @@ function searchYelp(query, callback) {
       // Do stuff with results
       var businessInfo = results.businesses[0];
       infowindowContent = "" +
-        "Category: " + businessInfo.categories[0][0] +
+        businessInfo.categories[0][0] +
         "&nbsp;&nbsp;<span class='glyphicon glyphicon-earphone' aria-hidden='true'></span>" +
         businessInfo.display_phone +
         "<br><img src='" + businessInfo.rating_img_url +"'>" +
-        "Rating based on " + businessInfo.review_count + " reviews.<br>" +
+        "<br>Rating based on " + businessInfo.review_count + " reviews.<br>" +
         "<a href='" + businessInfo.url + "'>More info on Yelp</a>";
       callback(infowindowContent);
     }),
