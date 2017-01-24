@@ -225,12 +225,9 @@ function searchFlickr(query, callback) {
     var flickrImageSizeSuffix = 'q'; // large square, 150x150
   }
 
-  // determine how many 75px images will fit
+  // determine how many images will fit
   var howManyImagesWillFit = Math.floor(availableWidth / flickrImageWidth);
   if (howManyImagesWillFit > numberOfPhotoResults) {howManyImagesWillFit = numberOfPhotoResults;}
-
-  var calculatePhotoPadding = Math.floor((availableWidth - (flickrImageWidth * howManyImagesWillFit)) / (howManyImagesWillFit * 2));
-  console.log(calculatePhotoPadding);
 
   if (newData.photos.total < 5) {
     flickrDivContent.push("<span class='error text-center'>no photos found on flickr</span>");
