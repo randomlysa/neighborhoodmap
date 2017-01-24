@@ -245,12 +245,13 @@ function searchFlickr(query, callback) {
 
       // photo source url info, including size
       // https://www.flickr.com/services/api/misc.urls.html
-      var image = "<img src='https://farm" + farm + ".staticflickr.com/" +
-        server_id + "/" + id + "_" + secret + "_" + flickrImageSizeSuffix + ".jpg'>";
+      var image = '<img src="https://farm' + farm + '.staticflickr.com/' +
+        server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg"' +
+        'class="flickr-item">';
       infowindowContent.push(image);
     }
-  infowindowContent.push("<br><a href='https://www.flickr.com/search/?text=" +
-    flickrAPISearchQuery + "' target='_new'>More photos on Flickr</a>");
+  //infowindowContent.push('<a href="https://www.flickr.com/search/?text="' +
+    // flickrAPISearchQuery + '" target="_new">More photos on Flickr</a>');
   }
 
   callback(infowindowContent);
