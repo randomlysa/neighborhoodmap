@@ -134,6 +134,8 @@ input {
     font-size: 200%;
     color: #ba3d36;
     padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #fff;
 }
 
 /* https://css-tricks.com/quick-css-trick-how-to-center-an-object-exactly-in-the-center/ */
