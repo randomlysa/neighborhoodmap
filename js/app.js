@@ -189,7 +189,7 @@ function openInfoWindow (title, clickLocation) {
     https://www.flickr.com/services/api/misc.urls.html
 */
 function searchFlickr(query, callback) {
-  infowindowContent = [];
+  flickrDivContent = [];
   // set the return format (json) and api_key for all api requests
   var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
   // take the first part of the title (before first parenthesis),
@@ -200,8 +200,8 @@ function searchFlickr(query, callback) {
 
   var request = $.ajax(fullFlickrAPIsearch);
   request.fail(function(){
-  infowindowContent.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
-  callback(infowindowContent);
+  flickrDivContent.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
+  callback(flickrDivContent);
   });
   request.done(function( data ){
   newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
@@ -233,7 +233,7 @@ function searchFlickr(query, callback) {
   console.log(calculatePhotoPadding);
 
   if (newData.photos.total < 5) {
-    infowindowContent.push("<span class='error text-center'>no photos found on flickr</span>");
+    flickrDivContent.push("<span class='error text-center'>no photos found on flickr</span>");
   } else {
     pickRandomPhotoNumbers = [];
 
@@ -248,13 +248,13 @@ function searchFlickr(query, callback) {
       var image = '<img src="https://farm' + farm + '.staticflickr.com/' +
         server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg"' +
         'class="flickr-item">';
-      infowindowContent.push(image);
+      flickrDivContent.push(image);
     }
-  //infowindowContent.push('<a href="https://www.flickr.com/search/?text="' +
+  //flickrDivContent.push('<a href="https://www.flickr.com/search/?text="' +
     // flickrAPISearchQuery + '" target="_new">More photos on Flickr</a>');
   }
 
-  callback(infowindowContent);
+  callback(flickrDivContent);
   });
 } // end of searchFlickr()
 
