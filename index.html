@@ -19,7 +19,7 @@
           <input data-bind="textInput: mapFilter" placeholder="filter locations" autofocus />
 
           <button type="button" class="btn btn-default" id="toggle-location-list"
-            aria-label="Toggle Location List">
+            aria-label="Toggle Location List" data-bind="click: collapseLocationDiv">
             <span id="toggle-button" class="glyphicon glyphicon-collapse-up" aria-hidden="true"></span>
           </button>
         </div>
@@ -28,7 +28,7 @@
         <a href="#"
           class="overlayMapListLinks"
           data-bind="text: title,
-          click: openInfoWindow,
+          click: $parent.openInfoWindow,
           attr: { id: $index }"></a><br />
         </div>
 
@@ -85,10 +85,7 @@
           });
 
           markersArray.push(marker);
-
         }; // close for loop
-
-        google.maps.event.addDomListener(map, 'click', closeIW);
       } // close function initMap
 
     </script>
@@ -102,3 +99,4 @@
 
   </body>
 </html>
+
