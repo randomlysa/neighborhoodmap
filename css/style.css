@@ -57,10 +57,10 @@ input {
     bottom: 0;
     background-color: none;
     width: 100%;
-    height: 200px;
+    height: 220px;
     /* This trasform moves the drawer off canvas. */
-    -webkit-transform: translate(0, 200px);
-    transform: translate(0, 200px);
+    -webkit-transform: translate(0, 220px);
+    transform: translate(0, 220px);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
 }
@@ -68,8 +68,6 @@ input {
 #more-info.open {
     position: fixed;
     bottom: 0;
-    width: 100%;
-    height: 200px;
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
 }
@@ -80,10 +78,10 @@ input {
     bottom: 0;
     background-color: none;
     width: 100%;
-    height: 110px;
+    height: 150px;
      /* This trasform moves the drawer off canvas. */
-    -webkit-transform: translate(0, 120px);
-    transform: translate(0, 120px);
+    -webkit-transform: translate(0, 150px);
+    transform: translate(0, 150px);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
 }
@@ -92,7 +90,6 @@ input {
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 120px;
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
 }
@@ -101,28 +98,35 @@ input {
     text-align: center;
     font-size: 150%;
 }
+
+/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 .flickr {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+    width: 100%;
 }
 
 .flickr-item {
+    margin: auto;
 }
 
 .flickr-more {
-    width: 100%;
+    flex-grow: 4;
     background-color: #fff;
     text-align: center;
+    /*margin: auto;
+    width: 100%;
+    width: 50%;
     padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 5px;*/
 }
 
-.flickr::after {
+/*.flickr::after {
     content: '';
     width: 100%;
     order: 100;
-}
+}*/
 
 .text-right {
     display: block;
@@ -149,4 +153,8 @@ input {
   left: 50%;
   /* bring your own prefixes */
   transform: translate(-50%, -50%);
+}
+
+.glyphicon-new-window {
+    padding: 16px;
 }
