@@ -97,6 +97,10 @@ input {
      transform: translate(0, 0);
 }
 
+.infoWindowTitle {
+    text-align: center;
+    font-size: 150%;
+}
 .flickr {
     display: flex;
     flex-flow: row wrap;

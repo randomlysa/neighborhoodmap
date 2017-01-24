@@ -171,9 +171,9 @@ var ViewModel = function(data) {
       markersArray[itemindex].setAnimation(null);
     }, 2800);
 
-    infowindow.setContent("" +
-      "<strong>" + title + "</strong><br>" +
-      "<div id='yelp' class='yelp'></div>"
+    infowindow.setContent('' +
+      '<div class="infoWindowTitle">' + title + '</div>' +
+      '<div id="yelp" class="yelp"></div>'
     );
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
