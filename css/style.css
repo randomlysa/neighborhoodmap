@@ -101,14 +101,12 @@ input {
 
 
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
-/*.flickr {
+#flickr-bottom {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
+    flex-flow: row nowrap;
     width: 100%;
-}*/
-
-
+    overflow: auto;
+}
 
 .flickr-more {
     /*flex-grow: 4;*/
