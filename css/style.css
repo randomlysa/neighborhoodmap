@@ -118,12 +118,6 @@ input {
     padding-top: 7px;
 }
 
-/*.flickr::after {
-    content: '';
-    width: 100%;
-    order: 100;
-}*/
-
 .text-right {
     display: block;
     text-align: right;
