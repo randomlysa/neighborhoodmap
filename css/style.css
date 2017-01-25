@@ -99,6 +99,12 @@ input {
     font-size: 150%;
 }
 
+#yelp {
+    min-width: 200px;
+    min-height: 100px;
+}
+
+
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 .flickr {
     display: flex;
