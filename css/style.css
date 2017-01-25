@@ -71,26 +71,22 @@ input {
      transform: translate(0, 0);
 }
 
-#more-info-mobile {
-    margin: -15px;
+#more-info-right {
     position: fixed;
-    bottom: 0;
-    background-color: none;
-    width: 100%;
-    padding-bottom: 15px;
+    right: 0;
+    top: 65px;
+    height: calc(100% - 65px);
      /* This trasform moves the drawer off canvas. */
-    -webkit-transform: translate(0, 150px);
-    transform: translate(0, 150px);
+    -webkit-transform: translate(160px, 0);
+    transform: translate(160px, 0);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
 }
 
-#more-info-mobile.open {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+#more-info-right.open {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
+     overflow: auto;
 }
 
 .infoWindowTitle {
@@ -105,19 +101,17 @@ input {
 
 
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
-.flickr {
+/*.flickr {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
     width: 100%;
-}
+}*/
 
-.flickr-item {
-    margin: auto;
-}
+
 
 .flickr-more {
-    flex-grow: 4;
+    /*flex-grow: 4;*/
     background-color: #fff;
     text-align: center;
     padding-top: 7px;
