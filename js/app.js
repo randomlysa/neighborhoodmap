@@ -57,10 +57,10 @@ var ViewModel = function(data) {
   // by default, show flickr images on right.
   // only exception, mobile tall orientation
   var moreInfoDiv = '#more-info-right';
-  var flickrDiv = '-mobile';
+  var flickrDiv = '-right';
   if (jQuery.browser.mobile && orientation === 'tall') {
     var moreInfoDiv = '#more-info-bottom';
-    var flickrDiv = '-mobile';
+    var flickrDiv = '-bottom';
   }
   console.log(moreInfoDiv, flickrDiv);
 
