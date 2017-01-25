@@ -51,7 +51,7 @@ input {
     visibility: hidden;
 }
 
-#more-info {
+#more-info-bottom {
     margin: -15px;
     position: fixed;
     bottom: 0;
@@ -64,9 +64,9 @@ input {
     transition: transform 0.3s ease;
 }
 
-#more-info.open {
     position: fixed;
     bottom: 0;
+#more-info-bottom.open {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
 }
