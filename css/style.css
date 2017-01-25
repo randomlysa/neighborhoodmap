@@ -51,6 +51,18 @@ input {
     visibility: hidden;
 }
 
+/* info window and related items */
+.infoWindowTitle {
+    text-align: center;
+    font-size: 150%;
+}
+
+#yelp {
+    min-width: 200px;
+    min-height: 100px;
+}
+
+/* flickr div and related items */
 #more-info-bottom {
     margin: -15px;
     position: fixed;
@@ -64,8 +76,6 @@ input {
     transition: transform 0.3s ease;
 }
 
-    position: fixed;
-    bottom: 0;
 #more-info-bottom.open {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
@@ -89,17 +99,6 @@ input {
      overflow: auto;
 }
 
-.infoWindowTitle {
-    text-align: center;
-    font-size: 150%;
-}
-
-#yelp {
-    min-width: 200px;
-    min-height: 100px;
-}
-
-
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 #flickr-bottom {
     display: flex;
@@ -115,16 +114,7 @@ input {
     padding-top: 7px;
 }
 
-.text-right {
-    display: block;
-    text-align: right;
-}
-
-.text-center {
-    display: block;
-    text-align: center;
-}
-
+/* general styles */
 .error {
     width: 100%;
     font-size: 200%;
