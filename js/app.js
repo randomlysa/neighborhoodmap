@@ -199,7 +199,7 @@ var ViewModel = function(data) {
   this.searchFlickr = function (query, callback) {
     flickrDivContent = [];
     // set the return format (json) and api_key for all api requests
-    var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5";
+    var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // take the first part of the title (before first parenthesis),
     // replace spaces with %20, and append %20Boston for better results
     var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
