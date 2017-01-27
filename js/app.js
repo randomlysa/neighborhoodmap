@@ -69,6 +69,10 @@ var ViewModel = function(data) {
     }
 
     if (moreInfoDiv !== oldMoreInfoDiv && oldMoreInfoDiv) {
+      var lat = this.currentMarkerLocation[0];
+      var lng = this.currentMarkerLocation[1];
+      var newLatLng = {lat: lat, lng: lng};
+
       // orientation changed
       // get the text/html from the current moreInfoDiv, replace the oldFlickrDiv with the (new) flickrDiv
       var newMoreInfoDivHTML = $( oldMoreInfoDiv ).html().replace(oldFlickrDiv, flickrDiv);;
@@ -76,8 +80,16 @@ var ViewModel = function(data) {
       $( oldMoreInfoDiv ).removeClass('open');
       $( moreInfoDiv ).html(newMoreInfoDivHTML);
       $( moreInfoDiv ).addClass('open');
+
+      window.setTimeout( function() {
+        map.setCenter(newLatLng);
+        if (orientation === 'wide') {
+          map.panBy(0, -120);
+        }
+      }, 300);
+
     }
-  }
+  }.bind(this);
 
   this.checkOrientation();
   $( window ).resize(this.checkOrientation);
@@ -165,6 +177,7 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
+  this.currentMarkerLocation = '';
   this.openInfoWindow = function (title, clickLocation) {
     // the 'list view' sends the title as an object.
     // in this case, the title is actually title.title
@@ -193,6 +206,8 @@ var ViewModel = function(data) {
     // gets the index of the marker in markersArray
     // ie, markersArray[itemindex] == marker that was clicked
     var itemindex = matchtitles(title);
+
+    this.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
     // bounce the marker for 2800 ms
     markersArray[itemindex].setAnimation(google.maps.Animation.BOUNCE);
