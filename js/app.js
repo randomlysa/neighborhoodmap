@@ -1,3 +1,5 @@
+'use strict';
+
 // get api info
 var getConfig = $.getJSON("js/config_secret.json");
 
@@ -255,7 +257,7 @@ var ViewModel = function(data) {
       https://www.flickr.com/services/api/misc.urls.html
   */
   this.searchFlickr = function (query, callback) {
-    flickrDivContent = [];
+    var flickrDivContent = [];
     // set the return format (json) and api_key for all api requests
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // take the first part of the title (before first parenthesis),
@@ -270,7 +272,7 @@ var ViewModel = function(data) {
     callback(flickrDivContent);
     });
     request.done(function( data ){
-    newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
+    var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
 
     var numberOfPhotoResults = newData.photos.photo.length;
 
@@ -284,9 +286,9 @@ var ViewModel = function(data) {
 
     // determine numberOfPhotosToShow
     if (numberOfPhotoResults < 10) {
-      numberOfPhotosToShow = numberOfPhotoResults;
+      var numberOfPhotosToShow = numberOfPhotoResults;
     } else {
-      numberOfPhotosToShow = 10
+      var numberOfPhotosToShow = 10
     }
 
     if (newData.photos.total < 0) {
