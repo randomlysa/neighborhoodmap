@@ -68,6 +68,12 @@ var ViewModel = function(data) {
       flickrDiv = 'flickr-bottom';
     }
 
+    if (availableWidth < 768) {
+      $( moreInfoDiv ).addClass('add-padding');
+    } else {
+      $( moreInfoDiv ).removeClass('add-padding');
+    }
+
     if (moreInfoDiv !== oldMoreInfoDiv && oldMoreInfoDiv) {
       var lat = this.currentMarkerLocation[0];
       var lng = this.currentMarkerLocation[1];

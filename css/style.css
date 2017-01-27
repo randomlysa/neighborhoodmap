@@ -84,13 +84,17 @@ input {
 #more-info-right {
     position: fixed;
     right: 0;
-    top: 65px;
-    height: calc(100% - 65px);
+    top: 0;
      /* This trasform moves the drawer off canvas. */
     -webkit-transform: translate(160px, 0);
     transform: translate(160px, 0);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
+}
+
+#more-info-right.add-padding {
+    margin-top: 65px;
+    height: calc(100% - 65px);
 }
 
 #more-info-right.open {
