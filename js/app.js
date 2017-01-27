@@ -71,7 +71,15 @@ var ViewModel = function(data) {
     if (moreInfoDiv !== oldMoreInfoDiv && oldMoreInfoDiv) {
       var lat = this.currentMarkerLocation[0];
       var lng = this.currentMarkerLocation[1];
-      var newLatLng = {lat: lat, lng: lng};
+      // if no marker has been clicked
+      if (!lat || !lng) {
+        var newLatLng = defaultMapCenter;
+        // no InfoWindow has been opened so no need to pan to make room for it.
+        var panByY = 0;
+      } else {
+        var newLatLng = {lat: lat, lng: lng};
+        var panByY = -120;
+      }
 
       // orientation changed
       // get the text/html from the current moreInfoDiv, replace the oldFlickrDiv with the (new) flickrDiv
@@ -84,9 +92,9 @@ var ViewModel = function(data) {
       window.setTimeout( function() {
         map.setCenter(newLatLng);
         if (orientation === 'wide') {
-          map.panBy(0, -120);
+          map.panBy(0, panByY);
         }
-      }, 300);
+      }, 5);
 
     }
   }.bind(this);
