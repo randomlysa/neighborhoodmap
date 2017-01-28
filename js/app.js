@@ -280,8 +280,10 @@ var ViewModel = function(data) {
     // search flickr for images and update the moreInfo/moreInfoMobile div
     // search yelp for business review/info and update #yelp (located in the infoWindow)
     this.updateDiv(title);
-    this.updateCollapseLocationsIcon();
-    $("#collapse-locations").slideUp();
+    if (jQuery.browser.mobile) {
+      this.updateCollapseLocationsIcon();
+      $("#collapse-locations").slideUp();
+    }
   }.bind(this);
 
   /* search flickr via flickr api for images for more-info-div.
