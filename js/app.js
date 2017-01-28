@@ -159,12 +159,16 @@ var ViewModel = function(data) {
     // back to dynamicLocationsList if they equal the input text
     initialLocations.forEach(function(mapItem){
       if (inputText) {
+        $( '#collapse-locations').css('display', 'inline');
         if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
           self.dynamicLocationsList.push( new Location(mapItem) );
         }
       }
       if (!inputText) {
         // no letters input, return all items
+        if (jQuery.browser.mobile) {
+          $( '#collapse-locations').css('display', 'none');
+        }
         self.dynamicLocationsList.push( new Location(mapItem) );
       }
     });
