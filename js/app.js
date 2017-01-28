@@ -63,7 +63,7 @@ var Location = function(data) {
 
 var ViewModel = function(data) {
   var self = this;
-  this.mapFilter = ko.observable("");
+  this.mapSearchInputText = ko.observable("");
   this.dynamicLocationsList = ko.observableArray();
 
   // check for mobile browser
@@ -209,8 +209,8 @@ var ViewModel = function(data) {
   this.addRemoveLocations();
 
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
-  // check mapFilter for inputText and update makeMapList with inputText
-  this.mapFilter.subscribe(function (inputText) {
+  // check mapSearchInputText for inputText and update makeMapList with inputText
+  this.mapSearchInputText.subscribe(function (inputText) {
     this.addRemoveLocations(inputText);
   }, this);
 
