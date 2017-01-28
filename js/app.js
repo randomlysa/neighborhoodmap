@@ -450,5 +450,8 @@ var ViewModel = function(data) {
   // toggle location list. this is needed for the button near the div
   this.collapseLocationDiv = function () {
       $( "#collapse-locations" ).slideToggle();
+      if (jQuery.browser.mobile) {
+        $( "#more-info-right").removeClass('open');
+      }
   }.bind(this);
 };
