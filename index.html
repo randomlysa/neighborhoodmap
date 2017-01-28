@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <div id="maps-error" class="centered text-center error">
+      <div id="maps-error" class="centered error">
           There Was an Error! Google Maps Didn't Load
       </div>
 
@@ -51,8 +51,8 @@
       function mapsError() {
         // if maps didn't load, hide the floating panel, don't load the viewmodel,
         // and show an error message
-        $("#floating-panel").css("visibility", "hidden");
-        $("#maps-error").css("visibility", "visible");
+        $("#floating-panel").css("display", "none");
+        $("#maps-error").css("display", "inline");
 
       }
       function mapSuccess() {
