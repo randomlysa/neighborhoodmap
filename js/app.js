@@ -219,9 +219,11 @@ var ViewModel = function(data) {
     // this keeps the collapse-locations div from sliding down
     // when clicking from one map marker directly on another one
     if (clickLocation !== 'map') {
-      this.updateCollapseLocationsIcon();
-      $("#collapse-locations").slideDown();
       $( moreInfoDiv ).removeClass( 'open' );
+      if (!jQuery.browser.mobile) {
+        this.updateCollapseLocationsIcon();
+        $("#collapse-locations").slideDown();
+      }
     }
   }.bind(this);
 
