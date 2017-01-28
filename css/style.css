@@ -101,6 +101,7 @@ input {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
      overflow: auto;
+     height: 100%;
 }
 
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
