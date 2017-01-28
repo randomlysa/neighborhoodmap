@@ -298,8 +298,11 @@ var ViewModel = function(data) {
     flickr photo source urls, or, working with results of photo.search :
       https://www.flickr.com/services/api/misc.urls.html
   */
-  this.searchFlickr = function (query, callback) {
-    var flickrDivContent = [];
+  this.flickrResults = ko.observableArray();
+  this.flickrSearchURL = ko.observable();
+  this.searchFlickr = function (query) {
+    // clear previous image results
+    self.flickrResults.removeAll();
     // set the return format (json) and api_key for all api requests
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // take the first part of the title (before first parenthesis),
@@ -310,14 +313,11 @@ var ViewModel = function(data) {
 
     var request = $.ajax(fullFlickrAPIsearch);
     request.fail(function(){
-    flickrDivContent.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
-    callback(flickrDivContent);
+      self.flickrResults.push("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
     });
     request.done(function( data ){
     var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
-
     var numberOfPhotoResults = newData.photos.photo.length;
-
 
     if (jQuery.browser.mobile) {
       // size suffixes info: https://www.flickr.com/services/api/misc.urls.html
@@ -334,7 +334,7 @@ var ViewModel = function(data) {
     }
 
     if (newData.photos.total < 0) {
-      flickrDivContent.push("<span class='error text-center'>no photos found on flickr</span>");
+      self.flickrResults.push("<span class='error text-center'>no photos found on flickr</span>");
     } else {
       for (var i = 0; i < numberOfPhotosToShow; i++) {
         var farm = newData.photos.photo[i].farm;
@@ -344,12 +344,15 @@ var ViewModel = function(data) {
 
         // photo source url info, including size
         // https://www.flickr.com/services/api/misc.urls.html
+
         var image = '<img src="https://farm' + farm + '.staticflickr.com/' +
           server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg"' +
           'class="img-responsive flickr-item">';
-        flickrDivContent.push(image);
+        self.flickrResults.push(image);
       }
-    flickrDivContent.push('' +
+    }
+
+    self.flickrResults.push('' +
       '<div class="flickr-more">' +
       // '<a href="https://www.flickr.com/search/?text=' +
       // flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
@@ -359,9 +362,9 @@ var ViewModel = function(data) {
       '</a>' +
       '</div>'
      );
-    }
 
-    callback(flickrDivContent);
+    self.flickrSearchURL('https://www.flickr.com/search/?text=' + flickrAPISearchQuery);
+
     });
   }.bind(this); // end of searchFlickr()
 
@@ -436,9 +439,7 @@ var ViewModel = function(data) {
 
   // update bottom div with flickr info and infoWindow with yelp info
   this.updateDiv = function (title) {
-    this.searchFlickr(title, function(result) {
-      $( '#' + flickrDiv ).html( result );
-    });
+    this.searchFlickr(title);
 
     this.searchYelp(title, function(result) {
       $( "#yelp" ).append( result );

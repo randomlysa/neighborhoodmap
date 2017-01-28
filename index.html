@@ -34,11 +34,11 @@
         </div>
 
         <div id="more-info-right">
-            <div id="flickr-right" class="flickr"></div>
+            <div id="flickr-right" class="flickr" data-bind="html: flickrResults"></div>
         </div>
 
         <div id="more-info-bottom">
-            <div id="flickr-bottom" class="flickr"></div>
+            <div id="flickr-bottom" class="flickr" data-bind="html: flickrResults"></div>
         </div>
       </div>
 
@@ -47,7 +47,6 @@
       </div>
 
     <script>
-
       function mapsError() {
         // if maps didn't load, hide the floating panel, don't load the viewmodel,
         // and show an error message
