@@ -278,10 +278,10 @@ var ViewModel = function(data) {
     $("#collapse-locations").slideUp();
   }.bind(this);
 
-  /* search flickr via flickr api for images for InfoWindow
-     photos.search docs:
+  /* search flickr via flickr api for images for more-info-div.
+    photos.search docs:
       https://www.flickr.com/services/api/flickr.photos.search.html
-     flickr photo source urls, or, working with results of photo.search :
+    flickr photo source urls, or, working with results of photo.search :
       https://www.flickr.com/services/api/misc.urls.html
   */
   this.searchFlickr = function (query, callback) {
