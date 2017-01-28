@@ -173,6 +173,12 @@ var ViewModel = function(data) {
       }
     });
 
+    if(inputText && self.dynamicLocationsList().length === 0) {
+      $( '#no-locations-found' ).css('display', 'inline');
+    } else {
+      $( '#no-locations-found' ).css('display', 'none');
+    }
+
     // add/remove markers from the map.
     // first check if markersArray has been created
     if (typeof markersArray !== 'undefined') {

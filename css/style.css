@@ -8,9 +8,6 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-a, input {
     font-size: 14pt;
     font-family: 'Raleway', sans-serif;
 }
@@ -49,6 +46,10 @@ input {
 
 #maps-error {
     visibility: hidden;
+}
+
+#no-locations-found {
+    display: none;
 }
 
 /* info window and related items */
