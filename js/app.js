@@ -118,11 +118,7 @@ var ViewModel = function(data) {
       }
 
       // orientation changed
-      // get the text/html from the current moreInfoDiv, replace the oldFlickrDiv with the (new) flickrDiv
-      var newMoreInfoDivHTML = $( oldMoreInfoDiv ).html().replace(oldFlickrDiv, flickrDiv);;
-
       $( oldMoreInfoDiv ).removeClass('open');
-      $( moreInfoDiv ).html(newMoreInfoDivHTML);
       $( moreInfoDiv ).addClass('open');
 
       window.setTimeout( function() {
