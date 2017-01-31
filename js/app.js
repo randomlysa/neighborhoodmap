@@ -199,7 +199,6 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
-
   // init stuff
   this.addListenerToMarker(this);
   this.addRemoveLocations();
@@ -217,6 +216,7 @@ var ViewModel = function(data) {
     // check if there's at least one openIW defined. if there is, close the last one.
     if (this.openIW[0] !== undefined) {
       this.openIW[this.openIW.length-1].close();
+      window.location.hash = '';
     };
     // this keeps the collapse-locations div from sliding down
     // when clicking from one map marker directly on another one
@@ -258,7 +258,7 @@ var ViewModel = function(data) {
     // gets the index of the marker in markersArray
     // ie, markersArray[itemindex] == marker that was clicked
     var itemindex = matchtitles(title);
-
+    window.location.hash = title.replace(/ /g, '%20');
     this.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
     // bounce the marker for 2800 ms
@@ -273,6 +273,7 @@ var ViewModel = function(data) {
     );
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
+      window.location.hash = '';
       this.updateCollapseLocationsIcon();
       $("#collapse-locations").slideDown();
       $( moreInfoDiv ).removeClass( 'open' );
@@ -469,4 +470,11 @@ var ViewModel = function(data) {
         $( "#more-info-right").removeClass('open');
       }
   }.bind(this);
+
+  var urlHash = window.location.hash;
+  if (urlHash) {
+    var title = urlHash.replace(/%20/g, ' ').slice(1);
+    console.log(title);
+    this.openInfoWindow(title);
+  }
 };
