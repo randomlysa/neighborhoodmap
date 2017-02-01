@@ -98,6 +98,18 @@ var ViewModel = function(data) {
       flickrDiv = 'flickr-bottom';
     }
 
+    var moreInfoContainer = document.getElementById('floating-panel')
+    var createMoreInfoDiv = document.createElement('div')
+    var createFlickrDiv = document.createElement('div')
+
+    createMoreInfoDiv.id = moreInfoDiv.slice(1);
+    createFlickrDiv.id = flickrDiv;
+    createFlickrDiv.class = 'flickr';
+    createFlickrDiv.dataset.bind = 'html: flickrResults';
+
+    moreInfoContainer.appendChild(createMoreInfoDiv).appendChild(createFlickrDiv);
+
+
     if (availableWidth < 768) {
       $( moreInfoDiv ).addClass('add-padding');
     } else {
@@ -118,8 +130,8 @@ var ViewModel = function(data) {
       }
 
       // orientation changed
-      $( oldMoreInfoDiv ).removeClass('open');
-      $( moreInfoDiv ).addClass('open');
+      // $( oldMoreInfoDiv ).removeClass('open');
+      // $( moreInfoDiv ).addClass('open');
 
       window.setTimeout( function() {
         map.setCenter(newLatLng);
