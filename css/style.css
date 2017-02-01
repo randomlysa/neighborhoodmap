@@ -95,8 +95,9 @@ input {
 }
 
 #more-info-right.add-padding {
-    margin-top: 65px;
-    height: calc(100% - 65px);
+    width: 75px;
+    margin-top: 70px;
+    height: calc(100% - 70px);
 }
 
 #more-info-right.open {
