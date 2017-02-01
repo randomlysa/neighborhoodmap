@@ -442,9 +442,6 @@ var ViewModel = function(data) {
           '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
           '</a>' ;
 
-
-
-
         callback(infowindowContent);
       }),
       yelpQuery.fail( function() {
