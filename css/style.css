@@ -75,6 +75,7 @@ input {
     transform: translate(0, 220px);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
+    overflow-y: scroll;
 }
 
 #more-info-bottom.open {

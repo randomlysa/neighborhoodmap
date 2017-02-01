@@ -345,11 +345,16 @@ var ViewModel = function(data) {
 
         // photo source url info, including size
         // https://www.flickr.com/services/api/misc.urls.html
+        var flickrThumbnailWithLink = '' +
+        '<a href="https://farm' + farm + '.staticflickr.com/' +
+          server_id + '/' + id + '_' + secret + '_b' + '.jpg" ' +
+          'data-lightbox="flickr">' +
 
-        var image = '<img src="https://farm' + farm + '.staticflickr.com/' +
+        '<img src="https://farm' + farm + '.staticflickr.com/' +
           server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg" ' +
-          'class="img-responsive flickr-item">';
-        flickrResultsString += (image);
+
+          '</a>';
+        flickrResultsString += (flickrThumbnailWithLink);
       }
     }
 
