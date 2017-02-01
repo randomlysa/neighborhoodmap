@@ -358,7 +358,7 @@ var ViewModel = function(data) {
       }
     }
 
-    this.flickrResultsString += '' +
+    flickrResultsString += '' +
       '<div class="flickr-more">' +
       // '<a href="https://www.flickr.com/search/?text=' +
       // flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
