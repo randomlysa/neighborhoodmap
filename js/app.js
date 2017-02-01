@@ -443,7 +443,7 @@ var ViewModel = function(data) {
     });
   }
 
-  // update bottom div with flickr info and infoWindow with yelp info
+  // update the moreInfoDiv div with flickr info and infoWindow with yelp info
   this.updateDiv = function (title) {
     this.searchFlickr(title);
 
@@ -479,7 +479,6 @@ var ViewModel = function(data) {
   var urlHash = window.location.hash;
   if (urlHash) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
-    console.log(title);
     this.openInfoWindow(title);
   }
 };
