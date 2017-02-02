@@ -150,11 +150,7 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
-  this.checkOrientation();
   $( window ).resize(this.checkOrientation);
-
-
-  google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
 
   this.addListenerToMarker = function() {
     markersArray.forEach( function( marker, position ) {
@@ -217,10 +213,6 @@ var ViewModel = function(data) {
       });
     }
   }.bind(this);
-
-  // init stuff
-  this.addListenerToMarker(this);
-  this.addRemoveLocations();
 
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
   // check mapSearchInputText for inputText and update makeMapList with inputText
@@ -497,4 +489,13 @@ var ViewModel = function(data) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
     this.openInfoWindow(title);
   }
+
+// init stuff
+  this.init = function() {
+    this.addListenerToMarker(this);
+    this.addRemoveLocations();
+    this.checkOrientation();
+    google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
+  }
+  this.init();
 };
