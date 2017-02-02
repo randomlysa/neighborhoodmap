@@ -78,8 +78,8 @@ var ViewModel = function(data) {
   var moreInfoDiv;
   var flickrDiv;
   this.checkOrientation = function() {
-    var oldMoreInfoDiv = moreInfoDiv;
-    var oldFlickrDiv = flickrDiv;
+    var previousMoreInfoDiv = moreInfoDiv;
+    var previousFlickrDiv = flickrDiv;
     var availableWidth = $(document).width();
     var availableHeight = $(window).height();
 
@@ -98,25 +98,36 @@ var ViewModel = function(data) {
       flickrDiv = 'flickr-bottom';
     }
 
-    var moreInfoContainer = document.getElementById('floating-panel')
-    var createMoreInfoDiv = document.createElement('div')
-    var createFlickrDiv = document.createElement('div')
+    /* for some reason, rotating a mobile device in Google Chrome
+    causes two window.width resizes. in this case, the previousMoreInfoDiv is the same
+    as moreInfoDiv, and this section should be skipped, othewise the new divs are added twice */
+    if (moreInfoDiv !== previousMoreInfoDiv) {
+      // remove the previous div if it exists
+      if (previousMoreInfoDiv) {
+        var divRemoved = true;
+        var previousMoreInfoDivNoPound = previousMoreInfoDiv.slice(1);
+        var child = document.getElementById(previousMoreInfoDivNoPound);
+        child.parentNode.removeChild(child);
+      }
+      // add new divs
+      $("#floating-panel").append('<div id="' + moreInfoDiv.slice(1) + '"></div>');
+      $(moreInfoDiv).append('<div id="' + flickrDiv + '" data-bind="html: flickrResults"></div>');
 
-    createMoreInfoDiv.id = moreInfoDiv.slice(1);
-    createFlickrDiv.id = flickrDiv;
-    createFlickrDiv.class = 'flickr';
-    createFlickrDiv.dataset.bind = 'html: flickrResults';
+      // the initial div has bindings applied by ko.applyBindings(new ViewModel()); in the
+      // html file. however, if a div was removed, the new div needs to have bindings re-applied
+      if (divRemoved) {
+        ko.applyBindings(this, $( '#' + flickrDiv)[0]);
+      }
+    }
 
-    moreInfoContainer.appendChild(createMoreInfoDiv).appendChild(createFlickrDiv);
-
-
+    // add padding to moreInfoDiv to keep from overlapping with #floating-panel
     if (availableWidth < 768) {
       $( moreInfoDiv ).addClass('add-padding');
     } else {
       $( moreInfoDiv ).removeClass('add-padding');
     }
 
-    if (moreInfoDiv !== oldMoreInfoDiv && oldMoreInfoDiv) {
+    if (moreInfoDiv !== previousMoreInfoDiv && previousMoreInfoDiv) {
       var lat = this.currentMarkerLocation[0];
       var lng = this.currentMarkerLocation[1];
       // if no marker has been clicked
@@ -128,10 +139,6 @@ var ViewModel = function(data) {
         var newLatLng = {lat: lat, lng: lng};
         var panByY = -120;
       }
-
-      // orientation changed
-      // $( oldMoreInfoDiv ).removeClass('open');
-      // $( moreInfoDiv ).addClass('open');
 
       window.setTimeout( function() {
         map.setCenter(newLatLng);
