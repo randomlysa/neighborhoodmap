@@ -116,6 +116,7 @@ var ViewModel = function(data) {
       // the initial div has bindings applied by ko.applyBindings(new ViewModel()); in the
       // html file. however, if a div was removed, the new div needs to have bindings re-applied
       if (divRemoved) {
+        // http://stackoverflow.com/a/10826516
         ko.applyBindings(this, $( '#' + flickrDiv)[0]);
       }
     }
