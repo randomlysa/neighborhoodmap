@@ -111,6 +111,8 @@ var ViewModel = function(data) {
       // add new divs
       $("#floating-panel").append('<div id="' + moreInfoDiv + '"></div>');
       $("#" + moreInfoDiv).append('<div id="' + flickrDiv + '" data-bind="html: flickrResults"></div>');
+      // if flickrResults isn't empty, keep moreInfoDiv open (class = open)
+      if(this.flickrResults().length > 0) { $('#' + moreInfoDiv).addClass('open'); }
 
       // the initial div has bindings applied by ko.applyBindings(new ViewModel()); in the
       // html file. however, if a div was removed, the new div needs to have bindings re-applied
@@ -226,6 +228,7 @@ var ViewModel = function(data) {
   this.closeIW = function (clickLocation) {
     // check if there's at least one openIW defined. if there is, close the last one.
     if (this.openIW[0] !== undefined) {
+      this.flickrResults('');
       this.openIW[this.openIW.length-1].close();
       window.location.hash = '';
     };
