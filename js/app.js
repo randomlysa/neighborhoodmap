@@ -90,11 +90,11 @@ var ViewModel = function(data) {
     }
 
     // by default, show flickr images on right.
-    moreInfoDiv = '#more-info-right';
+    moreInfoDiv = 'more-info-right';
     flickrDiv = 'flickr-right';
     // only exception, mobile tall orientation
     if (jQuery.browser.mobile && orientation === 'tall') {
-      moreInfoDiv = '#more-info-bottom';
+      moreInfoDiv = 'more-info-bottom';
       flickrDiv = 'flickr-bottom';
     }
 
@@ -105,13 +105,12 @@ var ViewModel = function(data) {
       // remove the previous div if it exists
       if (previousMoreInfoDiv) {
         var divRemoved = true;
-        var previousMoreInfoDivNoPound = previousMoreInfoDiv.slice(1);
-        var child = document.getElementById(previousMoreInfoDivNoPound);
+        var child = document.getElementById(previousMoreInfoDiv);
         child.parentNode.removeChild(child);
       }
       // add new divs
-      $("#floating-panel").append('<div id="' + moreInfoDiv.slice(1) + '"></div>');
-      $(moreInfoDiv).append('<div id="' + flickrDiv + '" data-bind="html: flickrResults"></div>');
+      $("#floating-panel").append('<div id="' + moreInfoDiv + '"></div>');
+      $("#" + moreInfoDiv).append('<div id="' + flickrDiv + '" data-bind="html: flickrResults"></div>');
 
       // the initial div has bindings applied by ko.applyBindings(new ViewModel()); in the
       // html file. however, if a div was removed, the new div needs to have bindings re-applied
@@ -123,9 +122,9 @@ var ViewModel = function(data) {
 
     // add padding to moreInfoDiv to keep from overlapping with #floating-panel
     if (availableWidth < 768) {
-      $( moreInfoDiv ).addClass('add-padding');
+      $( "#" + moreInfoDiv ).addClass('add-padding');
     } else {
-      $( moreInfoDiv ).removeClass('add-padding');
+      $( "#" + moreInfoDiv ).removeClass('add-padding');
     }
 
     if (moreInfoDiv !== previousMoreInfoDiv && previousMoreInfoDiv) {
@@ -233,7 +232,7 @@ var ViewModel = function(data) {
     // this keeps the collapse-locations div from sliding down
     // when clicking from one map marker directly on another one
     if (clickLocation !== 'map') {
-      $( moreInfoDiv ).removeClass( 'open' );
+      $( "#" + moreInfoDiv ).removeClass( 'open' );
       if (!jQuery.browser.mobile) {
         this.updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
@@ -253,7 +252,7 @@ var ViewModel = function(data) {
     this.closeIW(clickLocation);
 
     // slide up the more info div
-    $( moreInfoDiv ).addClass( 'open' );
+    $( "#" + moreInfoDiv ).addClass( 'open' );
 
     // find the title in initialLocations and return the 'id' (i)
     // this is which marker # to attach the info window to
@@ -288,7 +287,7 @@ var ViewModel = function(data) {
       window.location.hash = '';
       this.updateCollapseLocationsIcon();
       $("#collapse-locations").slideDown();
-      $( moreInfoDiv ).removeClass( 'open' );
+      $( "#" + moreInfoDiv ).removeClass( 'open' );
     }.bind(this));
     // add the infoWindow to the array that keeps track of which IWs to close
     this.openIW.push(infowindow);
