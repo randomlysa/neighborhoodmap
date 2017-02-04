@@ -78,8 +78,7 @@ var ViewModel = function(data) {
   var moreInfoDiv;
   var flickrDiv;
   this.checkOrientation = function() {
-    var previousMoreInfoDiv = moreInfoDiv;
-    var previousFlickrDiv = flickrDiv;
+    var currentMoreInfoDiv = moreInfoDiv;
     var availableWidth = $(document).width();
     var availableHeight = $(window).height();
 
@@ -99,14 +98,14 @@ var ViewModel = function(data) {
     }
 
     /* for some reason, rotating a mobile device in Google Chrome
-    causes two window.width resizes. in this case, the previousMoreInfoDiv is the same
+    causes two window.width resizes. in this case, the currentMoreInfoDiv is the same
     as moreInfoDiv, and this section should be skipped, othewise the new divs are added twice */
-    if (moreInfoDiv !== previousMoreInfoDiv) {
+    if (moreInfoDiv !== currentMoreInfoDiv) {
       // remove the previous div if it exists
-      if (previousMoreInfoDiv) {
+      if (currentMoreInfoDiv) {
         var divRemoved = true;
-        var child = document.getElementById(previousMoreInfoDiv);
-        child.parentNode.removeChild(child);
+        var currentMoreInfoDivElement = document.getElementById(currentMoreInfoDiv);
+        currentMoreInfoDivElement.parentNode.removeChild(currentMoreInfoDivElement);
       }
       // add new divs
       $("#floating-panel").append('<div id="' + moreInfoDiv + '"></div>');
@@ -129,7 +128,7 @@ var ViewModel = function(data) {
       $( "#" + moreInfoDiv ).removeClass('add-padding');
     }
 
-    if (moreInfoDiv !== previousMoreInfoDiv && previousMoreInfoDiv) {
+    if (moreInfoDiv !== currentMoreInfoDiv && currentMoreInfoDiv) {
       var lat = this.currentMarkerLocation[0];
       var lng = this.currentMarkerLocation[1];
       // if no marker has been clicked
