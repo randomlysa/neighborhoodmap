@@ -63,6 +63,16 @@ var Location = function(data) {
 
 var ViewModel = function(data) {
   var self = this;
+
+  // init stuff
+  var initHasRun = false;
+  this.init = function() {
+    this.addListenerToMarker(this);
+    this.addRemoveLocations();
+    this.checkOrientation();
+    google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
+  }
+
   this.mapSearchInputText = ko.observable("");
   this.dynamicLocationsList = ko.observableArray();
 
@@ -489,15 +499,13 @@ var ViewModel = function(data) {
   var urlHash = window.location.hash;
   if (urlHash) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
+    // If openInfoWindow is run here without init, moreInfoDiv is not defined.
+    this.init();
+    initHasRun = true;
     this.openInfoWindow(title);
   }
 
-// init stuff
-  this.init = function() {
-    this.addListenerToMarker(this);
-    this.addRemoveLocations();
-    this.checkOrientation();
-    google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
+  if (initHasRun !== true) {
+    this.init();
   }
-  this.init();
 };
