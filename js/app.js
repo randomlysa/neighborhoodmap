@@ -340,59 +340,59 @@ var ViewModel = function(data) {
       self.flickrResults("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
     });
     request.done(function( data ){
-    var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
-    var numberOfPhotoResults = newData.photos.photo.length;
+      var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
+      var numberOfPhotoResults = newData.photos.photo.length;
 
-    if (jQuery.browser.mobile) {
-      // size suffixes info: https://www.flickr.com/services/api/misc.urls.html
-      var flickrImageSizeSuffix = 's'; // small square, 75x75
-    } else {
-      var flickrImageSizeSuffix = 'q'; // large square, 150x150
-    }
-
-    // determine numberOfPhotosToShow
-    if (numberOfPhotoResults < 10) {
-      var numberOfPhotosToShow = numberOfPhotoResults;
-    } else {
-      var numberOfPhotosToShow = 10
-    }
-
-    if (newData.photos.total < 0) {
-      self.flickrResults("<span class='error text-center'>no photos found on flickr</span>");
-    } else {
-      for (var i = 0; i < numberOfPhotosToShow; i++) {
-        var farm = newData.photos.photo[i].farm;
-        var server_id = newData.photos.photo[i].server;
-        var id = newData.photos.photo[i].id;
-        var secret = newData.photos.photo[i].secret;
-
-        // photo source url info, including size
-        // https://www.flickr.com/services/api/misc.urls.html
-        var flickrThumbnailWithLink = '' +
-        '<a href="https://farm' + farm + '.staticflickr.com/' +
-          server_id + '/' + id + '_' + secret + '_b' + '.jpg" ' +
-          'data-lightbox="flickr">' +
-
-        '<img src="https://farm' + farm + '.staticflickr.com/' +
-          server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg" ' +
-
-          '</a>';
-        flickrResultsString += (flickrThumbnailWithLink);
+      if (jQuery.browser.mobile) {
+        // size suffixes info: https://www.flickr.com/services/api/misc.urls.html
+        var flickrImageSizeSuffix = 's'; // small square, 75x75
+      } else {
+        var flickrImageSizeSuffix = 'q'; // large square, 150x150
       }
-    }
 
-    flickrResultsString += '' +
-      '<div class="flickr-more">' +
-      // '<a href="https://www.flickr.com/search/?text=' +
-      // flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
-      '<a href="https://www.flickr.com/search/?text=' +
-      flickrAPISearchQuery + '" target="_new">' +
-      '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
-      '</a>' +
-      '</div>';
+      // determine numberOfPhotosToShow
+      if (numberOfPhotoResults < 10) {
+        var numberOfPhotosToShow = numberOfPhotoResults;
+      } else {
+        var numberOfPhotosToShow = 10
+      }
 
-    self.flickrSearchURL('https://www.flickr.com/search/?text=' + flickrAPISearchQuery);
-    self.flickrResults(flickrResultsString);
+      if (newData.photos.total < 0) {
+        self.flickrResults("<span class='error text-center'>no photos found on flickr</span>");
+      } else {
+        for (var i = 0; i < numberOfPhotosToShow; i++) {
+          var farm = newData.photos.photo[i].farm;
+          var server_id = newData.photos.photo[i].server;
+          var id = newData.photos.photo[i].id;
+          var secret = newData.photos.photo[i].secret;
+
+          // photo source url info, including size
+          // https://www.flickr.com/services/api/misc.urls.html
+          var flickrThumbnailWithLink = '' +
+          '<a href="https://farm' + farm + '.staticflickr.com/' +
+            server_id + '/' + id + '_' + secret + '_b' + '.jpg" ' +
+            'data-lightbox="flickr">' +
+
+          '<img src="https://farm' + farm + '.staticflickr.com/' +
+            server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg" ' +
+
+            '</a>';
+          flickrResultsString += (flickrThumbnailWithLink);
+        }
+      }
+
+      flickrResultsString += '' +
+        '<div class="flickr-more">' +
+        // '<a href="https://www.flickr.com/search/?text=' +
+        // flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
+        '<a href="https://www.flickr.com/search/?text=' +
+        flickrAPISearchQuery + '" target="_new">' +
+        '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+        '</a>' +
+        '</div>';
+
+      self.flickrSearchURL('https://www.flickr.com/search/?text=' + flickrAPISearchQuery);
+      self.flickrResults(flickrResultsString);
 
     });
   }.bind(this); // end of searchFlickr()
