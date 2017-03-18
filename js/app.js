@@ -92,17 +92,16 @@ var ViewModel = function(data) {
     }, 15);
   }.bind(this);
 
-  var moreInfoDiv;
-  var flickrDiv;
+  var moreInfoDiv, flickrDiv, orientation;
   this.checkOrientation = function() {
     var currentMoreInfoDiv = moreInfoDiv;
     var availableWidth = $(document).width();
     var availableHeight = $(window).height();
 
     if (availableHeight > availableWidth) {
-      var orientation = 'tall'
+      orientation = 'tall'
     } else {
-      var orientation = 'wide'
+      orientation = 'wide'
     }
 
     // by default, show flickr images on right.
@@ -152,7 +151,7 @@ var ViewModel = function(data) {
       if (lat && lng) {
         // center map on new marker and pan
         newLatLng = {lat: lat, lng: lng};
-        panByY = -120;
+        panByY = -135;
       } else {
         // no markers open, recenter map on default position
         newLatLng = defaultMapCenter;
@@ -278,7 +277,7 @@ var ViewModel = function(data) {
       }
     }
 
-    var infowindow =  new google.maps.InfoWindow({});
+    var infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
     // gets the index of the marker in markersArray
     // ie, markersArray[itemindex] == marker that was clicked
     var itemindex = matchtitles(title);
@@ -289,12 +288,18 @@ var ViewModel = function(data) {
     var lat = this.currentMarkerLocation[0];
     var lng = this.currentMarkerLocation[1];
     var newLatLng = {lat: lat, lng: lng};
-    // roughly centers the space around the infoWindow
-    // adjusted for the size of 'small' flickr images on right (75 px / 2).
-    var panByX = 37;
-    // keeps the infoWindow from overlapping the floating-panel-header,
-    // especially on iPhone 5
-    var panByY = -135;
+    var panByX, panByY;
+    if (orientation === 'wide') {
+      // roughly centers the space around the infoWindow
+      // adjusted for the size of 'small' flickr images on right (75 px / 2).
+      panByX = 37;
+    } else {
+      panByX = 0;
+    }
+    // keeps the top of the infoWindow from overlapping with the bottom of the
+    // floating-panel-header, especially on iPhone 5
+    panByY = -135;
+
     this.adjustMapPan(newLatLng, panByX , panByY);
 
     // bounce the marker for 2800 ms
