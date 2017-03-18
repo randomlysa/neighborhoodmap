@@ -285,6 +285,18 @@ var ViewModel = function(data) {
     window.location.hash = title.replace(/ /g, '%20');
     this.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
+    // center map on new marker and adjust pan
+    var lat = this.currentMarkerLocation[0];
+    var lng = this.currentMarkerLocation[1];
+    var newLatLng = {lat: lat, lng: lng};
+    // roughly centers the space around the infoWindow
+    // adjusted for the size of 'small' flickr images on right (75 px / 2).
+    var panByX = 37;
+    // keeps the infoWindow from overlapping the floating-panel-header,
+    // especially on iPhone 5
+    var panByY = -135;
+    this.adjustMapPan(newLatLng, panByX , panByY);
+
     // bounce the marker for 2800 ms
     markersArray[itemindex].setAnimation(google.maps.Animation.BOUNCE);
     window.setTimeout(function() {
