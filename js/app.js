@@ -399,8 +399,6 @@ var ViewModel = function(data) {
 
       flickrResultsString += '' +
         '<div class="flickr-more">' +
-        // '<a href="https://www.flickr.com/search/?text=' +
-        // flickrAPISearchQuery + '">More photos on Flickr</a>&nbsp;&nbsp;' +
         '<a href="https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery + '" target="_new">' +
         '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
