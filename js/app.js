@@ -246,7 +246,6 @@ var ViewModel = function(data) {
     if (clickLocation !== 'map') {
       $( "#" + moreInfoDiv ).removeClass( 'open' );
       if (!jQuery.browser.mobile) {
-        this.updateCollapseLocationsIcon();
         $("#collapse-locations").slideDown();
       }
     }
@@ -297,7 +296,6 @@ var ViewModel = function(data) {
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
       window.location.hash = '';
-      this.updateCollapseLocationsIcon();
       $("#collapse-locations").slideDown();
       $( "#" + moreInfoDiv ).removeClass( 'open' );
     }.bind(this));
@@ -307,7 +305,6 @@ var ViewModel = function(data) {
     // search yelp for business review/info and update #yelp (located in the infoWindow)
     this.updateDiv(title);
     if (jQuery.browser.mobile) {
-      this.updateCollapseLocationsIcon();
       $("#collapse-locations").slideUp();
     }
   }.bind(this);
@@ -470,22 +467,6 @@ var ViewModel = function(data) {
     this.searchYelp(title, function(result) {
       $( "#yelp" ).append( result );
     });
-  }.bind(this);
-
-  this.updateCollapseLocationsIcon = function() {
-    window.setTimeout(function() {
-      var clDisplay = $( "#collapse-locations" ).css('display');
-      if (clDisplay === 'block') {
-          $( '#toggle-button').removeClass('glyphicon-expand');
-          $( '#toggle-button').addClass('glyphicon-collapse-up');
-          // $( "#collapse-locations" ).slideUp();
-        }
-      if (clDisplay === 'none') {
-        $( '#toggle-button').removeClass('glyphicon-collapse-up');
-        $( '#toggle-button').addClass('glyphicon-expand');
-        // $( "#collapse-locations" ).slideDown();
-      }
-    }, 450);
   }.bind(this);
 
   // toggle location list. this is needed for the button near the div
