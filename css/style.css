@@ -37,11 +37,21 @@ input {
     border: solid 2px 000;
     padding: 15px;
     line-height: 150%;
+    height: 70px;
 }
 
 #floating-panel-header button {
     position: relative;
     top: -3px;
+}
+
+#collapse-locations {
+    top: 70px;
+    position: absolute;
+    background-color: #fff;
+    max-height: calc(100% - 70px);
+    overflow-y: auto;
+    padding-bottom: 10px;
 }
 
 #maps-error {
@@ -97,7 +107,7 @@ input {
 #more-info-right.add-padding {
     width: 75px;
     margin-top: 70px;
-    height: calc(100% - 70px);
+    /*height: calc(100% - 70px);*/
 }
 
 #more-info-right.open {
