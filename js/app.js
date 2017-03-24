@@ -253,7 +253,9 @@ var ViewModel = function(data) {
   }.bind(this);
 
   this.currentMarkerLocation = '';
+  this.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
   this.openInfoWindow = function (title, clickLocation) {
+    var self = this;
     // the 'list view' sends the title as an object.
     // in this case, the title is actually title.title
     // the map marker sends the title as a string
@@ -261,7 +263,7 @@ var ViewModel = function(data) {
       title = title.title;
     }
 
-    this.closeIW(clickLocation);
+    self.closeIW(clickLocation);
 
     // slide up the more info div
     $( "#" + moreInfoDiv ).addClass( 'open' );
@@ -277,7 +279,6 @@ var ViewModel = function(data) {
       }
     }
 
-    var infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
     // gets the index of the marker in markersArray
     // ie, markersArray[itemindex] == marker that was clicked
     var itemindex = matchtitles(title);
@@ -308,18 +309,15 @@ var ViewModel = function(data) {
       markersArray[itemindex].setAnimation(null);
     }, 2800);
 
-    infowindow.setContent('' +
-      '<div class="infoWindowTitle">' + title + '</div>' +
-      self.yelpInfoWindowContent()
-    );
-    infowindow.open(map, markersArray[itemindex]);
-    infowindow.addListener('closeclick', function() {
+    self.infowindow.setContent('Loading Infomation from Yelp');
+    self.infowindow.open(map, markersArray[itemindex]);
+    self.infowindow.addListener('closeclick', function() {
       window.location.hash = '';
       $("#collapse-locations").slideDown();
       $( "#" + moreInfoDiv ).removeClass( 'open' );
     }.bind(this));
     // add the infoWindow to the array that keeps track of which IWs to close
-    this.openIW.push(infowindow);
+    this.openIW.push(self.infowindow);
     // search flickr for images and update the moreInfo/moreInfoMobile div
     // search yelp for business review/info and update #yelp (located in the infoWindow)
     this.updateDiv(title);
@@ -427,7 +425,7 @@ var ViewModel = function(data) {
   this.searchYelp = function (query) {
     var self = this;
     var configBase = getConfig.responseJSON.config;
-    var yelp_url = 'https://api.yelp.com/v2/search';
+    var yelp_url = 'https://ai.yelp.com/v2/search';
     var infowindowContent;
 
     var parameters = {
@@ -457,25 +455,39 @@ var ViewModel = function(data) {
     yelpQuery.done(function(results) {
       // Do stuff with results
       var businessInfo = results.businesses[0];
-      infowindowContent = '' +
-        businessInfo.categories[0][0] +
-        '&nbsp;&nbsp;<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
+      var businessIsClosedText = '';
+
+      if (businessInfo.is_closed === true) {
+        businessIsClosedText = "<strong>Yelp reports this business is closed.</strong><br>"
+      }
+
+      self.infowindow.setContent(
+        '<div class="infoWindowTitle">' +
+          '<a href="' + businessInfo.url + '">' +
+            businessInfo.name +
+          '</a>' +
+
+          '<a href="' + businessInfo.url + ' " target="_new">' +
+            '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+          '</a>' +
+        '</div>' +
+
+        businessIsClosedText +
+        businessInfo.categories[0][0] + '<br>' +
+
+        '<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
         businessInfo.display_phone +
         '<br><img src="' + businessInfo.rating_img_url +'">' +
-        '<br>Rating based on ' + businessInfo.review_count + ' reviews.<br>' +
-        '<a href="' + businessInfo.url + '">More info on Yelp</a>&nbsp;&nbsp;' +
-        '<a href="' + businessInfo.url + ' " target="_new">' +
-        '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
-        '</a>' ;
+        '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
 
-      self.yelpInfoWindowContent(infowindowContent);
+
     }),
     yelpQuery.fail( function() {
-      // Do stuff on fail
-      infowindowContent = "<span class='error text-center'>there was an error<br> connecting to yelp</span>";
-      self.yelpInfoWindowContent(infowindowContent);
+      self.infowindow.setContent(
+        "<span class='error text-center'>there was an error connecting to yelp</span>"
+      );
     });
-  }
+  }.bind(this);
 
   // update the moreInfoDiv div with flickr info and infoWindow with yelp info
   this.updateDiv = function (title) {
