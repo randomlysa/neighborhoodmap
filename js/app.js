@@ -425,7 +425,7 @@ var ViewModel = function(data) {
   this.searchYelp = function (query) {
     var self = this;
     var configBase = getConfig.responseJSON.config;
-    var yelp_url = 'https://ai.yelp.com/v2/search';
+    var yelp_url = 'https://api.yelp.com/v2/search';
     var infowindowContent;
 
     var parameters = {
