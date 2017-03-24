@@ -310,7 +310,7 @@ var ViewModel = function(data) {
 
     infowindow.setContent('' +
       '<div class="infoWindowTitle">' + title + '</div>' +
-      '<div id="yelp" class="yelp"></div>'
+      self.yelpInfoWindowContent()
     );
     infowindow.open(map, markersArray[itemindex]);
     infowindow.addListener('closeclick', function() {
@@ -423,8 +423,9 @@ var ViewModel = function(data) {
     https://discussions.udacity.com/t/how-to-make-ajax-request-to-yelp-api/13699/24
     https://discussions.udacity.com/t/yelp-api-not-working/163965/4
   */
-  this.searchYelp = function (query, callback) {
-    $(document).ready(function() {
+  this.yelpInfoWindowContent = ko.observable();
+  this.searchYelp = function (query) {
+    var self = this;
       var configBase = getConfig.responseJSON.config;
       var yelp_url = 'https://api.yelp.com/v2/search';
       var infowindowContent;
@@ -467,23 +468,21 @@ var ViewModel = function(data) {
           '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
           '</a>' ;
 
-        callback(infowindowContent);
+        self.yelpInfoWindowContent(infowindowContent);
       }),
       yelpQuery.fail( function() {
         // Do stuff on fail
         infowindowContent = "<span class='error text-center'>there was an error<br> connecting to yelp</span>";
-        callback(infowindowContent);
+        self.yelpInfoWindowContent(infowindowContent);
       });
-    });
+
+
   }
 
   // update the moreInfoDiv div with flickr info and infoWindow with yelp info
   this.updateDiv = function (title) {
     this.searchFlickr(title);
-
-    this.searchYelp(title, function(result) {
-      $( "#yelp" ).append( result );
-    });
+    this.searchYelp(title);
   }.bind(this);
 
   // toggle location list. this is needed for the button near the div
