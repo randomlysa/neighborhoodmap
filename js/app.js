@@ -484,7 +484,8 @@ var ViewModel = function(data) {
     }),
     yelpQuery.fail( function() {
       self.infowindow.setContent(
-        "<span class='error text-center'>there was an error connecting to yelp</span>"
+        '<div class="infoWindowTitle">' + query + '</div>' +
+        "<div class='error small-text text-center'>there was an error connecting to yelp</div>"
       );
     });
   }.bind(this);

@@ -143,6 +143,10 @@ input {
     text-align: center;
 }
 
+.small-text {
+    font-size: 120%;
+}
+
 /* https://css-tricks.com/quick-css-trick-how-to-center-an-object-exactly-in-the-center/ */
 .centered {
   position: fixed;
