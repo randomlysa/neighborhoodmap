@@ -426,57 +426,55 @@ var ViewModel = function(data) {
   this.yelpInfoWindowContent = ko.observable();
   this.searchYelp = function (query) {
     var self = this;
-      var configBase = getConfig.responseJSON.config;
-      var yelp_url = 'https://api.yelp.com/v2/search';
-      var infowindowContent;
+    var configBase = getConfig.responseJSON.config;
+    var yelp_url = 'https://api.yelp.com/v2/search';
+    var infowindowContent;
 
-      var parameters = {
-        oauth_consumer_key: configBase.YELP_KEY,
-        oauth_token: configBase.YELP_TOKEN,
-        oauth_nonce: nonce_generate(),
-        oauth_timestamp: Math.floor(Date.now()/1000),
-        oauth_signature_method: 'HMAC-SHA1',
-        oauth_version : '1.0',
-        callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
-        term: query,
-        location: 'Boston'
-      };
+    var parameters = {
+      oauth_consumer_key: configBase.YELP_KEY,
+      oauth_token: configBase.YELP_TOKEN,
+      oauth_nonce: nonce_generate(),
+      oauth_timestamp: Math.floor(Date.now()/1000),
+      oauth_signature_method: 'HMAC-SHA1',
+      oauth_version : '1.0',
+      callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
+      term: query,
+      location: 'Boston'
+    };
 
-      var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
-      parameters.oauth_signature = encodedSignature;
+    var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
+    parameters.oauth_signature = encodedSignature;
 
-      var settings = {
-        url: yelp_url,
-        data: parameters,
-        cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
-        dataType: 'jsonp'
-      };
+    var settings = {
+      url: yelp_url,
+      data: parameters,
+      cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+      dataType: 'jsonp'
+    };
 
-      // Send AJAX query via jQuery library.
-      var yelpQuery = $.ajax(settings);
-      yelpQuery.done(function(results) {
-        // Do stuff with results
-        var businessInfo = results.businesses[0];
-        infowindowContent = '' +
-          businessInfo.categories[0][0] +
-          '&nbsp;&nbsp;<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
-          businessInfo.display_phone +
-          '<br><img src="' + businessInfo.rating_img_url +'">' +
-          '<br>Rating based on ' + businessInfo.review_count + ' reviews.<br>' +
-          '<a href="' + businessInfo.url + '">More info on Yelp</a>&nbsp;&nbsp;' +
-          '<a href="' + businessInfo.url + ' " target="_new">' +
-          '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
-          '</a>' ;
+    // Send AJAX query via jQuery library.
+    var yelpQuery = $.ajax(settings);
+    yelpQuery.done(function(results) {
+      // Do stuff with results
+      var businessInfo = results.businesses[0];
+      infowindowContent = '' +
+        businessInfo.categories[0][0] +
+        '&nbsp;&nbsp;<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
+        businessInfo.display_phone +
+        '<br><img src="' + businessInfo.rating_img_url +'">' +
+        '<br>Rating based on ' + businessInfo.review_count + ' reviews.<br>' +
+        '<a href="' + businessInfo.url + '">More info on Yelp</a>&nbsp;&nbsp;' +
+        '<a href="' + businessInfo.url + ' " target="_new">' +
+        '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+        '</a>' ;
 
-        self.yelpInfoWindowContent(infowindowContent);
-      }),
-      yelpQuery.fail( function() {
-        // Do stuff on fail
-        infowindowContent = "<span class='error text-center'>there was an error<br> connecting to yelp</span>";
-        self.yelpInfoWindowContent(infowindowContent);
-      });
-
-
+      self.yelpInfoWindowContent(infowindowContent);
+    }),
+    yelpQuery.fail( function() {
+      // Do stuff on fail
+      infowindowContent = "<span class='error text-center'>there was an error<br> connecting to yelp</span>";
+      self.yelpInfoWindowContent(infowindowContent);
+    });
   }
 
   // update the moreInfoDiv div with flickr info and infoWindow with yelp info
