@@ -3,63 +3,67 @@
 // get api info
 var getConfig = $.getJSON("js/config_secret.json");
 
-var initialLocations = [
-  {
-    'title': 'New England Aquarium',
-    'coordinates': [42.359151,-71.049576]
-  },
-  {
-    'title': 'Frost Ice Loft',
-    'coordinates': [42.360325,-71.053310]
-  },
-  {
-    'title': 'Central Wharf Company',
-    'coordinates': [42.358668, -71.052720]
-  },
-  {
-    'title': 'Alamo Rent a Car',
-    'coordinates': [42.358328, -71.051116]
-  },
-  {
-    'title': 'Boston Harbor Hotel',
-    'coordinates': [42.356551, -71.050188]
-  },
-  {
-    'title': 'Boston Harbor Cruises',
-    'coordinates': [42.359714, -71.050660]
-  },
-  {
-    'title': 'Boston Sail Loft',
-    'coordinates': [42.362504, -71.050546]
-  },
-  {
-    'title': 'The Paul Revere House',
-    'coordinates': [42.363640, -71.053743]
-  },
-  {
-    'title': 'Orpheum Theatre',
-    'coordinates': [42.356503, -71.060023]
-  },
-  {
-    'title': 'Old North Church',
-    'coordinates': [42.366320, -71.054439]
-  },
-  {
-    'title': 'Hyatt Regency Boston',
-    'coordinates': [42.353707, -71.060811]
-  },
-  {
-    'title': 'Omni Parker House',
-    'coordinates': [42.357553, -71.060174]
-  }
-];
+// check local storage for map-knockoutjs
+var initialLocations = ko.utils.parseJson(localStorage.getItem('map-knockoutjs'));
+
+if (!initialLocations) {
+  var initialLocations = [
+    {
+      'title': 'New England Aquarium',
+      'coordinates': [42.359151,-71.049576]
+    },
+    {
+      'title': 'Frost Ice Loft',
+      'coordinates': [42.360325,-71.053310]
+    },
+    {
+      'title': 'Central Wharf Company',
+      'coordinates': [42.358668, -71.052720]
+    },
+    {
+      'title': 'Alamo Rent a Car',
+      'coordinates': [42.358328, -71.051116]
+    },
+    {
+      'title': 'Boston Harbor Hotel',
+      'coordinates': [42.356551, -71.050188]
+    },
+    {
+      'title': 'Boston Harbor Cruises',
+      'coordinates': [42.359714, -71.050660]
+    },
+    {
+      'title': 'Boston Sail Loft',
+      'coordinates': [42.362504, -71.050546]
+    },
+    {
+      'title': 'The Paul Revere House',
+      'coordinates': [42.363640, -71.053743]
+    },
+    {
+      'title': 'Orpheum Theatre',
+      'coordinates': [42.356503, -71.060023]
+    },
+    {
+      'title': 'Old North Church',
+      'coordinates': [42.366320, -71.054439]
+    },
+    {
+      'title': 'Hyatt Regency Boston',
+      'coordinates': [42.353707, -71.060811]
+    },
+    {
+      'title': 'Omni Parker House',
+      'coordinates': [42.357553, -71.060174]
+    }
+  ];
+}
 
 var Location = function(data) {
   this.title = data.title;
-  this.coord = data.coordinates;
-  this.info = data.info;
+  this.coordinates = data.coordinates;
+  this.favorite = ko.observable(data.favorite);
 };
-
 
 var ViewModel = function(data) {
   var self = this;
@@ -74,7 +78,13 @@ var ViewModel = function(data) {
   }
 
   this.mapSearchInputText = ko.observable("");
+  // for the user interface, a list that can be filtered when text is typed
   this.dynamicLocationsList = ko.observableArray();
+
+  this.saveToStorage = function() {
+    localStorage.setItem('map-knockoutjs', ko.toJSON(initialLocations));
+  };
+
 
   // check for mobile browser
   /**
@@ -324,6 +334,25 @@ var ViewModel = function(data) {
     if (jQuery.browser.mobile) {
       $("#collapse-locations").slideUp();
     }
+  }.bind(this);
+
+  this.toggleFavorite = function( item ) {
+    var self = this;
+    // initialLocations is saved to local storage, so it also needs to be updated
+    var mapItemToUpdate = initialLocations.find( function( mapItem ) {
+      return mapItem.title === item.title;
+    })
+
+    if (item.favorite() === true) {
+      item.favorite(false);
+      mapItemToUpdate.favorite = false;
+    }
+    else {
+      item.favorite(true);
+      mapItemToUpdate.favorite = true;
+    }
+
+    this.saveToStorage();
   }.bind(this);
 
   /* search flickr via flickr api for images for more-info-div.

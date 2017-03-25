@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/lightbox.min.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   </head>
@@ -30,11 +32,21 @@
 
       <div id="collapse-locations" data-bind="foreach: dynamicLocationsList"
         class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <a href="#"
-        class="overlayMapListLinks"
-        data-bind="text: title,
-        click: $parent.openInfoWindow,
-        attr: { id: $index }"></a><br />
+
+        <div>
+          <span data-bind="if: favorite, click: $parent.toggleFavorite">
+            <i class="material-icons md-18">bookmark</i>
+          </span>
+          <span data-bind="ifnot: favorite, click: $parent.toggleFavorite">
+            <i class="material-icons md-18">bookmark_border</i>
+          </span>
+
+          <a href="#"
+            class="overlayMapListLinks"
+            data-bind="text: title,
+            click: $parent.openInfoWindow,
+            attr: { id: $index }"></a>
+        </div>
       </div>
 
 
