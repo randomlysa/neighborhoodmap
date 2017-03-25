@@ -10,51 +10,63 @@ if (!initialLocations) {
   var initialLocations = [
     {
       'title': 'New England Aquarium',
-      'coordinates': [42.359151,-71.049576]
+      'coordinates': [42.359151,-71.049576],
+      'type': 'Attraction'
     },
     {
       'title': 'Frost Ice Loft',
-      'coordinates': [42.360325,-71.053310]
+      'coordinates': [42.360325,-71.053310],
+      'type': 'Bar'
     },
     {
       'title': 'Central Wharf Company',
-      'coordinates': [42.358668, -71.052720]
+      'coordinates': [42.358668, -71.052720],
+      'type': 'Bar'
     },
     {
       'title': 'Alamo Rent a Car',
-      'coordinates': [42.358328, -71.051116]
+      'coordinates': [42.358328, -71.051116],
+      'type': 'Car Rental'
     },
     {
       'title': 'Boston Harbor Hotel',
-      'coordinates': [42.356551, -71.050188]
+      'coordinates': [42.356551, -71.050188],
+      'type': 'Hotel'
     },
     {
       'title': 'Boston Harbor Cruises',
-      'coordinates': [42.359714, -71.050660]
+      'coordinates': [42.359714, -71.050660],
+      'type': 'Attraction'
     },
     {
       'title': 'Boston Sail Loft',
-      'coordinates': [42.362504, -71.050546]
+      'coordinates': [42.362504, -71.050546],
+      'type': 'Bar'
     },
     {
       'title': 'The Paul Revere House',
-      'coordinates': [42.363640, -71.053743]
+      'coordinates': [42.363640, -71.053743],
+      'type': 'Attraction'
     },
     {
       'title': 'Orpheum Theatre',
-      'coordinates': [42.356262, -71.061027]
+      'coordinates': [42.356262, -71.061027],
+      'type': 'Attraction'
     },
     {
       'title': 'Old North Church',
-      'coordinates': [42.366320, -71.054439]
+      'coordinates': [42.366320, -71.054439],
+      'type': 'Attraction'
     },
     {
       'title': 'Hyatt Regency Boston',
-      'coordinates': [42.353707, -71.060811]
+      'coordinates': [42.353707, -71.060811],
+      'type': 'Hotel'
     },
     {
       'title': 'Omni Parker House',
-      'coordinates': [42.357553, -71.060174]
+      'coordinates': [42.357553, -71.060174],
+      'type': 'Hotel'
     }
   ];
 }
@@ -62,6 +74,7 @@ if (!initialLocations) {
 var Location = function(data) {
   this.title = data.title;
   this.coordinates = data.coordinates;
+  this.type = data.type;
   this.favorite = ko.observable(data.favorite);
 };
 
