@@ -20,6 +20,18 @@ a:hover {
     color: #000;
 }
 
+.link {
+    color: #158ad1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 input {
     width: calc(100% - 45px);
     padding: 5px;
