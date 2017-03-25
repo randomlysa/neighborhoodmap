@@ -219,6 +219,13 @@ var ViewModel = function(data) {
       }
     });
 
+    // sort list alphabetically
+    self.dynamicLocationsList.sort(function (left, right) {
+      var sortByA = left.title;
+      var sortByB = right.title;
+      return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1)
+    });
+
     if(inputText && self.dynamicLocationsList().length === 0) {
       $( '#no-locations-found' ).css('display', 'inline');
     } else {
