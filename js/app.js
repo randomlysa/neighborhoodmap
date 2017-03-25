@@ -42,7 +42,7 @@ if (!initialLocations) {
     },
     {
       'title': 'Orpheum Theatre',
-      'coordinates': [42.356503, -71.060023]
+      'coordinates': [42.356262, -71.061027]
     },
     {
       'title': 'Old North Church',
