@@ -216,11 +216,11 @@ var ViewModel = function(data) {
   }.bind(this);
 
   this.addRemoveLocations = function (inputText) {
-    // remove items from dynamicLocationsList
+    // remove items from filteredLocationsList
     self.filteredLocationsList.removeAll();
 
     // loop through initialLocations (all locations) and push them
-    // back to dynamicLocationsList if they equal the input text
+    // back to filteredLocationsList if they equal the input text
     initialLocations.forEach(function(mapItem){
       if (inputText) {
         $( '#collapse-locations').css('display', 'inline');
