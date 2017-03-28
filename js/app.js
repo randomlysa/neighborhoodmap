@@ -99,7 +99,7 @@ var ViewModel = function(data) {
   self.setFavorites = function() {
     initialLocations.forEach( function ( mapItem ) {
       if (mapItem.favorite === true) {
-        self.favoriteLocationsList.push(mapItem);
+        self.favoriteLocationsList.push( new Location(mapItem) );
       }
     });
   }
@@ -392,7 +392,7 @@ var ViewModel = function(data) {
     else {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
-      self.favoriteLocationsList.push(mapItemToUpdate);
+      self.favoriteLocationsList.push( new Location( mapItemToUpdate ) );
     }
 
     this.saveToStorage();
