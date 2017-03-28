@@ -222,19 +222,21 @@ var ViewModel = function(data) {
     // loop through initialLocations (all locations) and push them
     // back to filteredLocationsList if they equal the input text
     initialLocations.forEach(function(mapItem){
-      if (inputText) {
-        $( '#collapse-locations').css('display', 'inline');
-        if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
+      if (!mapItem.favorite) {
+        if (inputText) {
+          $( '#collapse-locations').css('display', 'inline');
+          if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
+            self.filteredLocationsList.push( new Location(mapItem) );
+          }
+        }
+        if (!inputText) {
+          // no letters input, return all items
+          if (jQuery.browser.mobile) {
+            $( '#collapse-locations').css('display', 'none');
+          }
           self.filteredLocationsList.push( new Location(mapItem) );
         }
-      }
-      if (!inputText) {
-        // no letters input, return all items
-        if (jQuery.browser.mobile) {
-          $( '#collapse-locations').css('display', 'none');
-        }
-        self.filteredLocationsList.push( new Location(mapItem) );
-      }
+      };
     });
 
     // sort list alphabetically
@@ -376,23 +378,43 @@ var ViewModel = function(data) {
 
   this.toggleFavorite = function( item ) {
     var self = this;
+
     // initialLocations is saved to local storage, so it also needs to be updated
     var mapItemToUpdate = initialLocations.find( function( mapItem ) {
       return mapItem.title === item.title;
     })
 
+    // find the title the specified array and return the 'id' (i)
+    function matchTitle( title, array ) {
+      for (var i = 0; i < array.length; i++) {
+        if (title === array[i].title) {
+          return i;
+        }
+      }
+    }
+
+    // gets the index of the mapItem in each array
+    var itemIndexInFavorites = matchTitle(item.title, self.favoriteLocationsList());
+    var itemIndexInFiltered = matchTitle(item.title, self.filteredLocationsList());
+
+    // remove a favorite
     if (item.favorite() === true) {
       // update object so dynamicLocationList gets updated
       item.favorite(false);
       // update initial locations so because it get saved to local storage
       mapItemToUpdate.favorite = false;
-      // remove item from ko.obsersableArray
-      self.favoriteLocationsList.remove(mapItemToUpdate);
+      // remove item from favoriteLocationsList
+      self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
+      // add item to filtered list
+      self.filteredLocationsList.push( item );
     }
-    else {
+
+    // create a favorite. see above for comments
+    else if (item.favorite() === false) {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
-      self.favoriteLocationsList.push( new Location( mapItemToUpdate ) );
+      self.filteredLocationsList.splice(itemIndexInFiltered, 1);
+      self.favoriteLocationsList.push( item );
     }
 
     this.saveToStorage();
