@@ -87,10 +87,23 @@ var ViewModel = function(data) {
     this.addListenerToMarker(this);
     this.addRemoveLocations();
     this.checkOrientation();
+    this.setFavorites();
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
   }
 
   this.mapSearchInputText = ko.observable("");
+  // an observable array for favorites, to move favorite locations to the top of the list
+  self.favoritesList = ko.observableArray();
+  // set up self.favoritesList from initialLocations
+  // which should have been loaded from local storage if it existed there
+  self.setFavorites = function() {
+    initialLocations.forEach( function ( mapItem ) {
+      if (mapItem.favorite === true) {
+        self.favoritesList.push(mapItem)
+      }
+    });
+  }
+
   // for the user interface, a list that can be filtered when text is typed
   this.dynamicLocationsList = ko.observableArray();
 
@@ -364,12 +377,17 @@ var ViewModel = function(data) {
     })
 
     if (item.favorite() === true) {
+      // update object so dynamicLocationList gets updated
       item.favorite(false);
+      // update initial locations so because it get saved to local storage
       mapItemToUpdate.favorite = false;
+      // remove item from ko.obsersableArray
+      self.favoritesList.remove(mapItemToUpdate);
     }
     else {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
+      self.favoritesList.push(mapItemToUpdate);
     }
 
     this.saveToStorage();
