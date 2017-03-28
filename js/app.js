@@ -93,19 +93,24 @@ var ViewModel = function(data) {
 
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
-  self.favoritesList = ko.observableArray();
-  // set up self.favoritesList from initialLocations
+  self.favoriteLocationsList = ko.observableArray();
+  // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
   self.setFavorites = function() {
     initialLocations.forEach( function ( mapItem ) {
       if (mapItem.favorite === true) {
-        self.favoritesList.push(mapItem)
+        self.favoriteLocationsList.push(mapItem);
       }
     });
   }
 
   // for the user interface, a list that can be filtered when text is typed
-  this.dynamicLocationsList = ko.observableArray();
+  self.filteredLocationsList = ko.observableArray();
+
+  // combine favoriteLocationsList and filteredLocationsList
+  this.dynamicLocationsList = ko.computed( function() {
+    return self.favoriteLocationsList().concat(self.filteredLocationsList());
+  }, self);
 
   this.saveToStorage = function() {
     localStorage.setItem('map-knockoutjs', ko.toJSON(initialLocations));
@@ -212,7 +217,7 @@ var ViewModel = function(data) {
 
   this.addRemoveLocations = function (inputText) {
     // remove items from dynamicLocationsList
-    self.dynamicLocationsList.removeAll();
+    self.filteredLocationsList.removeAll();
 
     // loop through initialLocations (all locations) and push them
     // back to dynamicLocationsList if they equal the input text
@@ -220,7 +225,7 @@ var ViewModel = function(data) {
       if (inputText) {
         $( '#collapse-locations').css('display', 'inline');
         if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
-          self.dynamicLocationsList.push( new Location(mapItem) );
+          self.filteredLocationsList.push( new Location(mapItem) );
         }
       }
       if (!inputText) {
@@ -228,18 +233,18 @@ var ViewModel = function(data) {
         if (jQuery.browser.mobile) {
           $( '#collapse-locations').css('display', 'none');
         }
-        self.dynamicLocationsList.push( new Location(mapItem) );
+        self.filteredLocationsList.push( new Location(mapItem) );
       }
     });
 
     // sort list alphabetically
-    self.dynamicLocationsList.sort(function (left, right) {
+    self.filteredLocationsList.sort(function (left, right) {
       var sortByA = left.title;
       var sortByB = right.title;
       return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1)
     });
 
-    if(inputText && self.dynamicLocationsList().length === 0) {
+    if(inputText && self.filteredLocationsList().length === 0) {
       $( '#no-locations-found' ).css('display', 'inline');
     } else {
       $( '#no-locations-found' ).css('display', 'none');
@@ -248,9 +253,9 @@ var ViewModel = function(data) {
     // add/remove markers from the map.
     // first check if markersArray has been created
     if (typeof markersArray !== 'undefined') {
-      // make an array of self.dynamicLocationsList titles
+      // make an array of self.filteredLocationsList titles
       var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach(function (Location) {
+      self.filteredLocationsList().forEach(function (Location) {
         dynamicLocationsListTitles.push(Location.title);
       });
 
@@ -382,12 +387,12 @@ var ViewModel = function(data) {
       // update initial locations so because it get saved to local storage
       mapItemToUpdate.favorite = false;
       // remove item from ko.obsersableArray
-      self.favoritesList.remove(mapItemToUpdate);
+      self.favoriteLocationsList.remove(mapItemToUpdate);
     }
     else {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
-      self.favoritesList.push(mapItemToUpdate);
+      self.favoriteLocationsList.push(mapItemToUpdate);
     }
 
     this.saveToStorage();
