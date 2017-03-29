@@ -100,6 +100,14 @@ var ViewModel = function(data) {
     }
   }
 
+  // sort a list
+  self.sortList = function( list ) {
+    list.sort(function (left, right) {
+      var sortByA = left.title;
+      var sortByB = right.title;
+      return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1)
+    });
+  }
 
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
@@ -250,11 +258,8 @@ var ViewModel = function(data) {
     });
 
     // sort list alphabetically
-    self.filteredLocationsList.sort(function (left, right) {
-      var sortByA = left.title;
-      var sortByB = right.title;
-      return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1)
-    });
+    self.sortList(self.filteredLocationsList); // = function( list ) {
+
 
     if(inputText && self.filteredLocationsList().length === 0) {
       $( '#no-locations-found' ).css('display', 'inline');
