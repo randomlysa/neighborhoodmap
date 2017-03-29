@@ -87,7 +87,10 @@ var ViewModel = function(data) {
     this.addListenerToMarker(this);
     this.addRemoveLocations();
     this.checkOrientation();
-    this.setFavorites();
+    // prevents duplication of favorites
+    if (!this.filterFavorites) {
+      this.setFavorites();
+    }
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
   }
 
@@ -112,6 +115,8 @@ var ViewModel = function(data) {
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
+  self.filterFavorites = ko.observable(true),
+
   // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
   self.setFavorites = function() {
@@ -237,6 +242,35 @@ var ViewModel = function(data) {
     // remove items from filteredLocationsList
     self.filteredLocationsList.removeAll();
 
+    // re-add all favorites once filterFavorites is unchecked
+    if (!self.filterFavorites()) {
+      self.favoriteLocationsList.removeAll();
+      this.setFavorites();
+    };
+
+    // filter favorites
+    if (self.filterFavorites()) {
+      self.favoriteLocationsList.removeAll();
+      initialLocations.forEach( function(mapItem){
+        if (mapItem.favorite) {
+          if (inputText) {
+            $( '#collapse-locations').css('display', 'inline');
+            if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
+              self.favoriteLocationsList.push( new Location(mapItem) );
+            }
+          }
+          if (!inputText) {
+            // no letters input, return all items
+            if (jQuery.browser.mobile) {
+              $( '#collapse-locations').css('display', 'none');
+            }
+            self.favoriteLocationsList.push( new Location(mapItem) );
+          }
+        }
+      });
+    }
+
+    // filter non-favorites
     // loop through initialLocations (all locations) and push them
     // back to filteredLocationsList if they equal the input text
     initialLocations.forEach(function(mapItem){
@@ -258,8 +292,7 @@ var ViewModel = function(data) {
     });
 
     // sort list alphabetically
-    self.sortList(self.filteredLocationsList); // = function( list ) {
-
+    self.sortList(self.filteredLocationsList);
 
     if(inputText && self.filteredLocationsList().length === 0) {
       $( '#no-locations-found' ).css('display', 'inline');
@@ -270,9 +303,9 @@ var ViewModel = function(data) {
     // add/remove markers from the map.
     // first check if markersArray has been created
     if (typeof markersArray !== 'undefined') {
-      // make an array of self.filteredLocationsList titles
+      // make an array of self.dynamicLocationsList titles
       var dynamicLocationsListTitles = [];
-      self.filteredLocationsList().forEach(function (Location) {
+      self.dynamicLocationsList().forEach(function (Location) {
         dynamicLocationsListTitles.push(Location.title);
       });
 
