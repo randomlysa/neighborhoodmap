@@ -49,6 +49,7 @@ a:hover {
     border: solid 2px 000;
     padding: 15px;
     line-height: 150%;
+    /* set collapse-locations: top to this number also */
     height: 90px;
 }
 
