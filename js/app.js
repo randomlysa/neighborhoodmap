@@ -405,6 +405,7 @@ var ViewModel = function(data) {
       self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
       // add item to filtered list
       self.filteredLocationsList.push( item );
+      self.sortList(self.filteredLocationsList);
     }
 
     // create a favorite. see above for comments
