@@ -91,6 +91,16 @@ var ViewModel = function(data) {
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
   }
 
+  // find the title the specified array and return the 'id' (i)
+  self.matchTitle = function ( title, array ) {
+    for (var i = 0; i < array.length; i++) {
+      if (title === array[i].title) {
+        return i;
+      }
+    }
+  }
+
+
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
@@ -318,20 +328,11 @@ var ViewModel = function(data) {
     // slide up the more info div
     $( "#" + moreInfoDiv ).addClass( 'open' );
 
-    // find the title in initialLocations and return the 'id' (i)
     // this is which marker # to attach the info window to
-    // (markers are stored in an array)
-    function matchtitles(title) {
-      for (var i = 0; i < initialLocations.length; i++) {
-        if (title == initialLocations[i].title) {
-          return i;
-        }
-      }
-    }
-
     // gets the index of the marker in markersArray
     // ie, markersArray[itemindex] == marker that was clicked
-    var itemindex = matchtitles(title);
+    var itemindex = self.matchTitle(title, initialLocations);
+
     window.location.hash = title.replace(/ /g, '%20');
     this.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
@@ -384,18 +385,10 @@ var ViewModel = function(data) {
       return mapItem.title === item.title;
     })
 
-    // find the title the specified array and return the 'id' (i)
-    function matchTitle( title, array ) {
-      for (var i = 0; i < array.length; i++) {
-        if (title === array[i].title) {
-          return i;
-        }
-      }
-    }
 
     // gets the index of the mapItem in each array
-    var itemIndexInFavorites = matchTitle(item.title, self.favoriteLocationsList());
-    var itemIndexInFiltered = matchTitle(item.title, self.filteredLocationsList());
+    var itemIndexInFavorites = self.matchTitle(item.title, self.favoriteLocationsList());
+    var itemIndexInFiltered = self.matchTitle(item.title, self.filteredLocationsList());
 
     // remove a favorite
     if (item.favorite() === true) {
