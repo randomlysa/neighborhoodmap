@@ -88,7 +88,7 @@ var ViewModel = function(data) {
     this.addRemoveLocations();
     this.checkOrientation();
     // prevents duplication of favorites
-    if (!this.filterFavorites) {
+    if (!this.alwaysShowFavorites) {
       this.setFavorites();
     }
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
@@ -115,7 +115,7 @@ var ViewModel = function(data) {
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
-  self.filterFavorites = ko.observable(true),
+  self.alwaysShowFavorites = ko.observable(true),
 
   // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
@@ -239,7 +239,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // determine what text is shown when no locations are found, based on whether
-  // filter favorites is selected or not
+  // alwaysShowFavorites is checked or not
   self.noLocationsFoundText = ko.observable();
   this.addRemoveLocations = function (inputText) {
     var self = this;
@@ -248,7 +248,7 @@ var ViewModel = function(data) {
     /*
       this is the list that determines if 'no locations found' is displayed.
       by default this is set to self.filteredLocationsList
-      if filter locations is true, then this is changed to
+      if alwaysShowFavorites is false, then this is changed to
       self.dynamicLocationsList.
 
       dynamicLocationsList contains both favoriteLocationsList
@@ -257,8 +257,8 @@ var ViewModel = function(data) {
     var correctLocationsList = self.filteredLocationsList;
     self.noLocationsFoundText('No Locations Found');
 
-    // re-add all favorites once filterFavorites is unchecked
-    if (!self.filterFavorites()) {
+    // re-add all favorites once alwaysShowFavorites is checked
+    if (self.alwaysShowFavorites()) {
       self.favoriteLocationsList.removeAll();
       this.setFavorites();
     };
@@ -285,15 +285,15 @@ var ViewModel = function(data) {
       });
     }
 
-    // filter favorites
-    if (self.filterFavorites()) {
+    // !alwaysShowFavorites; ie, filter favorites
+    if (!self.alwaysShowFavorites()) {
       var correctLocationsList = self.dynamicLocationsList;
       self.favoriteLocationsList.removeAll();
 
       // take initialLocations and push favorites to self.favoriteLocationsList
       filterLocationList (initialLocations, self.favoriteLocationsList, true);
 
-    // if not filtering favorites and there are favorites selected by the user,
+    // if alwaysShowFavorites and there are favorites selected by the user,
     // update self.noLocationsFoundText
     } else {
       if (self.favoriteLocationsList().length > 0) {
