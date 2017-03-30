@@ -255,7 +255,7 @@ var ViewModel = function(data) {
       and filteredLocationsList
     */
     var correctLocationsList = self.filteredLocationsList;
-    self.noLocationsFoundText('Only Favorite Locations Found')
+    self.noLocationsFoundText('No Locations Found');
 
     // re-add all favorites once filterFavorites is unchecked
     if (!self.filterFavorites()) {
@@ -266,9 +266,7 @@ var ViewModel = function(data) {
     // filter favorites
     if (self.filterFavorites()) {
       var correctLocationsList = self.dynamicLocationsList;
-      self.noLocationsFoundText('No Locations Found');
       self.favoriteLocationsList.removeAll();
-
       initialLocations.forEach( function(mapItem){
         if (mapItem.favorite) {
           if (inputText) {
@@ -286,6 +284,12 @@ var ViewModel = function(data) {
           }
         }
       });
+    // if not filtering favorites and there are favorites selected by the user,
+    // update self.noLocationsFoundText
+    } else {
+      if (self.favoriteLocationsList().length > 0) {
+        self.noLocationsFoundText('No locations found. Displaying favorites.')
+      }
     }
 
     // filter non-favorites

@@ -73,6 +73,7 @@ a:hover {
 
 #no-locations-found {
     display: none;
+    font-size: 10pt;
 }
 
 /* info window and related items */
