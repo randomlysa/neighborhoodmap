@@ -238,9 +238,24 @@ var ViewModel = function(data) {
 
   }.bind(this);
 
+  // determine what text is shown when no locations are found, based on whether
+  // filter favorites is selected or not
+  self.noLocationsFoundText = ko.observable();
   this.addRemoveLocations = function (inputText) {
+    var self = this;
     // remove items from filteredLocationsList
     self.filteredLocationsList.removeAll();
+    /*
+      this is the list that determines if 'no locations found' is displayed.
+      by default this is set to self.filteredLocationsList
+      if filter locations is true, then this is changed to
+      self.dynamicLocationsList.
+
+      dynamicLocationsList contains both favoriteLocationsList
+      and filteredLocationsList
+    */
+    var correctLocationsList = self.filteredLocationsList;
+    self.noLocationsFoundText('Only Favorite Locations Found')
 
     // re-add all favorites once filterFavorites is unchecked
     if (!self.filterFavorites()) {
@@ -250,7 +265,10 @@ var ViewModel = function(data) {
 
     // filter favorites
     if (self.filterFavorites()) {
+      var correctLocationsList = self.dynamicLocationsList;
+      self.noLocationsFoundText('No Locations Found');
       self.favoriteLocationsList.removeAll();
+
       initialLocations.forEach( function(mapItem){
         if (mapItem.favorite) {
           if (inputText) {
@@ -294,7 +312,7 @@ var ViewModel = function(data) {
     // sort list alphabetically
     self.sortList(self.filteredLocationsList);
 
-    if(inputText && self.filteredLocationsList().length === 0) {
+    if(inputText && correctLocationsList().length === 0) {
       $( '#no-locations-found' ).css('display', 'inline');
     } else {
       $( '#no-locations-found' ).css('display', 'none');
