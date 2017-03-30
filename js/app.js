@@ -263,16 +263,15 @@ var ViewModel = function(data) {
       this.setFavorites();
     };
 
-    // filter favorites
-    if (self.filterFavorites()) {
-      var correctLocationsList = self.dynamicLocationsList;
-      self.favoriteLocationsList.removeAll();
-      initialLocations.forEach( function(mapItem){
-        if (mapItem.favorite) {
+    // isFavorite sets whether this is a list of favorites (true) or
+    // list of filtered items (false)
+    function filterLocationList( arrayToFilter, arrayToPushTo, isFavorite) {
+      arrayToFilter.forEach( function(mapItem){
+        if (isFavorite === mapItem.favorite) {
           if (inputText) {
             $( '#collapse-locations').css('display', 'inline');
             if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
-              self.favoriteLocationsList.push( new Location(mapItem) );
+              arrayToPushTo.push( new Location(mapItem) );
             }
           }
           if (!inputText) {
@@ -280,10 +279,20 @@ var ViewModel = function(data) {
             if (jQuery.browser.mobile) {
               $( '#collapse-locations').css('display', 'none');
             }
-            self.favoriteLocationsList.push( new Location(mapItem) );
+            arrayToPushTo.push( new Location(mapItem) );
           }
         }
       });
+    }
+
+    // filter favorites
+    if (self.filterFavorites()) {
+      var correctLocationsList = self.dynamicLocationsList;
+      self.favoriteLocationsList.removeAll();
+
+      // take initialLocations and push favorites to self.favoriteLocationsList
+      filterLocationList (initialLocations, self.favoriteLocationsList, true);
+
     // if not filtering favorites and there are favorites selected by the user,
     // update self.noLocationsFoundText
     } else {
@@ -292,26 +301,10 @@ var ViewModel = function(data) {
       }
     }
 
-    // filter non-favorites
-    // loop through initialLocations (all locations) and push them
-    // back to filteredLocationsList if they equal the input text
-    initialLocations.forEach(function(mapItem){
-      if (!mapItem.favorite) {
-        if (inputText) {
-          $( '#collapse-locations').css('display', 'inline');
-          if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
-            self.filteredLocationsList.push( new Location(mapItem) );
-          }
-        }
-        if (!inputText) {
-          // no letters input, return all items
-          if (jQuery.browser.mobile) {
-            $( '#collapse-locations').css('display', 'none');
-          }
-          self.filteredLocationsList.push( new Location(mapItem) );
-        }
-      };
-    });
+    // filter non-favorites (runs always)
+    // take initialLocations and push items that match input text to
+    // self.filteredLocationsList
+    filterLocationList (initialLocations, self.filteredLocationsList, false);
 
     // sort list alphabetically
     self.sortList(self.filteredLocationsList);
