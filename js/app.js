@@ -267,7 +267,7 @@ var ViewModel = function(data) {
     // list of filtered items (false)
     function filterLocationList( arrayToFilter, arrayToPushTo, isFavorite) {
       arrayToFilter.forEach( function(mapItem){
-        if (isFavorite === mapItem.favorite) {
+        if (isFavorite === Boolean(mapItem.favorite)) {
           if (inputText) {
             $( '#collapse-locations').css('display', 'inline');
             if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
