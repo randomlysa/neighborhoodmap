@@ -565,70 +565,73 @@ var ViewModel = function(data) {
   this.yelpInfoWindowContent = ko.observable();
   this.searchYelp = function (query) {
     var self = this;
-    var configBase = getConfig.responseJSON.config;
-    var yelp_url = 'https://api.yelp.com/v2/search';
-    var infowindowContent;
+    // $(document).ready fixes Yelp not working on Firefox (and maybe others)
+    // when loading the page with a location in the hash.
+    $(document).ready(function() {
+      var configBase = getConfig.responseJSON.config;
+      var yelp_url = 'https://api.yelp.com/v2/search';
+      var infowindowContent;
 
-    var parameters = {
-      oauth_consumer_key: configBase.YELP_KEY,
-      oauth_token: configBase.YELP_TOKEN,
-      oauth_nonce: nonce_generate(),
-      oauth_timestamp: Math.floor(Date.now()/1000),
-      oauth_signature_method: 'HMAC-SHA1',
-      oauth_version : '1.0',
-      callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
-      term: query,
-      location: 'Boston'
-    };
+      var parameters = {
+        oauth_consumer_key: configBase.YELP_KEY,
+        oauth_token: configBase.YELP_TOKEN,
+        oauth_nonce: nonce_generate(),
+        oauth_timestamp: Math.floor(Date.now()/1000),
+        oauth_signature_method: 'HMAC-SHA1',
+        oauth_version : '1.0',
+        callback: 'cb', // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
+        term: query,
+        location: 'Boston'
+      };
 
-    var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
-    parameters.oauth_signature = encodedSignature;
+      var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
+      parameters.oauth_signature = encodedSignature;
 
-    var settings = {
-      url: yelp_url,
-      data: parameters,
-      cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
-      dataType: 'jsonp'
-    };
+      var settings = {
+        url: yelp_url,
+        data: parameters,
+        cache: true,  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+        dataType: 'jsonp'
+      };
 
-    // Send AJAX query via jQuery library.
-    var yelpQuery = $.ajax(settings);
-    yelpQuery.done(function(results) {
-      // Do stuff with results
-      var businessInfo = results.businesses[0];
-      var businessIsClosedText = '';
+      // Send AJAX query via jQuery library.
+      var yelpQuery = $.ajax(settings);
+      yelpQuery.done(function(results) {
+        // Do stuff with results
+        var businessInfo = results.businesses[0];
+        var businessIsClosedText = '';
 
-      if (businessInfo.is_closed === true) {
-        businessIsClosedText = "<strong>Yelp reports this business is closed.</strong><br>"
-      }
+        if (businessInfo.is_closed === true) {
+          businessIsClosedText = "<strong>Yelp reports this business is closed.</strong><br>"
+        }
 
-      self.infowindow.setContent(
-        '<div class="infoWindowTitle">' +
-          '<a href="' + businessInfo.url + '">' +
-            businessInfo.name +
-          '</a>' +
+        self.infowindow.setContent(
+          '<div class="infoWindowTitle">' +
+            '<a href="' + businessInfo.url + '">' +
+              businessInfo.name +
+            '</a>' +
 
-          '<a href="' + businessInfo.url + ' " target="_new">' +
-            '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
-          '</a>' +
-        '</div>' +
+            '<a href="' + businessInfo.url + ' " target="_new">' +
+              '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+            '</a>' +
+          '</div>' +
 
-        businessIsClosedText +
-        businessInfo.categories[0][0] + '<br>' +
+          businessIsClosedText +
+          businessInfo.categories[0][0] + '<br>' +
 
-        '<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
-        businessInfo.display_phone +
-        '<br><img src="' + businessInfo.rating_img_url +'">' +
-        '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
+          '<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
+          businessInfo.display_phone +
+          '<br><img src="' + businessInfo.rating_img_url +'">' +
+          '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
 
-
-    }),
-    yelpQuery.fail( function() {
-      self.infowindow.setContent(
-        '<div class="infoWindowTitle">' + query + '</div>' +
-        "<div class='error small-text text-center'>there was an error connecting to yelp</div>"
-      );
-    });
+      }),
+      yelpQuery.fail( function() {
+        self.infowindow.setContent(
+          '<div class="infoWindowTitle">' + query + '</div>' +
+          "<div class='error small-text text-center'>there was an error connecting to yelp</div>"
+        );
+      });
+    })
   }.bind(this);
 
   // update the moreInfoDiv div with flickr info and infoWindow with yelp info
