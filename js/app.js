@@ -444,7 +444,7 @@ var ViewModel = function(data) {
     var itemIndexInFiltered = self.matchTitle(item.title, self.filteredLocationsList());
 
     // remove a favorite
-    if (item.favorite() === true) {
+    if (Boolean(item.favorite()) === true) {
       // update object so dynamicLocationList gets updated
       item.favorite(false);
       // update initial locations so because it get saved to local storage
@@ -457,7 +457,7 @@ var ViewModel = function(data) {
     }
 
     // create a favorite. see above for comments
-    else if (item.favorite() === false) {
+    else if (Boolean(item.favorite()) === false) {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
       self.filteredLocationsList.splice(itemIndexInFiltered, 1);
