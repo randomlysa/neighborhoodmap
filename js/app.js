@@ -115,7 +115,7 @@ var ViewModel = function(data) {
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
-  self.alwaysShowFavorites = ko.observable(true),
+  self.alwaysShowFavorites = ko.observable(true);
 
   // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
