@@ -3,8 +3,12 @@
 // get api info
 var getConfig = $.getJSON("js/config_secret.json");
 
-// check local storage for map-knockoutjs
-var initialLocations = ko.utils.parseJson(localStorage.getItem('map-knockoutjs'));
+// check local storage for map-knockoutjs.location
+var getFromStorage = ko.utils.parseJson(localStorage.getItem('map-knockoutjs'));
+if (getFromStorage) {
+  var initialLocations = getFromStorage.locations;
+  var settings = getFromStorage.settings;
+}
 
 if (!initialLocations) {
   var initialLocations = [
@@ -94,6 +98,21 @@ var ViewModel = function(data) {
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
   }
 
+  this.getSetting = function( setting ) {
+    // no settings have been saved at all
+    if (settings === undefined) {
+      settings = {};
+      settings[setting] = true;
+      return true;
+    // if the setting exists
+    } else if (settings[setting]) {
+      return setting;
+    // some other problem... ?
+    } else {
+      console.log('other problem with settings')
+    }
+  }
+
   // find the title the specified array and return the 'id' (i)
   self.matchTitle = function ( title, array ) {
     for (var i = 0; i < array.length; i++) {
@@ -115,7 +134,7 @@ var ViewModel = function(data) {
   this.mapSearchInputText = ko.observable("");
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
-  self.alwaysShowFavorites = ko.observable(true);
+  self.alwaysShowFavorites = ko.observable(self.getSetting('alwaysShowFavorites'));
 
   // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
@@ -136,7 +155,11 @@ var ViewModel = function(data) {
   }, self);
 
   this.saveToStorage = function() {
-    localStorage.setItem('map-knockoutjs', ko.toJSON(initialLocations));
+    localStorage.setItem('map-knockoutjs', ko.toJSON({
+        locations: initialLocations,
+        settings: settings
+      })
+    );
   };
 
 
