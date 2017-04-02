@@ -26,8 +26,8 @@
             <span id="toggle-button" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
           </button>
 
-          <input type="checkbox" id="cbox1" data-bind="checked: alwaysShowFavorites">
-          <label for="cbox1">Always Show Favorites</label>
+          <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click: toggleAndUpdateSetting">
+          <label for="alwaysShowFavorites">Always Show Favorites</label>
 
         </div>
       </div>

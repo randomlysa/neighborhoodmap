@@ -115,6 +115,16 @@ var ViewModel = function(data) {
     }
   }
 
+  this.toggleAndUpdateSetting = function ( vm, data ) {
+    var self = this;
+    var option = data.currentTarget.id;
+    var setting = data.currentTarget.checked;
+    settings[option] = setting;
+    self.saveToStorage();
+    // to toggle the checkbox: http://stackoverflow.com/a/11296375
+    return true;
+  }.bind(this);
+
   // find the title the specified array and return the 'id' (i)
   self.matchTitle = function ( title, array ) {
     for (var i = 0; i < array.length; i++) {
