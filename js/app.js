@@ -122,9 +122,10 @@ var ViewModel = function(data) {
     settings[option] = setting;
     self.saveToStorage();
     // for moveFavoritesToTop, do not redraw map markers
-    if (option === 'moveFavoritesToTop') {
-      self.addRemoveLocations('', false);
-    }
+    // if (option === 'moveFavoritesToTop') {
+      // send currently input text to addRemoveLocations
+      self.addRemoveLocations(self.mapSearchInputText());
+    // }
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
   }.bind(this);
