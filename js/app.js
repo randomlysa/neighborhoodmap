@@ -281,10 +281,16 @@ var ViewModel = function(data) {
     // remove items from filteredLocationsList
     self.filteredLocationsList.removeAll();
     /*
-      this is the list that determines if 'no locations found' is displayed.
-      by default this is set to self.filteredLocationsList
-      if alwaysShowFavorites is false, then this is changed to
-      self.dynamicLocationsList.
+      correctLocationsList is the list that determines when a message is shown
+      that indicates that no locations have been found.
+
+      if alwaysShowFavorites is false, then favoriteLocationsList can be
+      filtered, and there should be a message when the entire list, ie
+      dynamicLocationsList, is empty.
+
+      if alwaysShowFavorites is true, then there should be a message when
+      filteredLocationsList is empty, because favoriteLocationsList
+      will not be changed.
 
       dynamicLocationsList contains both favoriteLocationsList
       and filteredLocationsList
