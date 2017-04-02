@@ -98,6 +98,8 @@ var ViewModel = function(data) {
     google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
   }
 
+  // gets a setting from local storage
+  // if settings is undefined, return true. this might have to be changed later
   this.getSetting = function( setting ) {
     // no settings have been saved at all
     if (settings === undefined) {
@@ -105,8 +107,8 @@ var ViewModel = function(data) {
       settings[setting] = true;
       return true;
     // if the setting exists
-    } else if (settings[setting]) {
-      return setting;
+    } else if (settings.hasOwnProperty(setting)) {
+      return settings[setting];
     // some other problem... ?
     } else {
       console.log('other problem with settings')
