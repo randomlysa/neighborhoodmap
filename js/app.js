@@ -334,7 +334,16 @@ var ViewModel = function(data) {
         if (isFavorite === null || isFavorite === Boolean(mapItem.favorite)) {
           if (inputText) {
             $( '#collapse-locations').css('display', 'inline');
-            if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
+            // if alwaysShowFavorites === true and moveFavoritesToTop == false
+            // favorites need to be added regardless of the inputText because
+            // the favoriteLocationsList will not be shown
+            if (Boolean(self.alwaysShowFavorites()) === true &&
+                Boolean(self.moveFavoritesToTop()) === false &&
+                Boolean(mapItem.favorite) === true)
+            {
+              arrayToPushTo.push( new Location(mapItem) );
+            }
+            else if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
               arrayToPushTo.push( new Location(mapItem) );
             }
           }
