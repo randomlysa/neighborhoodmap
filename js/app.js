@@ -106,12 +106,12 @@ var ViewModel = function(data) {
       settings = {};
       settings[setting] = true;
       return true;
-    // if the setting exists
+    // settings exist and the setting exists
     } else if (settings.hasOwnProperty(setting)) {
       return settings[setting];
-    // some other problem... ?
+    // settings exist and setting does not exist
     } else {
-      console.log('other problem with settings')
+      return true;
     }
   }
 
