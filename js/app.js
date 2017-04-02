@@ -121,6 +121,10 @@ var ViewModel = function(data) {
     var setting = data.currentTarget.checked;
     settings[option] = setting;
     self.saveToStorage();
+    // for moveFavoritesToTop, do not redraw map markers
+    if (option === 'moveFavoritesToTop') {
+      self.addRemoveLocations('', false);
+    }
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
   }.bind(this);
@@ -147,6 +151,7 @@ var ViewModel = function(data) {
   // an observable array for favorites, to move favorite locations to the top of the list
   self.favoriteLocationsList = ko.observableArray();
   self.alwaysShowFavorites = ko.observable(self.getSetting('alwaysShowFavorites'));
+  self.moveFavoritesToTop = ko.observable(self.getSetting('moveFavoritesToTop'));
 
   // set up self.favoriteLocationsList from initialLocations
   // which should have been loaded from local storage if it existed there
@@ -163,7 +168,12 @@ var ViewModel = function(data) {
 
   // combine favoriteLocationsList and filteredLocationsList
   this.dynamicLocationsList = ko.computed( function() {
-    return self.favoriteLocationsList().concat(self.filteredLocationsList());
+    if (self.moveFavoritesToTop() === true ) {
+      return self.favoriteLocationsList().concat(self.filteredLocationsList());
+    }
+    if (self.moveFavoritesToTop() === false) {
+      return self.filteredLocationsList();
+    }
   }, self);
 
   this.saveToStorage = function() {
@@ -276,8 +286,14 @@ var ViewModel = function(data) {
   // determine what text is shown when no locations are found, based on whether
   // alwaysShowFavorites is checked or not
   self.noLocationsFoundText = ko.observable();
-  this.addRemoveLocations = function (inputText) {
+  this.addRemoveLocations = function (inputText, updateMarkers) {
     var self = this;
+
+    // usually we want this to be true.
+    if (updateMarkers === undefined) {
+      updateMarkers = true;
+    }
+
     // remove items from filteredLocationsList
     self.filteredLocationsList.removeAll();
     /*
@@ -307,8 +323,15 @@ var ViewModel = function(data) {
     // isFavorite sets whether this is a list of favorites (true) or
     // list of filtered items (false)
     function filterLocationList( arrayToFilter, arrayToPushTo, isFavorite) {
+      // by setting isFavorite to null, all mapItem(s) will be processed
+      // by arrayToFilter.forEach(). also, the ko.computed for
+      // dynamicLocationsList will only be filteredLocationList, and
+      // filteredLocationList will not be shown.
+      if (self.moveFavoritesToTop() === false) {
+        isFavorite = null;
+      }
       arrayToFilter.forEach( function(mapItem){
-        if (isFavorite === Boolean(mapItem.favorite)) {
+        if (isFavorite === null || isFavorite === Boolean(mapItem.favorite)) {
           if (inputText) {
             $( '#collapse-locations').css('display', 'inline');
             if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
@@ -356,27 +379,31 @@ var ViewModel = function(data) {
       $( '#no-locations-found' ).css('display', 'none');
     }
 
-    // add/remove markers from the map.
-    // first check if markersArray has been created
-    if (typeof markersArray !== 'undefined') {
-      // make an array of self.dynamicLocationsList titles
-      var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach(function (Location) {
-        dynamicLocationsListTitles.push(Location.title);
-      });
+    // so far, the only time to not update markers is when toggling
+    // moveFavoritesToTop
+    if (updateMarkers === true) {
+      // add/remove markers from the map.
+      // first check if markersArray has been created
+      if (typeof markersArray !== 'undefined') {
+        // make an array of self.dynamicLocationsList titles
+        var dynamicLocationsListTitles = [];
+        self.dynamicLocationsList().forEach(function (Location) {
+          dynamicLocationsListTitles.push(Location.title);
+        });
 
-      // loop through markers array (array length shouldn't change)
-      // and check if the marker title is in the dLLtitles array
-      // for (var i = 0; i < markersArray.length; i++) {
-        markersArray.forEach( function(item, position) {
-        var title = markersArray[position].title;
-        var result = dynamicLocationsListTitles.indexOf(item.title);
-        if (result === -1) {
-          markersArray[position].setMap(null);
-        } else {
-          markersArray[position].setMap(map);
-        }
-      });
+        // loop through markers array (array length shouldn't change)
+        // and check if the marker title is in the dLLtitles array
+        // for (var i = 0; i < markersArray.length; i++) {
+          markersArray.forEach( function(item, position) {
+          var title = markersArray[position].title;
+          var result = dynamicLocationsListTitles.indexOf(item.title);
+          if (result === -1) {
+            markersArray[position].setMap(null);
+          } else {
+            markersArray[position].setMap(map);
+          }
+        });
+      }
     }
   }.bind(this);
 
@@ -490,19 +517,23 @@ var ViewModel = function(data) {
       item.favorite(false);
       // update initial locations so because it get saved to local storage
       mapItemToUpdate.favorite = false;
-      // remove item from favoriteLocationsList
-      self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
-      // add item to filtered list
-      self.filteredLocationsList.push( item );
-      self.sortList(self.filteredLocationsList);
+      if (self.moveFavoritesToTop() === true) {
+        // remove item from favoriteLocationsList
+        self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
+        // add item to filtered list
+        self.filteredLocationsList.push( item );
+        self.sortList(self.filteredLocationsList);
+      }
     }
 
     // create a favorite. see above for comments
     else if (Boolean(item.favorite()) === false) {
       item.favorite(true);
       mapItemToUpdate.favorite = true;
-      self.filteredLocationsList.splice(itemIndexInFiltered, 1);
-      self.favoriteLocationsList.push( item );
+      if (self.moveFavoritesToTop() === true) {
+        self.filteredLocationsList.splice(itemIndexInFiltered, 1);
+        self.favoriteLocationsList.push( item );
+      }
     }
 
     this.saveToStorage();

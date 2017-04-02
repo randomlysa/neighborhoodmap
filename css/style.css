@@ -50,7 +50,7 @@ a:hover {
     padding: 15px;
     line-height: 150%;
     /* set collapse-locations: top to this number also */
-    height: 90px;
+    height: 115px;
 }
 
 #floating-panel-header button {
@@ -59,7 +59,7 @@ a:hover {
 }
 
 #collapse-locations {
-    top: 90px;
+    top: 115px;
     position: absolute;
     background-color: #fff;
     max-height: calc(100% - 70px);
