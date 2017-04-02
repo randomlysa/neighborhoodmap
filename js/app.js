@@ -339,9 +339,8 @@ var ViewModel = function(data) {
             // favorites need to be added regardless of the inputText because
             // the favoriteLocationsList will not be shown
             if (Boolean(self.alwaysShowFavorites()) === true &&
-                Boolean(self.moveFavoritesToTop()) === false &&
-                Boolean(mapItem.favorite) === true)
-            {
+                  Boolean(self.moveFavoritesToTop()) === false &&
+                  Boolean(mapItem.favorite) === true) {
               arrayToPushTo.push( new Location(mapItem) );
             }
             else if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
