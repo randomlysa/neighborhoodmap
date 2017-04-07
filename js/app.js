@@ -120,14 +120,20 @@ var ViewModel = function(data) {
     var self = this;
     var option = data.currentTarget.id;
     var setting = data.currentTarget.checked;
+    var redrawMapMarkers = true;
+
     settings[option] = setting;
     self.saveToStorage();
-    // TODO: Check if the commented out code is necessary.
-    // for moveFavoritesToTop, do not redraw map markers
-    // if (option === 'moveFavoritesToTop') {
-      // send currently input text to addRemoveLocations
-      self.addRemoveLocations(self.mapSearchInputText());
-    // }
+
+    // For moveFavoritesToTop checkbox, do not redraw map markers because
+    // they should not change.
+    if (option === 'moveFavoritesToTop') {
+      var redrawMapMarkers = false;
+    }
+
+    // Send currently input text to addRemoveLocations.
+    self.addRemoveLocations(self.mapSearchInputText(), redrawMapMarkers);
+
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
   }.bind(this);
