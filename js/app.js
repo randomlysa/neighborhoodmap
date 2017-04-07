@@ -434,13 +434,9 @@ var ViewModel = function(data) {
           dynamicLocationsListTitles.push(Location.title);
         });
 
-        // TODO: Update comment, why is this doing this?
-
-        // Loop through markers array (array length shouldn't change)
-        // and check if the marker title is in the dynamicLocationsListTitles
-        // array.
-
-        // TODO: Update if / else.
+        // Loop through markers array and check if the marker title is in
+        // self.dynamicLocationsListTitles. If it is not, remove the marker
+        // from the map. Otherwise, set the marker to this map.
           markersArray.forEach( function(item, position) {
           var title = markersArray[position].title;
           var result = dynamicLocationsListTitles.indexOf(item.title);
