@@ -533,13 +533,10 @@ var ViewModel = function(data) {
     // to close.
     openInfoWindows.push(self.infowindow);
 
-    // updateDiv does two things:
+    // searchAPIsAndDisplayResults does two things:
     // 1. Search flickr for images and update the moreInfo div.
     // 2. Search yelp for business info and update yelpInfoWindowContent.
-
-    // TODO: Rename update div, since only one of the items is a div, and
-    // I think both use ko.observables now.
-    this.updateDiv(title);
+    this.searchAPIsAndDisplayResults(title);
     if (jQuery.browser.mobile) {
       $("#collapse-locations").slideUp();
     }
@@ -762,8 +759,8 @@ var ViewModel = function(data) {
     })
   }.bind(this);
 
-  // Update moreInfoDiv with Flickr info and infoWindow with yelp info.
-  this.updateDiv = function (title) {
+  // Search Flickr, Yelp, and display results in the user interface.
+  this.searchAPIsAndDisplayResults = function (title) {
     this.searchFlickr(title);
     this.searchYelp(title);
   }.bind(this);
