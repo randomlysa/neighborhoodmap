@@ -96,7 +96,7 @@ var ViewModel = function(data) {
     if (!this.alwaysShowFavorites) {
       this.setFavorites();
     }
-    google.maps.event.addDomListener(map, 'click', function() { this.closeIW(); }.bind(this));
+    google.maps.event.addDomListener(map, 'click', function() { this.closeInfoWindow(); }.bind(this));
   }
 
   // Gets a setting from local storage.
@@ -457,14 +457,14 @@ var ViewModel = function(data) {
   }, this);
 
   // Keep track of open infoWindow(s). Use to close the previous infoWindow.
-  this.openIW = [];
-
-  this.closeIW = function (clickLocation) {
-    // Check if there's at least one openIW defined. If there is, close the last one.
-    // TODO: Do I need to check for undefined in this case?
-    if (this.openIW[0] !== undefined) {
+  var openInfoWindows = [];
+  this.closeInfoWindow = function (clickLocation) {
+    // Check if there's at least one openInfoWindows defined. If there is,
+    // close the last infoWindow, remove images from ko.observable
+    // flickrResults, and clear the window hash.
+    if (openInfoWindows[0]) {
       this.flickrResults('');
-      this.openIW[this.openIW.length-1].close();
+      openInfoWindows[openInfoWindows.length - 1].close();
       window.location.hash = '';
     };
     // This keeps the collapse-locations div from sliding down when clicking
@@ -489,7 +489,7 @@ var ViewModel = function(data) {
     }
 
     // TODO: What does this do?
-    self.closeIW(clickLocation);
+    self.closeInfoWindow(clickLocation);
 
     // Show the area that will display flickr images.
     // TODO: Rename moreInfoDiv to FlickrDiv?
@@ -542,8 +542,8 @@ var ViewModel = function(data) {
     // Add the infoWindow to the array that keeps track of which infoWindow
     // to close.
 
-    // TODO: Does this variable need to be this.openIW? Can it be var?
-    this.openIW.push(self.infowindow);
+    // TODO: Does this variable need to be this.openInfoWindows? Can it be var?
+    openInfoWindows.push(self.infowindow);
 
     // updateDiv does two things:
     // 1. Search flickr for images and update the moreInfo div.
