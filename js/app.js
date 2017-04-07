@@ -248,7 +248,10 @@ var ViewModel = function(data) {
       pushFlickrImagesTo = self.flickrResults;
     }
 
-    $( "#" + pushFlickrImagesToID ).addClass( 'open' );
+    // If flickrResults isn't empty, keep pushFlickrImagesToDiv open.
+    if(this.flickrResults().length > 0) {
+      $('#' + pushFlickrImagesToDiv).addClass('open');
+    }
 
 
     // Add padding to $flickrResultsRight to keep from overlapping
@@ -446,10 +449,14 @@ var ViewModel = function(data) {
   this.closeInfoWindow = function () {
     // Check if there's at least one openInfoWindows defined. If there is,
     // close the last infoWindow, remove images from ko.observable
-    // flickrResults, and clear the window hash.
+    // flickrResults, clear the window hash, and remove the 'open' class from
+    // pushFlickrImagesToDiv.
     if (openInfoWindows[0]) {
-      pushFlickrImagesTo('');
       openInfoWindows[openInfoWindows.length - 1].close();
+      pushFlickrImagesTo('');
+      // TODO Check why this div closes on desktop without this line,
+      // but not in mobile emulation in Chrome.
+      $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
       window.location.hash = '';
     };
   }.bind(this);
