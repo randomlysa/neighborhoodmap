@@ -552,10 +552,14 @@ var ViewModel = function(data) {
     })
 
     // Gets the index of the mapItem in each array
-    var itemIndexInFavorites = self.matchTitle(item.title, self.favoriteLocationsList());
-    var itemIndexInFiltered = self.matchTitle(item.title, self.filteredLocationsList());
+    var itemIndexInFavorites = self.matchTitle(item.title,
+      self.favoriteLocationsList());
+    var itemIndexInFiltered = self.matchTitle(item.title,
+      self.filteredLocationsList());
 
     // TODO: make this code more concise.
+    // Using !Boolean( item.favorite() ) to toggle the favorite causes the
+    // favorite to not be saved.
 
     // Remove a favorite
     if (Boolean(item.favorite()) === true) {
@@ -611,7 +615,13 @@ var ViewModel = function(data) {
 
     var request = $.ajax(fullFlickrAPIsearch);
     request.fail(function(){
-      self.flickrResults("<span class='error text-center'>there was an error<br> connecting to flickr</span>");
+      // TODO This absolutely does not fit when the flickr div
+      // is a thin column on the right.
+      self.flickrResults(
+        '<span class="error text-center">' +
+        'there was an error<br> connecting to flickr' +
+        '</span>'
+      );
     });
     request.done(function( data ){
       var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
