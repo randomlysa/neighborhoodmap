@@ -652,15 +652,14 @@ var ViewModel = function(data) {
 
       // After all the images from Flickr are loaded, add a link to go to
       // Flickr to see more images.
-      // TODO Currently not working.
-      // flickrResultsString += '' +
-      //   '<div class="flickr-more">' +
-      //   '<a href="https://www.flickr.com/search/?text=' +
-      //   flickrAPISearchQuery + '" target="_new">' +
-      //   '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
-      //   '</span>' +
-      //   '</a>' +
-      //   '</div>';
+      flickrResultsString += '' +
+        '<div class="flickrLinkForMoreImages">' +
+        '<a href="https://www.flickr.com/search/?text=' +
+        flickrAPISearchQuery + '" target="_new">' +
+        '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
+        '</span>' +
+        '</a>' +
+        '</div>';
 
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
