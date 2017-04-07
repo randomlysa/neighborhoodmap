@@ -494,8 +494,7 @@ var ViewModel = function(data) {
     window.location.hash = title.replace(/ /g, '%20');
     this.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
-    // Center map on new marker and pan.
-    // TODO: Center AND pan? Is this not the same thing?
+    // Center map on new marker and adjust pan in a few situations.
     var lat = this.currentMarkerLocation[0];
     var lng = this.currentMarkerLocation[1];
     var newLatLng = {lat: lat, lng: lng};
