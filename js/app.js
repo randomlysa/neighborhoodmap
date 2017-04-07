@@ -221,7 +221,7 @@ var ViewModel = function(data) {
 
   // For now, pushFlickrImagesTo is always self.flickrReusults. This may change
   // to flickrResultsRight / flickrResultsBottom in the future.
-  var pushFlickrImagesTo, pushFlickrImagesToID, orientation;
+  var pushFlickrImagesTo, pushFlickrImagesToDiv, orientation;
   this.flickrResults = ko.observable('');
   // this.flickrResultsRight = ko.observable('');
   // this.flickrResultsBottom = ko.observable('');
@@ -236,25 +236,27 @@ var ViewModel = function(data) {
       orientation = 'wide'
     }
 
-    $( "#" + pushFlickrImagesToID ).removeClass( 'open' );
+    $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
 
     // By default, show flickr images on right.
-    pushFlickrImagesToID = 'flickrContainerRight';
+    pushFlickrImagesToDiv = 'flickrContainerRight';
     pushFlickrImagesTo = self.flickrResults;
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
-      pushFlickrImagesToID = 'flickrContainerBottom';
+      pushFlickrImagesToDiv = 'flickrContainerBottom';
       pushFlickrImagesTo = self.flickrResults;
     }
 
     $( "#" + pushFlickrImagesToID ).addClass( 'open' );
 
-    // Add padding to moreInfoDiv to keep from overlapping with #floating-panel.
+
+    // Add padding to $flickrResultsRight to keep from overlapping
+    //  with #floating-panel.
     if (availableWidth < 768) {
-      $( "#flickrContainerRight" ).addClass('add-padding');
+      $( "#flickrResultsRight" ).addClass('add-padding');
     } else {
-      $( "#flickrContainerRight" ).removeClass('add-padding');
+      $( "#flickrResultsRight" ).removeClass('add-padding');
     }
 
     // Set options and pan map after rotation.
@@ -466,7 +468,7 @@ var ViewModel = function(data) {
     self.closeInfoWindow();
 
     // Show the area that will display flickr images.
-    $( "#" + pushFlickrImagesToID ).addClass( 'open' );
+    $( "#" + pushFlickrImagesToDiv ).addClass( 'open' );
 
     // This is which marker number to attach the info window to.
     // Gets the index of the marker in markersArray.
@@ -506,9 +508,10 @@ var ViewModel = function(data) {
     self.infowindow.setContent('Loading Infomation from Yelp');
     self.infowindow.open(map, markersArray[itemindex]);
     self.infowindow.addListener('closeclick', function() {
+      // TODO Check this, don't want the slideDown on mobile.
       window.location.hash = '';
       $("#collapse-locations").slideDown();
-      $( "#" + moreInfoDiv ).removeClass( 'open' );
+      $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
     }.bind(this));
 
     // Add the infoWindow to the array that keeps track of which infoWindow
@@ -516,7 +519,7 @@ var ViewModel = function(data) {
     openInfoWindows.push(self.infowindow);
 
     // searchAPIsAndDisplayResults does two things:
-    // 1. Search flickr for images and update the moreInfo div.
+    // 1. Search flickr for images and update pushFlickrImagesToDiv.
     // 2. Search yelp for business info and update yelpInfoWindowContent.
     this.searchAPIsAndDisplayResults(title);
     if (jQuery.browser.mobile) {
@@ -571,7 +574,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   /*
-    Search Flickr via Flickr API for images for moreInfoDiv.
+    Search Flickr via Flickr API for images.
     * Link to documentation for photos.search:
         https://www.flickr.com/services/api/flickr.photos.search.html
     * Flickr photo source urls, or, working with results of photo.search:
@@ -781,7 +784,8 @@ var ViewModel = function(data) {
   var urlHash = window.location.hash;
   if (urlHash) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
-    // If openInfoWindow is run here without init, moreInfoDiv is not defined.
+    // If openInfoWindow is run here without init, pushFlickrImagesToDiv
+    // is not defined.
     this.init();
     initHasRun = true;
     this.openInfoWindow(title);
