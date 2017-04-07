@@ -96,7 +96,9 @@ var ViewModel = function(data) {
     if (!this.alwaysShowFavorites) {
       this.setFavorites();
     }
-    google.maps.event.addDomListener(map, 'click', function() { this.closeInfoWindow(); }.bind(this));
+    // Close an infoWindow by clicking on an empty area on the map.
+    google.maps.event.addDomListener(map, 'click',
+        function() { this.closeInfoWindow(); }.bind(this));
   }
 
   // Gets a setting from local storage.
@@ -160,8 +162,12 @@ var ViewModel = function(data) {
   // An observable array for favorites, to move favorite locations to the top
   // of the list.
   self.favoriteLocationsList = ko.observableArray();
-  self.alwaysShowFavorites = ko.observable(self.getSetting('alwaysShowFavorites'));
-  self.moveFavoritesToTop = ko.observable(self.getSetting('moveFavoritesToTop'));
+  self.alwaysShowFavorites = ko.observable(
+    self.getSetting('alwaysShowFavorites')
+  );
+  self.moveFavoritesToTop = ko.observable(
+    self.getSetting('moveFavoritesToTop')
+  );
 
   // Set up self.favoriteLocationsList from initialLocations,
   // which should have been loaded from local storage if it existed there.
@@ -366,7 +372,9 @@ var ViewModel = function(data) {
                   Boolean(mapItem.favorite) === true) {
               arrayToPushTo.push( new Location(mapItem) );
             }
-            else if (mapItem.title.toLowerCase().includes(inputText.toLowerCase())) {
+            else if (
+              mapItem.title.toLowerCase().includes(inputText.toLowerCase())
+            ) {
               arrayToPushTo.push( new Location(mapItem) );
             }
           }
@@ -600,7 +608,8 @@ var ViewModel = function(data) {
   this.flickrResults = ko.observable('');
   this.flickrSearchURL = ko.observable();
   this.searchFlickr = function (query) {
-    // Set to '' otherwise later, += will cause undefined to be added to the string.
+    // Set to '' otherwise later, += will cause undefined to be added to the
+    // string.
     var flickrResultsString = '';
     var self = this;
 
@@ -610,7 +619,8 @@ var ViewModel = function(data) {
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // Replace spaces in title with %20, and append %20Boston for better results.
     var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
-    var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
+    var flickrAPIsearch = "&method=flickr.photos.search&text=" +
+      flickrAPISearchQuery;
     var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
 
     var request = $.ajax(fullFlickrAPIsearch);
@@ -628,7 +638,7 @@ var ViewModel = function(data) {
       var numberOfPhotoResults = newData.photos.photo.length;
 
       if (jQuery.browser.mobile) {
-        // Size suffixes info: https://www.flickr.com/services/api/misc.urls.html
+        // Size suffix info: https://www.flickr.com/services/api/misc.urls.html
         var flickrImageSizeSuffix = 's'; // small square, 75x75
       } else {
         var flickrImageSizeSuffix = 'q'; // large square, 150x150
@@ -642,7 +652,10 @@ var ViewModel = function(data) {
       }
 
       if (newData.photos.total < 0) {
-        self.flickrResults("<span class='error text-center'>no photos found on flickr</span>");
+        self.flickrResults(
+          '<span class="error text-center">' +
+          'no photos found on flickr' +
+          '</span>');
       } else {
         for (var i = 0; i < numberOfPhotosToShow; i++) {
           var farm = newData.photos.photo[i].farm;
@@ -657,10 +670,11 @@ var ViewModel = function(data) {
             server_id + '/' + id + '_' + secret + '_b' + '.jpg" ' +
             'data-lightbox="flickr">' +
 
-          '<img src="https://farm' + farm + '.staticflickr.com/' +
-            server_id + '/' + id + '_' + secret + '_' + flickrImageSizeSuffix + '.jpg" ' +
+            '<img src="https://farm' + farm + '.staticflickr.com/' +
+              server_id + '/' + id + '_' + secret + '_' +
+              flickrImageSizeSuffix + '.jpg" ' +
 
-            '</a>';
+          '</a>';
           flickrResultsString += (flickrThumbnailWithLink);
         }
       }
@@ -669,11 +683,13 @@ var ViewModel = function(data) {
         '<div class="flickr-more">' +
         '<a href="https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery + '" target="_new">' +
-        '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+        '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
+        '</span>' +
         '</a>' +
         '</div>';
 
-      self.flickrSearchURL('https://www.flickr.com/search/?text=' + flickrAPISearchQuery);
+      self.flickrSearchURL('https://www.flickr.com/search/?text=' +
+        flickrAPISearchQuery);
       self.flickrResults(flickrResultsString);
 
     });
@@ -717,7 +733,12 @@ var ViewModel = function(data) {
         location: 'Boston'
       };
 
-      var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, configBase.YELP_KEY_SECRET, configBase.YELP_TOKEN_SECRET);
+      var encodedSignature = oauthSignature.generate('GET',
+        yelp_url,
+        parameters,
+        configBase.YELP_KEY_SECRET,
+        configBase.YELP_TOKEN_SECRET
+      );
       parameters.oauth_signature = encodedSignature;
 
       var settings = {
@@ -736,7 +757,8 @@ var ViewModel = function(data) {
         var businessIsClosedText = '';
 
         if (businessInfo.is_closed === true) {
-          businessIsClosedText = "<strong>Yelp reports this business is closed.</strong><br>"
+          businessIsClosedText = '' +
+            '<strong>Yelp reports this business is closed.</strong><br>';
         }
 
         self.infowindow.setContent(
@@ -746,14 +768,16 @@ var ViewModel = function(data) {
             '</a>' +
 
             '<a href="' + businessInfo.url + ' " target="_new">' +
-              '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>' +
+              '<span class="glyphicon glyphicon-new-window" ' +
+              'aria-hidden="true"></span>' +
             '</a>' +
           '</div>' +
 
           businessIsClosedText +
           businessInfo.categories[0][0] + '<br>' +
 
-          '<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>' +
+          '<span class="glyphicon glyphicon-earphone" ' +
+          'aria-hidden="true"></span>' +
           businessInfo.display_phone +
           '<br><img src="' + businessInfo.rating_img_url +'">' +
           '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
@@ -762,7 +786,8 @@ var ViewModel = function(data) {
       yelpQuery.fail( function() {
         self.infowindow.setContent(
           '<div class="infoWindowTitle">' + query + '</div>' +
-          "<div class='error small-text text-center'>there was an error connecting to yelp</div>"
+          '<div class="error small-text text-center">' +
+          'there was an error connecting to yelp</div>'
         );
       });
     })
