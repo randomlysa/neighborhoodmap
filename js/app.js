@@ -608,10 +608,7 @@ var ViewModel = function(data) {
     self.flickrResults('');
     // Set the return format (json) and api_key for all API requests.
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
-    // TODO: Are there parenthesis in the title now?
-
-    // Take the first part of the title (before first parenthesis),
-    // replace spaces with %20, and append %20Boston for better results.
+    // Replace spaces in title with %20, and append %20Boston for better results.
     var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
     var flickrAPIsearch = "&method=flickr.photos.search&text=" + flickrAPISearchQuery;
     var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
