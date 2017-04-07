@@ -542,7 +542,6 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
-  // TODO: rename item to mapItem? For consistency.
   this.toggleFavorite = function( item ) {
     var self = this;
 
