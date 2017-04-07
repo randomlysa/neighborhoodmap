@@ -726,8 +726,6 @@ var ViewModel = function(data) {
       // Send AJAX query via jQuery library.
       var yelpQuery = $.ajax(settings);
       yelpQuery.done(function(results) {
-        // TODO: Update or remove comment?
-        // Do stuff with results.
         var businessInfo = results.businesses[0];
         var businessIsClosedText = '';
 
