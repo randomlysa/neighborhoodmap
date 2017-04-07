@@ -531,8 +531,6 @@ var ViewModel = function(data) {
 
     // Add the infoWindow to the array that keeps track of which infoWindow
     // to close.
-
-    // TODO: Does this variable need to be this.openInfoWindows? Can it be var?
     openInfoWindows.push(self.infowindow);
 
     // updateDiv does two things:
