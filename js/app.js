@@ -218,9 +218,15 @@ var ViewModel = function(data) {
   // Checks the page orientation and adjusts the user interface, mainly setting
   // where the flickr div goes, that the flickr div does not overlap with the
   // filter/header div, and re-pan the map to the marker.
-  var moreInfoDiv, flickrDiv, orientation;
+
+  // For now, pushFlickrImagesTo is always self.flickrReusults. This may change
+  // to flickrResultsRight / flickrResultsBottom in the future.
+  var pushFlickrImagesTo, pushFlickrImagesToID, orientation;
+  this.flickrResults = ko.observable('');
+  // this.flickrResultsRight = ko.observable('');
+  // this.flickrResultsBottom = ko.observable('');
   this.checkOrientation = function() {
-    var currentMoreInfoDiv = moreInfoDiv;
+    var self = this;
     var availableWidth = $(document).width();
     var availableHeight = $(window).height();
 
@@ -230,70 +236,42 @@ var ViewModel = function(data) {
       orientation = 'wide'
     }
 
+    $( "#" + pushFlickrImagesToID ).removeClass( 'open' );
+
     // By default, show flickr images on right.
-    moreInfoDiv = 'more-info-right';
-    flickrDiv = 'flickr-right';
+    pushFlickrImagesToID = 'flickrContainerRight';
+    pushFlickrImagesTo = self.flickrResults;
+
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
-      moreInfoDiv = 'more-info-bottom';
-      flickrDiv = 'flickr-bottom';
+      pushFlickrImagesToID = 'flickrContainerBottom';
+      pushFlickrImagesTo = self.flickrResults;
     }
 
-    // For some reason, rotating a mobile device in Google Chrome
-    // causes two window.width resizes. in this case, the currentMoreInfoDiv
-    // is the same as moreInfoDiv, and this section should be skipped, othewise
-    //  the new divs are added twice.
-
-    // TODO I think this code could be better. Maybe make the divs in the HTML
-    // file and instead of adding/removing divs, pick which one to load images
-    // into.
-    if (moreInfoDiv !== currentMoreInfoDiv) {
-      // Remove the previous div if it exists.
-      if (currentMoreInfoDiv) {
-        var divRemoved = true;
-        var currentMoreInfoDivElement = document.getElementById(currentMoreInfoDiv);
-        currentMoreInfoDivElement.parentNode.removeChild(currentMoreInfoDivElement);
-      }
-      // Add new divs.
-      $("#floating-panel").append('<div id="' + moreInfoDiv + '"></div>');
-      $("#" + moreInfoDiv).append('<div id="' + flickrDiv + '" data-bind="html: flickrResults"></div>');
-      // If flickrResults isn't empty, keep moreInfoDiv open (class = open).
-      if(this.flickrResults().length > 0) { $('#' + moreInfoDiv).addClass('open'); }
-
-      // The initial div has bindings applied by
-      // ko.applyBindings(new ViewModel()); in the
-      // html file. however, if a div was removed, the new div needs to have
-      // bindings re-applied.
-      if (divRemoved) {
-        // http://stackoverflow.com/a/10826516
-        ko.applyBindings(this, $( '#' + flickrDiv)[0]);
-      }
-    }
+    $( "#" + pushFlickrImagesToID ).addClass( 'open' );
 
     // Add padding to moreInfoDiv to keep from overlapping with #floating-panel.
     if (availableWidth < 768) {
-      $( "#" + moreInfoDiv ).addClass('add-padding');
+      $( "#flickrContainerRight" ).addClass('add-padding');
     } else {
-      $( "#" + moreInfoDiv ).removeClass('add-padding');
+      $( "#flickrContainerRight" ).removeClass('add-padding');
     }
 
-    // Pan map after rotation.
-    if (moreInfoDiv !== currentMoreInfoDiv && currentMoreInfoDiv) {
-      var panByX = 0, panByY = 0, newLatLng;
-      var lat = this.currentMarkerLocation[0];
-      var lng = this.currentMarkerLocation[1];
-      if (lat && lng) {
-        // center map on new marker and pan
-        newLatLng = {lat: lat, lng: lng};
-        panByY = -135;
-      } else {
-        // no markers open, recenter map on default position
-        newLatLng = defaultMapCenter;
-      }
-
-      this.panMap(newLatLng, panByX , panByY);
-
+    // Set options and pan map after rotation.
+    var panByX = 0, panByY = 0, newLatLng;
+    var lat = this.currentMarkerLocation[0];
+    var lng = this.currentMarkerLocation[1];
+    // Center map on new marker and pan.
+    if (lat && lng) {
+      newLatLng = {lat: lat, lng: lng};
+      panByY = -135;
+    // No markers open, recenter map on default position.
+    } else {
+      newLatLng = defaultMapCenter;
     }
+
+    this.panMap(newLatLng, panByX , panByY);
+
   }.bind(this);
 
   $( window ).resize(this.checkOrientation);
@@ -468,7 +446,7 @@ var ViewModel = function(data) {
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, and clear the window hash.
     if (openInfoWindows[0]) {
-      this.flickrResults('');
+      pushFlickrImagesTo('');
       openInfoWindows[openInfoWindows.length - 1].close();
       window.location.hash = '';
     };
@@ -488,8 +466,7 @@ var ViewModel = function(data) {
     self.closeInfoWindow();
 
     // Show the area that will display flickr images.
-    // TODO: Rename moreInfoDiv to FlickrDiv?
-    $( "#" + moreInfoDiv ).addClass( 'open' );
+    $( "#" + pushFlickrImagesToID ).addClass( 'open' );
 
     // This is which marker number to attach the info window to.
     // Gets the index of the marker in markersArray.
@@ -600,7 +577,6 @@ var ViewModel = function(data) {
     * Flickr photo source urls, or, working with results of photo.search:
         https://www.flickr.com/services/api/misc.urls.html
   */
-  this.flickrResults = ko.observable('');
   this.flickrSearchURL = ko.observable();
   this.searchFlickr = function (query) {
     // Set to '' otherwise later, += will cause undefined to be added to the
@@ -609,7 +585,7 @@ var ViewModel = function(data) {
     var self = this;
 
     // Clear previous image results.
-    self.flickrResults('');
+    pushFlickrImagesTo('');
     // Set the return format (json) and api_key for all API requests.
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // Replace spaces in title with %20, and append %20Boston for better results.
@@ -620,9 +596,9 @@ var ViewModel = function(data) {
 
     var request = $.ajax(fullFlickrAPIsearch);
     request.fail(function(){
-      // TODO This absolutely does not fit when the flickr div
+      // TODO This error absolutely does not fit when the flickr div
       // is a thin column on the right.
-      self.flickrResults(
+      self.flickrContainerRight(
         '<span class="error text-center">' +
         'there was an error<br> connecting to flickr' +
         '</span>'
@@ -647,7 +623,7 @@ var ViewModel = function(data) {
       }
 
       if (newData.photos.total < 0) {
-        self.flickrResults(
+        self.flickrContainerRight(
           '<span class="error text-center">' +
           'no photos found on flickr' +
           '</span>');
@@ -674,18 +650,21 @@ var ViewModel = function(data) {
         }
       }
 
-      flickrResultsString += '' +
-        '<div class="flickr-more">' +
-        '<a href="https://www.flickr.com/search/?text=' +
-        flickrAPISearchQuery + '" target="_new">' +
-        '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
-        '</span>' +
-        '</a>' +
-        '</div>';
+      // After all the images from Flickr are loaded, add a link to go to
+      // Flickr to see more images.
+      // TODO Currently not working.
+      // flickrResultsString += '' +
+      //   '<div class="flickr-more">' +
+      //   '<a href="https://www.flickr.com/search/?text=' +
+      //   flickrAPISearchQuery + '" target="_new">' +
+      //   '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
+      //   '</span>' +
+      //   '</a>' +
+      //   '</div>';
 
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
-      self.flickrResults(flickrResultsString);
+      pushFlickrImagesTo(flickrResultsString);
 
     });
   }.bind(this); // End of searchFlickr().

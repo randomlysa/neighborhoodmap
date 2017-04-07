@@ -88,12 +88,13 @@ a:hover {
 }
 
 /* flickr div and related items */
-#more-info-bottom {
-    margin: -15px;
+#flickrContainerBottom {
     position: fixed;
     bottom: 0;
     background-color: none;
     width: 100%;
+    height: 75px;
+    white-space: nowrap;
     /* This trasform moves the drawer off canvas. */
     -webkit-transform: translate(0, 220px);
     transform: translate(0, 220px);
@@ -102,12 +103,12 @@ a:hover {
     overflow-y: scroll;
 }
 
-#more-info-bottom.open {
+#flickrContainerBottom.open {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
 }
 
-#more-info-right {
+#flickrContainerRight {
     position: fixed;
     right: 0;
     top: 0;
@@ -117,14 +118,21 @@ a:hover {
     transform: translate(160px, 0);
     /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
+    overflow-x: scroll;
 }
 
-#more-info-right.add-padding {
+#flickrContainerRight img {
+    clear: both;
+    float: left;
+    display: block;
+}
+
+#flickrContainerRight.add-padding {
     width: 75px;
     margin-top: 70px;
 }
 
-#more-info-right.open {
+#flickrContainerRight.open {
      -webkit-transform: translate(0, 0);
      transform: translate(0, 0);
      overflow: auto;
