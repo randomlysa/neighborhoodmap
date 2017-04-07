@@ -458,7 +458,7 @@ var ViewModel = function(data) {
 
   // Keep track of open infoWindow(s). Use to close the previous infoWindow.
   var openInfoWindows = [];
-  this.closeInfoWindow = function (clickLocation) {
+  this.closeInfoWindow = function () {
     // Check if there's at least one openInfoWindows defined. If there is,
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, and clear the window hash.
@@ -467,19 +467,11 @@ var ViewModel = function(data) {
       openInfoWindows[openInfoWindows.length - 1].close();
       window.location.hash = '';
     };
-    // This keeps the collapse-locations div from sliding down when clicking
-    // from one map marker directly on another one.
-    if (clickLocation !== 'map') {
-      $( "#" + moreInfoDiv ).removeClass( 'open' );
-      if (!jQuery.browser.mobile) {
-        $("#collapse-locations").slideDown();
-      }
-    }
   }.bind(this);
 
   this.currentMarkerLocation = '';
   this.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
-  this.openInfoWindow = function (title, clickLocation) {
+  this.openInfoWindow = function (title) {
     var self = this;
     // The 'list view' sends the title as an object.
     // In this case, the title is actually title.title.
@@ -488,8 +480,7 @@ var ViewModel = function(data) {
       title = title.title;
     }
 
-    // TODO: What does this do?
-    self.closeInfoWindow(clickLocation);
+    self.closeInfoWindow();
 
     // Show the area that will display flickr images.
     // TODO: Rename moreInfoDiv to FlickrDiv?
