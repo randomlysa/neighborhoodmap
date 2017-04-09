@@ -154,7 +154,8 @@ var ViewModel = function(data) {
 
   // Helper functions:
   // check for mobile browser, matchTitle, sortList, panMap, checkOrientation,
-  // collapseLocationDiv, setFavorites, toggleFavorite.
+  // collapseLocationDiv, setFavorites, toggleFavorite, autocomplete using
+  // awesomplete.
 
   /**
    * Check for mobile browser.
@@ -329,6 +330,19 @@ var ViewModel = function(data) {
 
     this.saveToStorage();
   }.bind(this);
+
+  // Make an array of all titles from initialLocations for autocomplete to work.
+  var allTitlesForAutoComplete = [];
+  initialLocations.forEach(function (Location) {
+    allTitlesForAutoComplete.push(Location.title);
+  });
+  var inputMapLocation = document.getElementById("main-search-input");
+  new Awesomplete(inputMapLocation, {
+    list: allTitlesForAutoComplete
+  });
+  inputMapLocation.addEventListener("awesomplete-selectcomplete",
+    function( item ) { this.openInfoWindow(item.target.value); }.bind(this)
+  );
 
 
   // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
