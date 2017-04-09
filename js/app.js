@@ -474,14 +474,16 @@ var ViewModel = function(data) {
     self.sortList(self.filteredLocationsList);
 
     // Handle error case:
-    // alwaysShowFavorites === true and moveFavoritesToTop === false.
+    // If alwaysShowFavorites === true and moveFavoritesToTop === false.
     // In this case, correctLocationsList().length is never 0 if there is a
     // favorite marked, because favorites are in the same list as the rest of
     // the locations.
-    if (Boolean(self.moveFavoritesToTop()) === false &&
-          correctLocationsList().length ===
-          self.favoriteLocationsList().length) {
+    if (Boolean(self.alwaysShowFavorites()) === true &&
+          Boolean(self.moveFavoritesToTop()) === false &&
+          correctLocationsList().length === self.favoriteLocationsList().length)
+    {
         var showError = true;
+
     }
 
     if(showError === true || inputText && correctLocationsList().length === 0) {
