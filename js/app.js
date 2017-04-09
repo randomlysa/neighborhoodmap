@@ -103,7 +103,6 @@ var ViewModel = function(data) {
 
   // Settings functions: getSettings, saveToStorage, toggleAndUpdateSetting.
 
-
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
   this.getSetting = function( setting ) {
@@ -152,10 +151,9 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
-  // Helper functions:
-  // check for mobile browser, matchTitle, sortList, panMap, checkOrientation,
-  // collapseLocationDiv, setFavorites, toggleFavorite, autocomplete using
-  // awesomplete.
+  // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
+  // checkOrientation, collapseLocationDiv, setFavorites, toggleFavorite,
+  // autocomplete using awesomplete.
 
   /**
    * Check for mobile browser.
@@ -346,7 +344,7 @@ var ViewModel = function(data) {
 
 
   // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
-  // openInfoWindow
+  // openInfoWindow.
 
   this.mapSearchInputText = ko.observable("");
 
