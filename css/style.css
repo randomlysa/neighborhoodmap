@@ -32,8 +32,12 @@ a:hover {
     cursor: pointer;
 }
 
-#main-search-input {
+.awesomplete {
     width: calc(100% - 45px);
+}
+
+#main-search-input {
+    width: 100%;
     padding: 5px;
     border-top: none;
     border-left: none;
