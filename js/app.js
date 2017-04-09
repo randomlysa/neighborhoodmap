@@ -101,6 +101,9 @@ var ViewModel = function(data) {
         function() { this.closeInfoWindow(); }.bind(this));
   }
 
+  // Settings functions: getSettings, saveToStorage, toggleAndUpdateSetting.
+
+
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
   this.getSetting = function( setting ) {
@@ -117,6 +120,15 @@ var ViewModel = function(data) {
       return true;
     }
   }
+
+    // Save settings and locations infomation.
+  this.saveToStorage = function() {
+    localStorage.setItem('map-knockoutjs', ko.toJSON({
+        locations: initialLocations,
+        settings: settings
+      })
+    );
+  };
 
   this.toggleAndUpdateSetting = function ( vm, data ) {
     var self = this;
@@ -140,6 +152,17 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
+  // Helper functions:
+  // check for mobile browser, matchTitle, sortList, panMap, checkOrientation,
+  // collapseLocationDiv, setFavorites, toggleFavorite.
+
+  /**
+   * Check for mobile browser.
+   * jQuery.browser.mobile (http://detectmobilebrowser.com/)
+   * jQuery.browser.mobile will be true if the browser is a mobile device
+   **/
+  (function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
+
   // Find the title the specified array and return the 'id' (i).
   self.matchTitle = function ( title, array ) {
     for (var i = 0; i < array.length; i++) {
@@ -158,54 +181,6 @@ var ViewModel = function(data) {
     });
   }
 
-  this.mapSearchInputText = ko.observable("");
-  // An observable array for favorites, to move favorite locations to the top
-  // of the list.
-  self.favoriteLocationsList = ko.observableArray();
-  self.alwaysShowFavorites = ko.observable(
-    self.getSetting('alwaysShowFavorites')
-  );
-  self.moveFavoritesToTop = ko.observable(
-    self.getSetting('moveFavoritesToTop')
-  );
-
-  // Set up self.favoriteLocationsList from initialLocations,
-  // which should have been loaded from local storage if it existed there.
-  self.setFavorites = function() {
-    initialLocations.forEach( function ( mapItem ) {
-      if (mapItem.favorite === true) {
-        self.favoriteLocationsList.push( new Location(mapItem) );
-      }
-    });
-  }
-
-  // For the user interface, a list that can be filtered when text is typed.
-  self.filteredLocationsList = ko.observableArray();
-
-  // Combine self.favoriteLocationsList and self.filteredLocationsList.
-  this.dynamicLocationsList = ko.computed( function() {
-    if (self.moveFavoritesToTop() === true ) {
-      return self.favoriteLocationsList().concat(self.filteredLocationsList());
-    }
-    if (self.moveFavoritesToTop() === false) {
-      return self.filteredLocationsList();
-    }
-  }, self);
-
-  this.saveToStorage = function() {
-    localStorage.setItem('map-knockoutjs', ko.toJSON({
-        locations: initialLocations,
-        settings: settings
-      })
-    );
-  };
-
-  /**
-   * Check for mobile browser.
-   * jQuery.browser.mobile (http://detectmobilebrowser.com/)
-   * jQuery.browser.mobile will be true if the browser is a mobile device
-   **/
-  (function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
 
   // Pans the map, with some changes to x, y in certain cases.
   this.panMap = function(newLatLng, x, y) {
@@ -280,6 +255,99 @@ var ViewModel = function(data) {
   }.bind(this);
 
   $( window ).resize(this.checkOrientation);
+
+  // Toggle location list. This is needed for the button near the div.
+  this.collapseLocationDiv = function () {
+      $( "#collapse-locations" ).slideToggle();
+      if (jQuery.browser.mobile) {
+        $( "#more-info-right").removeClass('open');
+      }
+  }.bind(this);
+
+    // An observable array for favorites, to move favorite locations to the top
+  // of the list.
+  self.favoriteLocationsList = ko.observableArray();
+  self.alwaysShowFavorites = ko.observable(
+    self.getSetting('alwaysShowFavorites')
+  );
+  self.moveFavoritesToTop = ko.observable(
+    self.getSetting('moveFavoritesToTop')
+  );
+
+  // Set up self.favoriteLocationsList from initialLocations,
+  // which should have been loaded from local storage if it existed there.
+  self.setFavorites = function() {
+    initialLocations.forEach( function ( mapItem ) {
+      if (mapItem.favorite === true) {
+        self.favoriteLocationsList.push( new Location(mapItem) );
+      }
+    });
+  }
+
+  this.toggleFavorite = function( item ) {
+    var self = this;
+
+    // Find item in initialLocations, bcause initialLocations is what
+    // is saved to local storage.
+    var mapItemToUpdate = initialLocations.find( function( mapItem ) {
+      return mapItem.title === item.title;
+    })
+
+    // Gets the index of the mapItem in each array
+    var itemIndexInFavorites = self.matchTitle(item.title,
+      self.favoriteLocationsList());
+    var itemIndexInFiltered = self.matchTitle(item.title,
+      self.filteredLocationsList());
+
+    // TODO: make this code more concise.
+    // Using !Boolean( item.favorite() ) to toggle the favorite causes the
+    // favorite to not be saved.
+
+    // Remove a favorite
+    if (Boolean(item.favorite()) === true) {
+      // Update the object so dynamicLocationList (the user interface)
+      // gets updated.
+      item.favorite(false);
+      // Update initialLocations because it get saved to local storage.
+      mapItemToUpdate.favorite = false;
+      if (self.moveFavoritesToTop() === true) {
+        self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
+        self.filteredLocationsList.push( item );
+        self.sortList(self.filteredLocationsList);
+      }
+    }
+
+    // Create a favorite. See above for comments.
+    else if (Boolean(item.favorite()) === false) {
+      item.favorite(true);
+      mapItemToUpdate.favorite = true;
+      if (self.moveFavoritesToTop() === true) {
+        self.filteredLocationsList.splice(itemIndexInFiltered, 1);
+        self.favoriteLocationsList.push( item );
+      }
+    }
+
+    this.saveToStorage();
+  }.bind(this);
+
+
+  // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
+  // openInfoWindow
+
+  this.mapSearchInputText = ko.observable("");
+
+  // For the user interface, a list that can be filtered when text is typed.
+  self.filteredLocationsList = ko.observableArray();
+
+  // Combine self.favoriteLocationsList and self.filteredLocationsList.
+  this.dynamicLocationsList = ko.computed( function() {
+    if (self.moveFavoritesToTop() === true ) {
+      return self.favoriteLocationsList().concat(self.filteredLocationsList());
+    }
+    if (self.moveFavoritesToTop() === false) {
+      return self.filteredLocationsList();
+    }
+  }, self);
 
   this.addListenerToMarker = function() {
     markersArray.forEach( function( marker, position ) {
@@ -425,7 +493,7 @@ var ViewModel = function(data) {
         // Loop through markers array and check if the marker title is in
         // self.dynamicLocationsListTitles. If it is not, remove the marker
         // from the map. Otherwise, set the marker to this map.
-          markersArray.forEach( function(item, position) {
+        markersArray.forEach( function(item, position) {
           var title = markersArray[position].title;
           var result = dynamicLocationsListTitles.indexOf(item.title);
           if (result === -1) {
@@ -534,51 +602,7 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
-  this.toggleFavorite = function( item ) {
-    var self = this;
-
-    // Find item in initialLocations, bcause initialLocations is what
-    // is saved to local storage.
-    var mapItemToUpdate = initialLocations.find( function( mapItem ) {
-      return mapItem.title === item.title;
-    })
-
-    // Gets the index of the mapItem in each array
-    var itemIndexInFavorites = self.matchTitle(item.title,
-      self.favoriteLocationsList());
-    var itemIndexInFiltered = self.matchTitle(item.title,
-      self.filteredLocationsList());
-
-    // TODO: make this code more concise.
-    // Using !Boolean( item.favorite() ) to toggle the favorite causes the
-    // favorite to not be saved.
-
-    // Remove a favorite
-    if (Boolean(item.favorite()) === true) {
-      // Update the object so dynamicLocationList (the user interface)
-      // gets updated.
-      item.favorite(false);
-      // Update initialLocations because it get saved to local storage.
-      mapItemToUpdate.favorite = false;
-      if (self.moveFavoritesToTop() === true) {
-        self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
-        self.filteredLocationsList.push( item );
-        self.sortList(self.filteredLocationsList);
-      }
-    }
-
-    // Create a favorite. See above for comments.
-    else if (Boolean(item.favorite()) === false) {
-      item.favorite(true);
-      mapItemToUpdate.favorite = true;
-      if (self.moveFavoritesToTop() === true) {
-        self.filteredLocationsList.splice(itemIndexInFiltered, 1);
-        self.favoriteLocationsList.push( item );
-      }
-    }
-
-    this.saveToStorage();
-  }.bind(this);
+  // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.
 
   /*
     Search Flickr via Flickr API for images.
@@ -780,14 +804,7 @@ var ViewModel = function(data) {
     this.searchYelp(title);
   }.bind(this);
 
-  // Toggle location list. This is needed for the button near the div.
-  this.collapseLocationDiv = function () {
-      $( "#collapse-locations" ).slideToggle();
-      if (jQuery.browser.mobile) {
-        $( "#more-info-right").removeClass('open');
-      }
-  }.bind(this);
-
+  // urlHash, init
   var urlHash = window.location.hash;
   if (urlHash) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
