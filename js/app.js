@@ -85,6 +85,7 @@ var Location = function(data) {
 
 var ViewModel = function(data) {
   var self = this;
+  this.displayOptions = ko.observable(false);
 
   // init stuff.
   var initHasRun = false;
@@ -153,7 +154,7 @@ var ViewModel = function(data) {
 
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
   // checkOrientation, collapseLocationDiv, setFavorites, toggleFavorite,
-  // autocomplete using awesomplete.
+  // autocomplete using awesomplete, fadeVisible.
 
   /**
    * Check for mobile browser.
@@ -341,6 +342,27 @@ var ViewModel = function(data) {
   inputMapLocation.addEventListener("awesomplete-selectcomplete",
     function( item ) { this.openInfoWindow(item.target.value); }.bind(this)
   );
+
+  // http://knockoutjs.com/examples/animatedTransitions.html
+  // Here's a custom Knockout binding that makes elements shown/hidden via
+  // jQuery's fadeIn()/fadeOut() methods.
+  ko.bindingHandlers.fadeVisible = {
+    init: function(element, valueAccessor) {
+        // Initially set the element to be instantly visible/hidden
+        // depending on the value.
+        var value = valueAccessor();
+        // Use "unwrapObservable" so we can handle values that may or may
+        // not be observable.
+        $(element).toggle(ko.unwrap(value));
+
+    },
+    update: function(element, valueAccessor) {
+        // Whenever the value subsequently changes, slowly fade the element
+        // in or out.
+        var value = valueAccessor();
+        ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
+    }
+  };
 
 
   // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,

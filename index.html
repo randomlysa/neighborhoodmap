@@ -29,11 +29,21 @@
 
           <br>
 
-          <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click: toggleAndUpdateSetting">
-          <label for="alwaysShowFavorites">Always Show Favorites</label>
-          <br>
-          <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click: toggleAndUpdateSetting">
-          <label for="moveFavoritesToTop">Move Favorites To Top</label>
+          <label>
+            <input type='checkbox' data-bind='checked: displayOptions' />
+            Display advanced options
+          </label>
+
+          <div id="options" data-bind="fadeVisible: displayOptions">
+            <div class="option">
+              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click: toggleAndUpdateSetting">
+              <label for="alwaysShowFavorites">Always Show Favorites</label>
+            </div>
+            <div class="option">
+              <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click: toggleAndUpdateSetting">
+              <label for="moveFavoritesToTop">Move Favorites To Top</label>
+            </div>
+          </div>
 
         </div>
       </div>
