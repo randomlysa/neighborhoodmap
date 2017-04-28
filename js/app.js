@@ -333,19 +333,21 @@ var ViewModel = function(data) {
   // Clear all favorites.
   this.clearAllFavorites = function() {
     var self = this;
-    // Update initialLocations because it gets saved to storage.
-    initialLocations.forEach( function (mapItem) {
-      if (mapItem.favorite && mapItem.favorite === true) {
-        mapItem.favorite = false;
-      }
-    });
-    // Update dynamicLocationsList because it is the UI.
-    self.dynamicLocationsList().forEach( function (mapItem) {
-      if (mapItem.favorite === true) {
-        mapItem.favorite(false);
-      }
-    });
-    self.saveToStorage();
+    alertify.confirm("Clear all favorites?", function() {
+      // Update initialLocations because it gets saved to storage.
+      initialLocations.forEach( function (mapItem) {
+        if (mapItem.favorite && mapItem.favorite === true) {
+          mapItem.favorite = false;
+        }
+      });
+      // Update dynamicLocationsList because it is the UI.
+      self.dynamicLocationsList().forEach( function (mapItem) {
+        if (mapItem.favorite === true) {
+          mapItem.favorite(false);
+        }
+      });
+      self.saveToStorage();
+    })
   }.bind(this);
 
   // Make an array of all titles from initialLocations for autocomplete to work.
