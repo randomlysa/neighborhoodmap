@@ -71,7 +71,7 @@ a:hover {
     top: 115px;
     position: absolute;
     background-color: #fff;
-    max-height: calc(100% - 70px);
+    max-height: calc(100% - 115px);
     overflow-y: auto;
     padding-bottom: 10px;
 }
