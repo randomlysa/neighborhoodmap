@@ -154,7 +154,7 @@ var ViewModel = function(data) {
 
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
   // checkOrientation, collapseLocationDiv, setFavorites, toggleFavorite,
-  // autocomplete using awesomplete, fadeVisible.
+  // clearAllFavorites, autocomplete using awesomplete, fadeVisible.
 
   /**
    * Check for mobile browser.
@@ -328,6 +328,24 @@ var ViewModel = function(data) {
     }
 
     this.saveToStorage();
+  }.bind(this);
+
+  // Clear all favorites.
+  this.clearAllFavorites = function() {
+    var self = this;
+    // Update initialLocations because it gets saved to storage.
+    initialLocations.forEach( function (mapItem) {
+      if (mapItem.favorite && mapItem.favorite === true) {
+        mapItem.favorite = false;
+      }
+    });
+    // Update dynamicLocationsList because it is the UI.
+    self.dynamicLocationsList().forEach( function (mapItem) {
+      if (mapItem.favorite === true) {
+        mapItem.favorite(false);
+      }
+    });
+    self.saveToStorage();
   }.bind(this);
 
   // Make an array of all titles from initialLocations for autocomplete to work.
