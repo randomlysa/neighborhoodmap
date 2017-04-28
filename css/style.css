@@ -62,6 +62,11 @@ a:hover {
     top: -3px;
 }
 
+#options {
+    background-color: #fff;
+    padding-bottom: 10px;
+}
+
 #collapse-locations {
     top: 115px;
     position: absolute;
