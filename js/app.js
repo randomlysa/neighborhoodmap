@@ -342,7 +342,7 @@ var ViewModel = function(data) {
       });
       // Update dynamicLocationsList because it is the UI.
       self.dynamicLocationsList().forEach( function (mapItem) {
-        if (mapItem.favorite === true) {
+        if (mapItem.favorite() === true) {
           mapItem.favorite(false);
         }
       });
