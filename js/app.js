@@ -198,8 +198,8 @@ var ViewModel = function(data) {
   // to flickrResultsRight / flickrResultsBottom in the future.
   var pushFlickrImagesTo, pushFlickrImagesToDiv, orientation;
   this.flickrResults = ko.observable('');
-  // this.flickrResultsRight = ko.observable('');
-  // this.flickrResultsBottom = ko.observable('');
+  this.flickrResultsRight = ko.observable('');
+  this.flickrResultsBottom = ko.observable('');
   this.checkOrientation = function() {
     var self = this;
     var availableWidth = $(document).width();
@@ -215,12 +215,12 @@ var ViewModel = function(data) {
 
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickrContainerRight';
-    pushFlickrImagesTo = self.flickrResults;
+    pushFlickrImagesTo = self.flickrResultsRight;
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
       pushFlickrImagesToDiv = 'flickrContainerBottom';
-      pushFlickrImagesTo = self.flickrResults;
+      pushFlickrImagesTo = self.flickrResultsBottom;
     }
 
     // If flickrResults isn't empty, keep pushFlickrImagesToDiv open.
