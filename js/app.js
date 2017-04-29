@@ -334,19 +334,12 @@ var ViewModel = function(data) {
   this.clearAllFavorites = function() {
     var self = this;
     alertify.confirm("Clear all favorites?", function() {
-      // Update initialLocations because it gets saved to storage.
-      initialLocations.forEach( function (mapItem) {
-        if (mapItem.favorite && mapItem.favorite === true) {
-          mapItem.favorite = false;
-        }
-      });
-      // Update dynamicLocationsList because it is the UI.
-      self.dynamicLocationsList().forEach( function (mapItem) {
+      // Loop through all locations, pass favorites to toggleFavorite.
+      self.dynamicLocationsList().forEach( function ( mapItem ) {
         if (mapItem.favorite() === true) {
-          mapItem.favorite(false);
+          self.toggleFavorite(mapItem);
         }
-      });
-      self.saveToStorage();
+      })
     })
   }.bind(this);
 
