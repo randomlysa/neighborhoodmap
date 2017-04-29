@@ -30,19 +30,19 @@
 
           <br>
 
+          <div class="option">
+            <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click: toggleAndUpdateSetting">
+            <label for="alwaysShowFavorites">Always Show Favorites</label>
+          </div>
           <label>
             <input type='checkbox' data-bind='checked: displayOptions' />
             More options
           </label>
-          <div class="option">
-            <a href="#" data-bind="click: clearAllFavorites">Clear All Favorites</a>
-          </div>
 
           <!-- Advanced options that are hidden by default. -->
           <div id="options" data-bind="fadeVisible: displayOptions">
             <div class="option">
-              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click: toggleAndUpdateSetting">
-              <label for="alwaysShowFavorites">Always Show Favorites</label>
+              <a href="#" data-bind="click: clearAllFavorites">Clear All Favorites</a>
             </div>
             <div class="option">
               <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click: toggleAndUpdateSetting">
