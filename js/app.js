@@ -191,12 +191,9 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Checks the page orientation and adjusts the user interface, mainly setting
-  // where the flickr div goes, that the flickr div does not overlap with the
-  // filter/header div, and re-pan the map to the marker.
-
-  // For now, pushFlickrImagesTo is always self.flickrReusults. This may change
-  // to flickrResultsRight / flickrResultsBottom in the future.
-  var pushFlickrImagesTo, pushFlickrImagesToDiv, orientation;
+  // which flickr div opens (bottom or right), that the flickr div does not
+  // overlap with the filter/header div, and re-pan the map to the marker.
+  var pushFlickrImagesToObservable, pushFlickrImagesToDiv, orientation;
   this.flickrResults = ko.observable('');
   this.flickrResultsRight = ko.observable('');
   this.flickrResultsBottom = ko.observable('');
@@ -211,26 +208,32 @@ var ViewModel = function(data) {
       orientation = 'wide'
     }
 
+    // Check and save to a variable the current Flickr images.
+    if (pushFlickrImagesToObservable) {
+      var previousFlickrImages = pushFlickrImagesToObservable();
+    }
+
     $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
 
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickrContainerRight';
-    pushFlickrImagesTo = self.flickrResultsRight;
+    pushFlickrImagesToObservable = self.flickrResultsRight;
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
       pushFlickrImagesToDiv = 'flickrContainerBottom';
-      pushFlickrImagesTo = self.flickrResultsBottom;
+      pushFlickrImagesToObservable = self.flickrResultsBottom;
     }
 
-    // If flickrResults isn't empty, keep pushFlickrImagesToDiv open.
-    if(this.flickrResults().length > 0) {
+    // If previousFlickrImages exist, open the new flickr div and add the
+    // previous images to it.
+    if(previousFlickrImages) {
       $('#' + pushFlickrImagesToDiv).addClass('open');
+      pushFlickrImagesToObservable(previousFlickrImages);
     }
-
 
     // Add padding to $flickrResultsRight to keep from overlapping
-    //  with #floating-panel.
+    // with #floating-panel.
     if (availableWidth < 768) {
       $( "#flickrResultsRight" ).addClass('add-padding');
     } else {
@@ -570,7 +573,7 @@ var ViewModel = function(data) {
     // pushFlickrImagesToDiv.
     if (openInfoWindows[0]) {
       openInfoWindows[openInfoWindows.length - 1].close();
-      pushFlickrImagesTo('');
+      pushFlickrImagesToObservable('');
       // TODO Check why this div closes on desktop without this line,
       // but not in mobile emulation in Chrome.
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
@@ -668,7 +671,7 @@ var ViewModel = function(data) {
     var self = this;
 
     // Clear previous image results.
-    pushFlickrImagesTo('');
+    pushFlickrImagesToObservable('');
     // Set the return format (json) and api_key for all API requests.
     var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
     // Replace spaces in title with %20, and append %20Boston for better results.
@@ -746,7 +749,7 @@ var ViewModel = function(data) {
 
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
-      pushFlickrImagesTo(flickrResultsString);
+      pushFlickrImagesToObservable(flickrResultsString);
 
     });
   }.bind(this); // End of searchFlickr().
