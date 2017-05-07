@@ -104,7 +104,7 @@ var ViewModel = function(data) {
         function() { this.closeInfoWindow(); }.bind(this));
   }
 
-  // Settings functions: getSettings, saveToStorage, toggleAndUpdateSetting.
+  // Settings functions: getSetting, saveToStorage, toggleAndUpdateSetting.
 
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
@@ -156,7 +156,8 @@ var ViewModel = function(data) {
 
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
   // checkOrientation, collapseLocationDiv, setFavorites, toggleFavorite,
-  // clearAllFavorites, autocomplete using awesomplete, fadeVisible.
+  // clearAllFavorites, autocomplete using awesomplete, fadeVisible,
+  // some variables for errors.
 
   /**
    * Check for mobile browser.
@@ -269,7 +270,7 @@ var ViewModel = function(data) {
       }
   }.bind(this);
 
-    // An observable array for favorites, to move favorite locations to the top
+  // An observable array for favorites, to move favorite locations to the top
   // of the list.
   self.favoriteLocationsList = ko.observableArray();
   self.alwaysShowFavorites = ko.observable(
