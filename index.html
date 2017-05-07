@@ -87,6 +87,9 @@
       <div id="maps-error" class="centered error">
           There Was an Error! Google Maps Didn't Load
       </div>
+      <div id="other-error" class="error small-text"
+        data-bind="visible: errorMessageText, text: errorMessageText">
+      </div>
 
     <script>
       function mapsError() {

@@ -85,7 +85,9 @@ var Location = function(data) {
 
 var ViewModel = function(data) {
   var self = this;
-  this.displayOptions = ko.observable(false);
+  self.displayOptions = ko.observable(false);
+  self.displayErrorMessage = ko.observable(true);
+  self.errorMessageText = ko.observable();
 
   // init stuff.
   var initHasRun = false;
@@ -682,13 +684,7 @@ var ViewModel = function(data) {
 
     var request = $.ajax(fullFlickrAPIsearch);
     request.fail(function(){
-      // TODO This error absolutely does not fit when the flickr div
-      // is a thin column on the right.
-      self.flickrContainerRight(
-        '<span class="error text-center">' +
-        'there was an error<br> connecting to flickr' +
-        '</span>'
-      );
+      self.errorMessageText('there was an error connecting to flickr');
     });
     request.done(function( data ){
       var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));

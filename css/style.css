@@ -80,6 +80,11 @@ a:hover {
     display: none;
 }
 
+#other-error {
+    bottom: 5px;
+    position: absolute;
+}
+
 #no-locations-found {
     display: none;
     font-size: 10pt;
