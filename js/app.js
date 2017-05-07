@@ -86,8 +86,6 @@ var Location = function(data) {
 var ViewModel = function(data) {
   var self = this;
   self.displayOptions = ko.observable(false);
-  self.displayErrorMessage = ko.observable(true);
-  self.errorMessageText = ko.observable();
 
   // init stuff.
   var initHasRun = false;
@@ -383,6 +381,11 @@ var ViewModel = function(data) {
     }
   };
 
+  // Some variables for errors.
+  self.displayErrorMessage = ko.observable(
+    self.getSetting('displayErrorMessage')
+  );
+  self.errorMessageText = ko.observable();
 
   // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
   // openInfoWindow.
