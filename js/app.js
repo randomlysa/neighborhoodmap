@@ -590,6 +590,7 @@ var ViewModel = function(data) {
       // but not in mobile emulation in Chrome.
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
       window.location.hash = '';
+      this.errorMessageText('');
     };
   }.bind(this);
 
