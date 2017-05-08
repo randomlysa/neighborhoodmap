@@ -386,6 +386,12 @@ var ViewModel = function(data) {
     self.getSetting('displayErrorMessage')
   );
   self.errorMessageText = ko.observable();
+  // Only display the error message when the setting is true and
+  // there is text to display.
+  self.displayErrorMessageComputed = ko.computed( function() {
+    return Boolean(self.displayErrorMessage()) &&
+      Boolean(self.errorMessageText());
+  });
 
   // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
   // openInfoWindow.

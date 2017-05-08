@@ -83,6 +83,9 @@ a:hover {
 #other-error {
     bottom: 5px;
     position: absolute;
+    width: 100%;
+    background-color: #fff;
+    text-align: center;
 }
 
 #no-locations-found {

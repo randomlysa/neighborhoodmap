@@ -50,6 +50,11 @@
                 toggleAndUpdateSetting">
               <label for="moveFavoritesToTop">Move Favorites To Top</label>
             </div>
+            <div class="option">
+              <input type="checkbox" data-bind="checked: displayErrorMessage, click:
+                toggleAndUpdateSetting">
+              <label for="displayErrorMessage">Display Error Messages</label>
+            </div>
           </div>
 
         </div>
@@ -89,8 +94,12 @@
       <div id="maps-error" class="centered error">
           There Was an Error! Google Maps Didn't Load
       </div>
-      <div id="other-error" class="error small-text"
-        data-bind="visible: errorMessageText, text: errorMessageText">
+
+      <div id="other-error" data-bind="visible: displayErrorMessageComputed">
+        <div class="error small-text" data-bind="text: errorMessageText"></div>
+        <input type="checkbox" id="displayErrorMessage"
+          data-bind="checked: displayErrorMessage, click: toggleAndUpdateSetting">
+        <label for="displayErrorMessage">show future error messages</label>
       </div>
 
     <script>
