@@ -571,7 +571,9 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
-  // Check mapSearchInputText for inputText and update makeMapList based on inputText.
+  // Check mapSearchInputText for inputText and update makeMapList
+  // (after 300 ms delay) based on inputText.
+  this.mapSearchInputText.extend({ rateLimit: 300 });
   this.mapSearchInputText.subscribe(function (inputText) {
     this.addRemoveLocations(inputText);
   }, this);
