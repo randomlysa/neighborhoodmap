@@ -121,10 +121,20 @@ var ViewModel = function(data) {
     }
   }
 
-    // Save settings and locations infomation.
+  // Save settings and locations infomation.
   this.saveToStorage = function() {
+    // Convert dynamicLocationsList.item.favorite from a function to true/false
+    // so it saves properly.
+    var listToSave = [];
+    self.dynamicLocationsList().forEach( function ( mapItem ) {
+      var newItem = Object.assign({}, mapItem);
+      newItem.favorite = mapItem.favorite();
+      listToSave.push(newItem);
+    });
+
+    // Save locations and settings.
     localStorage.setItem('map-knockoutjs', ko.toJSON({
-        locations: initialLocations,
+        locations: listToSave,
         settings: settings
       })
     );
@@ -288,19 +298,13 @@ var ViewModel = function(data) {
     });
   }
 
-  this.toggleFavorite = function( item ) {
+  this.toggleFavorite = function( mapItem ) {
     var self = this;
 
-    // Find item in initialLocations, bcause initialLocations is what
-    // is saved to local storage.
-    var mapItemToUpdate = initialLocations.find( function( mapItem ) {
-      return mapItem.title === item.title;
-    })
-
     // Gets the index of the mapItem in each array
-    var itemIndexInFavorites = self.matchTitle(item.title,
+    var itemIndexInFavorites = self.matchTitle(mapItem.title,
       self.favoriteLocationsList());
-    var itemIndexInFiltered = self.matchTitle(item.title,
+    var itemIndexInFiltered = self.matchTitle(mapItem.title,
       self.filteredLocationsList());
 
     // TODO: make this code more concise.
@@ -308,26 +312,23 @@ var ViewModel = function(data) {
     // favorite to not be saved.
 
     // Remove a favorite
-    if (Boolean(item.favorite()) === true) {
+    if (Boolean(mapItem.favorite()) === true) {
       // Update the object so dynamicLocationList (the user interface)
       // gets updated.
-      item.favorite(false);
-      // Update initialLocations because it get saved to local storage.
-      mapItemToUpdate.favorite = false;
+      mapItem.favorite(false);
       if (self.moveFavoritesToTop() === true) {
         self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
-        self.filteredLocationsList.push( item );
+        self.filteredLocationsList.push( mapItem );
         self.sortList(self.filteredLocationsList);
       }
     }
 
     // Create a favorite. See above for comments.
-    else if (Boolean(item.favorite()) === false) {
-      item.favorite(true);
-      mapItemToUpdate.favorite = true;
+    else if (Boolean(mapItem.favorite()) === false) {
+      mapItem.favorite(true);
       if (self.moveFavoritesToTop() === true) {
         self.filteredLocationsList.splice(itemIndexInFiltered, 1);
-        self.favoriteLocationsList.push( item );
+        self.favoriteLocationsList.push( mapItem );
       }
     }
 
