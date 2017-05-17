@@ -28,20 +28,18 @@
             <span id="toggle-button" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
           </button>
 
-          <br>
+          <button type="button" class="btn btn-small" id="toggle-location-list" data-bind='click: displayOptions'>
+            <span class="glyphicon glyphicon-option-vertical"></span>
+          </button>
 
           <div class="option">
             <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click:
               toggleAndUpdateSetting">
             <label for="alwaysShowFavorites">Always Show Favorites</label>
           </div>
-          <label>
-            <input type='checkbox' data-bind='checked: displayOptions' />
-            More options
-          </label>
 
-          <!-- Advanced options that are hidden by default. -->
-          <div id="options" data-bind="fadeVisible: displayOptions">
+          <!-- Other options that are hidden by default. -->
+          <div id="options" data-bind="fadeVisible: displayOptionsStatus">
             <div class="option">
               <a href="#" data-bind="click: clearAllFavorites">Clear All Favorites</a>
             </div>

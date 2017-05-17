@@ -85,7 +85,11 @@ var Location = function(data) {
 
 var ViewModel = function(data) {
   var self = this;
-  self.displayOptions = ko.observable(false);
+
+  self.displayOptionsStatus = ko.observable(false);
+  self.displayOptions = function () {
+    return self.displayOptionsStatus(!self.displayOptionsStatus());
+  };
 
   // Settings functions: getSetting, saveToStorage, toggleAndUpdateSetting.
 

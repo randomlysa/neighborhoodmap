@@ -33,7 +33,7 @@ a:hover {
 }
 
 .awesomplete {
-    width: calc(100% - 45px);
+    width: calc(100% - 90px);
 }
 
 #main-search-input {
