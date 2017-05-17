@@ -108,18 +108,9 @@ var ViewModel = function(data) {
 
   // Save settings and locations infomation.
   this.saveToStorage = function() {
-    // Convert dynamicLocationsList.item.favorite from a function to true/false
-    // so it saves properly.
-    var listToSave = [];
-    self.dynamicLocationsList().forEach( function ( mapItem ) {
-      var newItem = Object.assign({}, mapItem);
-      newItem.favorite = mapItem.favorite();
-      listToSave.push(newItem);
-    });
-
     // Save locations and settings.
     localStorage.setItem('map-knockoutjs', ko.toJSON({
-        locations: listToSave,
+        locations: initialLocations,
         settings: settings
       })
     );
@@ -290,6 +281,13 @@ var ViewModel = function(data) {
   this.toggleFavorite = function( mapItem ) {
     var self = this;
 
+    // Find item in initialLocations, because initialLocations is what
+    // is saved to local storage.
+    var initialLocationsMapItemToUpdate = initialLocations.find(
+      function( tempMapItem ) {
+        return tempMapItem.title === mapItem.title;
+    })
+
     // Gets the index of the mapItem in each array
     var itemIndexInFavorites = self.matchTitle(mapItem.title,
       self.favoriteLocationsList());
@@ -305,6 +303,8 @@ var ViewModel = function(data) {
       // Update the object so dynamicLocationList (the user interface)
       // gets updated.
       mapItem.favorite(false);
+      // Update initialLocations because it get saved to local storage.
+      initialLocationsMapItemToUpdate.favorite = false;
       if (self.moveFavoritesToTop() === true) {
         self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
         self.filteredLocationsList.push( mapItem );
@@ -315,6 +315,7 @@ var ViewModel = function(data) {
     // Create a favorite. See above for comments.
     else if (Boolean(mapItem.favorite()) === false) {
       mapItem.favorite(true);
+      initialLocationsMapItemToUpdate.favorite = true;
       if (self.moveFavoritesToTop() === true) {
         self.filteredLocationsList.splice(itemIndexInFiltered, 1);
         self.favoriteLocationsList.push( mapItem );
