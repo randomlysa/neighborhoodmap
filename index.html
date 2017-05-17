@@ -103,6 +103,7 @@
       </div>
 
     <script>
+      'use strict'
       function mapsError() {
         // if maps didn't load, hide the floating panel, don't load the viewmodel,
         // and show an error message
@@ -118,14 +119,14 @@
       }
 
       var map;
+      var markersArray = [];
       var defaultMapCenter = {lat: 42.36, lng: -71.0511};
+
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: defaultMapCenter,
           zoom: 15
         });
-
-        markersArray = [];
 
         // Loop through the initialLocations object and place a marker for each
         // set of coordinates.
