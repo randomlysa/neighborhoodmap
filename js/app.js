@@ -87,21 +87,6 @@ var ViewModel = function(data) {
   var self = this;
   self.displayOptions = ko.observable(false);
 
-  // init stuff.
-  var initHasRun = false;
-  this.init = function() {
-    this.addListenerToMarker(this);
-    this.addRemoveLocations();
-    this.checkOrientation();
-    // Prevents duplication of favorites.
-    if (!this.alwaysShowFavorites) {
-      this.setFavorites();
-    }
-    // Close an infoWindow by clicking on an empty area on the map.
-    google.maps.event.addDomListener(map, 'click',
-        function() { this.closeInfoWindow(); }.bind(this));
-  }
-
   // Settings functions: getSetting, saveToStorage, toggleAndUpdateSetting.
 
   // Gets a setting from local storage.
@@ -153,6 +138,10 @@ var ViewModel = function(data) {
     // they should not change.
     if (option === 'moveFavoritesToTop') {
       var redrawMapMarkers = false;
+    }
+
+    if (option === 'showCustomMapMarkers') {
+      self.updateMarkerIcons();
     }
 
     // Send currently input text to addRemoveLocations.
@@ -394,8 +383,83 @@ var ViewModel = function(data) {
       Boolean(self.errorMessageText());
   });
 
-  // Main functions: addListenerToMarker, addRemoveLocations, closeInfoWindow,
-  // openInfoWindow.
+  // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
+  // addRemoveLocations, closeInfoWindow, openInfoWindow.
+
+  self.showCustomMapMarkers = ko.observable(
+    self.getSetting('showCustomMapMarkers')
+  );
+
+  // Keep track of markers.
+  var markersArray = [];
+  // Set up custom map location icons.
+  var iconToImage = {
+    'Hotel': 'ic_hotel_black_24dp_1x',
+    'Bar': 'ic_local_bar_black_24dp_1x',
+    'Attraction': 'ic_local_see_black_24dp_1x',
+    'Car Rental': 'ic_directions_car_black_24dp_1x',
+    'Default': 'ic_place_black_24dp_1x'
+  };
+  // Loop through the initialLocations object and place a marker for each
+  // set of coordinates.
+  self.loadMapMarkers = function() {
+    for (var i = 0; i < initialLocations.length; i++) {
+      var location = initialLocations[i];
+      var coords = location.coordinates;
+      var title = location.title;
+      var type = location.type;
+
+      var latLng = new google.maps.LatLng(coords[0],coords[1]);
+
+      if (self.showCustomMapMarkers() === true) {
+        var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+      }
+      if (self.showCustomMapMarkers() === false) {
+       var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+      }
+
+      var marker = new google.maps.Marker({
+        title: title,
+        position: latLng,
+        map: map,
+        icon: imageIcon
+      });
+
+      markersArray.push(marker);
+    }; // close for loop
+  };
+
+  self.updateMarkerIcons = function() {
+    for (var i = 0; i < initialLocations.length; i++) {
+      var location = initialLocations[i];
+      var type = location.type;
+
+      if (self.showCustomMapMarkers() === true) {
+        var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+      }
+      if (self.showCustomMapMarkers() === false) {
+       var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+      }
+
+      markersArray[i].setOptions({ icon: imageIcon});
+    }
+  }
+
+  // init stuff.
+  var initHasRun = false;
+  this.init = function() {
+    this.loadMapMarkers();
+    this.addListenerToMarker(this);
+    this.addRemoveLocations();
+    this.checkOrientation();
+    // Prevents duplication of favorites.
+    if (!this.alwaysShowFavorites) {
+      this.setFavorites();
+    }
+    // Close an infoWindow by clicking on an empty area on the map.
+    google.maps.event.addDomListener(map, 'click',
+        function() { this.closeInfoWindow(); }.bind(this));
+  }
 
   this.mapSearchInputText = ko.observable("");
 

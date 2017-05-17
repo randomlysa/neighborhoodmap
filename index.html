@@ -51,9 +51,14 @@
               <label for="moveFavoritesToTop">Move Favorites To Top</label>
             </div>
             <div class="option">
-              <input type="checkbox" data-bind="checked: displayErrorMessage, click:
+              <input type="checkbox" id="displayErrorMessage" data-bind="checked: displayErrorMessage, click:
                 toggleAndUpdateSetting">
               <label for="displayErrorMessage">Display Error Messages</label>
+            </div>
+            <div class="option">
+              <input type="checkbox" id="showCustomMapMarkers" data-bind="checked: showCustomMapMarkers, click:
+                toggleAndUpdateSetting">
+              <label for="showCustomMapMarkers">Show Custom Map Markers</label>
             </div>
           </div>
 
@@ -119,7 +124,6 @@
       }
 
       var map;
-      var markersArray = [];
       var defaultMapCenter = {lat: 42.36, lng: -71.0511};
 
       function initMap() {
@@ -127,36 +131,6 @@
           center: defaultMapCenter,
           zoom: 15
         });
-
-        // Loop through the initialLocations object and place a marker for each
-        // set of coordinates.
-        for (var i = 0; i < initialLocations.length; i++) {
-          var location = initialLocations[i];
-          var coords = location.coordinates;
-          var title = location.title;
-          var type = location.type;
-
-          var latLng = new google.maps.LatLng(coords[0],coords[1]);
-
-          // Set up custom map location icons.
-          var iconToImage = {
-            'Hotel': 'ic_hotel_black_24dp_1x',
-            'Bar': 'ic_local_bar_black_24dp_1x',
-            'Attraction': 'ic_local_see_black_24dp_1x',
-            'Car Rental': 'ic_directions_car_black_24dp_1x',
-            'Default': 'ic_place_black_24dp_1x'
-          }
-          var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
-
-          var marker = new google.maps.Marker({
-            title: title,
-            position: latLng,
-            map: map,
-            icon: imageIcon
-          });
-
-          markersArray.push(marker);
-        }; // close for loop
       } // close function initMap
     </script>
 
