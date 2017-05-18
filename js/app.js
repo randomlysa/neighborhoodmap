@@ -91,7 +91,7 @@ var ViewModel = function(data) {
     return self.displayOptionsStatus(!self.displayOptionsStatus());
   };
 
-  // Settings functions: getSetting, saveToStorage, toggleAndUpdateSetting.
+  // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting.
 
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
@@ -120,7 +120,7 @@ var ViewModel = function(data) {
     );
   };
 
-  this.toggleAndUpdateSetting = function ( vm, data ) {
+  this.toggleAndSaveSetting = function ( vm, data ) {
     var self = this;
     var option = data.currentTarget.id;
     var setting = data.currentTarget.checked;

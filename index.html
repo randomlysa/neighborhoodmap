@@ -41,22 +41,22 @@
           </div>
             <div class="option">
               <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click:
-                toggleAndUpdateSetting">
+                toggleAndSaveSetting">
               <label for="alwaysShowFavorites">Always Show Favorites</label>
             </div>
             <div class="option">
               <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click:
-                toggleAndUpdateSetting">
+                toggleAndSaveSetting">
               <label for="moveFavoritesToTop">Move Favorites To Top</label>
             </div>
             <div class="option">
               <input type="checkbox" id="displayErrorMessage" data-bind="checked: displayErrorMessage, click:
-                toggleAndUpdateSetting">
+                toggleAndSaveSetting">
               <label for="displayErrorMessage">Display Error Messages</label>
             </div>
             <div class="option">
               <input type="checkbox" id="showCustomMapMarkers" data-bind="checked: showCustomMapMarkers, click:
-                toggleAndUpdateSetting">
+                toggleAndSaveSetting">
               <label for="showCustomMapMarkers">Show Custom Map Markers</label>
             </div>
           </div>
@@ -103,7 +103,7 @@
       <div id="other-error" data-bind="visible: displayErrorMessageComputed">
         <div class="error small-text" data-bind="text: errorMessageText"></div>
         <input type="checkbox" id="displayErrorMessage"
-          data-bind="checked: displayErrorMessage, click: toggleAndUpdateSetting">
+          data-bind="checked: displayErrorMessage, click: toggleAndSaveSetting">
         <label for="displayErrorMessage">show future error messages</label>
       </div>
 
