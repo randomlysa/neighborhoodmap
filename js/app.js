@@ -81,7 +81,11 @@ var Location = function(data) {
   this.coordinates = data.coordinates;
   this.type = data.type;
   this.favorite = ko.observable(data.favorite);
-  // Determine if the 'been here' icon should be disabled. Default to true.
+  // Determine if the item is a favorite and return the correct icon.
+  this.favoriteText = ko.pureComputed( function() {
+    return this.favorite() === true ? "bookmark" : "bookmark_border";
+  }, this);
+  // Determine if the beenhere icon should be disabled. Default to true.
   if (!data.beenHereDisabled) { data.beenHereDisabled = true; }
   this.beenHereDisabled = ko.observable(data.beenHereDisabled);
 };
