@@ -32,16 +32,17 @@
             <span class="glyphicon glyphicon-option-vertical"></span>
           </button>
 
-          <div class="option">
-            <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click:
-              toggleAndUpdateSetting">
-            <label for="alwaysShowFavorites">Always Show Favorites</label>
-          </div>
-
-          <!-- Other options that are hidden by default. -->
+          <!-- Options - hidden by default. -->
           <div id="options" data-bind="fadeVisible: displayOptionsStatus">
+            <div class="option text-right">
+              <a href="#" data-bind="click: clearAllFavorites">
+                <button type="button" class="btn btn-small btn-danger btn-block">Clear All Favorites</button>
+              </a>
+          </div>
             <div class="option">
-              <a href="#" data-bind="click: clearAllFavorites">Clear All Favorites</a>
+              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click:
+                toggleAndUpdateSetting">
+              <label for="alwaysShowFavorites">Always Show Favorites</label>
             </div>
             <div class="option">
               <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click:
@@ -59,6 +60,7 @@
               <label for="showCustomMapMarkers">Show Custom Map Markers</label>
             </div>
           </div>
+          <!-- End of options block. -->
 
         </div>
       </div>
