@@ -196,3 +196,5 @@ a:hover {
 .glyphicon-new-window {
     padding: 16px;
 }
+
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }

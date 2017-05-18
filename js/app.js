@@ -81,6 +81,9 @@ var Location = function(data) {
   this.coordinates = data.coordinates;
   this.type = data.type;
   this.favorite = ko.observable(data.favorite);
+  // Determine if the 'been here' icon should be disabled. Default to true.
+  if (!data.beenHereDisabled) { data.beenHereDisabled = true; }
+  this.beenHereDisabled = ko.observable(data.beenHereDisabled);
 };
 
 var ViewModel = function(data) {
