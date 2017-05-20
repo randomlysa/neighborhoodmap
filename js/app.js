@@ -289,8 +289,26 @@ var ViewModel = function(data) {
     });
   }
 
-  this.toggleFavorite = function( mapItem ) {
+  Location.prototype.toggleProperty = function( mapItem, event, property) {
     var self = this;
+
+    // For clearAllFavorites, there is no event.target.innerText
+    if (event) {
+      var innerText = event.target.innerText;
+
+      // Which property to toggle.
+      if (innerText === 'bookmark_border' || innerText === 'bookmark') {
+        var propertyToUpdate = 'favorite';
+      }
+      if (innerText === 'beenhere') {
+        var propertyToUpdate = 'beenHereDisabled'
+      }
+    }
+
+    // For clearAllFavorites.
+    if (property) {
+      var propertyToUpdate = property;
+    }
 
     // Find item in initialLocations, because initialLocations is what
     // is saved to local storage.
@@ -309,25 +327,31 @@ var ViewModel = function(data) {
     // Using !Boolean( item.favorite() ) to toggle the favorite causes the
     // favorite to not be saved.
 
-    // Remove a favorite
-    if (Boolean(mapItem.favorite()) === true) {
+    // Toggle property to false.
+    if (Boolean(mapItem[propertyToUpdate]()) === true) {
       // Update the object so dynamicLocationList (the user interface)
       // gets updated.
-      mapItem.favorite(false);
+      mapItem[propertyToUpdate](false);
       // Update initialLocations because it get saved to local storage.
-      initialLocationsMapItemToUpdate.favorite = false;
-      if (self.moveFavoritesToTop() === true) {
+      initialLocationsMapItemToUpdate[propertyToUpdate] = false;
+      // For favorites only.
+      if (propertyToUpdate === 'favorite' && self.moveFavoritesToTop() === true)
+      {
         self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
         self.filteredLocationsList.push( mapItem );
         self.sortList(self.filteredLocationsList);
       }
     }
-
-    // Create a favorite. See above for comments.
-    else if (Boolean(mapItem.favorite()) === false) {
-      mapItem.favorite(true);
-      initialLocationsMapItemToUpdate.favorite = true;
-      if (self.moveFavoritesToTop() === true) {
+    // Toggle property to true.
+    else if (Boolean(mapItem[propertyToUpdate]()) === false) {
+      // Update the object so dynamicLocationList (the user interface)
+      // gets updated.
+      mapItem[propertyToUpdate](true);
+      // Update initialLocations because it get saved to local storage.
+      initialLocationsMapItemToUpdate[propertyToUpdate] = true;
+      // For favorites only.
+      if (propertyToUpdate === 'favorite' && self.moveFavoritesToTop() === true)
+      {
         self.filteredLocationsList.splice(itemIndexInFiltered, 1);
         self.favoriteLocationsList.push( mapItem );
       }
@@ -343,7 +367,7 @@ var ViewModel = function(data) {
       // Loop through all locations, pass favorites to toggleFavorite.
       self.dynamicLocationsList().forEach( function ( mapItem ) {
         if (mapItem.favorite() === true) {
-          self.toggleFavorite(mapItem);
+          Location.prototype.toggleProperty(mapItem, '', 'favorite');
         }
       })
     })

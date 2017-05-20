@@ -68,14 +68,16 @@
       <div id="collapse-locations" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <div data-bind="foreach: dynamicLocationsList">
           <div>
-            <span data-bind="click: $parent.toggleFavorite">
+            <span data-bind="click: Location.prototype.toggleProperty">
               <i class="link material-icons md-18" data-bind="text: favoriteText"></i>
             </span>
 
-            <i class="material-icons"
-              data-bind="css: {'md-dark md-inactive': beenHereDisabled }">
-              beenhere
-            </i>
+            <span data-bind="click: Location.prototype.toggleProperty">
+              <i class="material-icons"
+                data-bind="css: {'md-dark md-inactive': beenHereDisabled }">
+                beenhere
+              </i>
+            </span>
 
             <a href="#"
               class="overlayMapListLinks"
