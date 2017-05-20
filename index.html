@@ -50,6 +50,11 @@
               <label for="moveFavoritesToTop">Move Favorites To Top</label>
             </div>
             <div class="option">
+              <input type="checkbox" id="displayBeenHereColumn" data-bind="checked: settingDisplayBeenHereColumn, click:
+                toggleAndSaveSetting">
+              <label for="displayBeenHereColumn">Display Been Here Column</label>
+            </div>
+            <div class="option">
               <input type="checkbox" id="showCustomMapMarkers" data-bind="checked: settingShowCustomMapMarkers, click:
                 toggleAndSaveSetting">
               <label for="showCustomMapMarkers">Show Custom Map Markers</label>
@@ -72,7 +77,8 @@
               <i class="link material-icons md-18" data-bind="text: favoriteText"></i>
             </span>
 
-            <span data-bind="click: Location.prototype.toggleProperty">
+            <span data-bind="click: Location.prototype.toggleProperty,
+              if: $parent.settingDisplayBeenHereColumn">
               <i class="link material-icons md-18"
                 data-bind="css: {'md-dark md-inactive': beenHereDisabled }">
                 beenhere

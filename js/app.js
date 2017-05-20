@@ -153,6 +153,12 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
+  // Misc settings that don't fit elsewhere.
+
+  self.settingDisplayBeenHereColumn = ko.observable(
+    self.getSetting('displayBeenHereColumn')
+  );
+
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
   // checkOrientation, collapseLocationDiv, setFavorites, toggleProperty,
   // clearAllFavorites, autocomplete using awesomplete, fadeVisible,
