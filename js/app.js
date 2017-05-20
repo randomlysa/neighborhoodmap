@@ -86,7 +86,7 @@ var Location = function(data) {
     return this.favorite() === true ? "bookmark" : "bookmark_border";
   }, this);
   // Determine if the beenhere icon should be disabled. Default to true.
-  if (!data.beenHereDisabled) { data.beenHereDisabled = true; }
+  if (data.beenHereDisabled === undefined) { data.beenHereDisabled = true; }
   this.beenHereDisabled = ko.observable(data.beenHereDisabled);
 };
 
