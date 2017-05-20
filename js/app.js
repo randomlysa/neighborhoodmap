@@ -142,7 +142,7 @@ var ViewModel = function(data) {
       var redrawMapMarkers = false;
     }
 
-    if (option === 'showCustomMapMarkers') {
+    if (option === 'displayCustomMapMarkers') {
       self.updateMarkerIcons();
     }
 
@@ -428,8 +428,8 @@ var ViewModel = function(data) {
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocations, closeInfoWindow, openInfoWindow.
 
-  self.settingShowCustomMapMarkers = ko.observable(
-    self.getSetting('showCustomMapMarkers')
+  self.settingDisplayCustomMapMarkers = ko.observable(
+    self.getSetting('displayCustomMapMarkers')
   );
 
   // Keep track of markers.
@@ -453,10 +453,10 @@ var ViewModel = function(data) {
 
       var latLng = new google.maps.LatLng(coords[0],coords[1]);
 
-      if (self.settingShowCustomMapMarkers() === true) {
+      if (self.settingDisplayCustomMapMarkers() === true) {
         var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
-      if (self.settingShowCustomMapMarkers() === false) {
+      if (self.settingDisplayCustomMapMarkers() === false) {
        var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
       }
 
@@ -476,10 +476,10 @@ var ViewModel = function(data) {
       var location = initialLocations[i];
       var type = location.type;
 
-      if (self.settingShowCustomMapMarkers() === true) {
+      if (self.settingDisplayCustomMapMarkers() === true) {
         var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
-      if (self.settingShowCustomMapMarkers() === false) {
+      if (self.settingDisplayCustomMapMarkers() === false) {
        var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
       }
 
