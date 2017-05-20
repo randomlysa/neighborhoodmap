@@ -272,10 +272,10 @@ var ViewModel = function(data) {
   // An observable array for favorites, to move favorite locations to the top
   // of the list.
   self.favoriteLocationsList = ko.observableArray();
-  self.alwaysShowFavorites = ko.observable(
+  self.settingAlwaysShowFavorites = ko.observable(
     self.getSetting('alwaysShowFavorites')
   );
-  self.moveFavoritesToTop = ko.observable(
+  self.settingMoveFavoritesToTop = ko.observable(
     self.getSetting('moveFavoritesToTop')
   );
 
@@ -335,7 +335,7 @@ var ViewModel = function(data) {
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = false;
       // For favorites only.
-      if (propertyToUpdate === 'favorite' && self.moveFavoritesToTop() === true)
+      if (propertyToUpdate === 'favorite' && self.settingMoveFavoritesToTop() === true)
       {
         self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
         self.filteredLocationsList.push( mapItem );
@@ -350,7 +350,7 @@ var ViewModel = function(data) {
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = true;
       // For favorites only.
-      if (propertyToUpdate === 'favorite' && self.moveFavoritesToTop() === true)
+      if (propertyToUpdate === 'favorite' && self.settingMoveFavoritesToTop() === true)
       {
         self.filteredLocationsList.splice(itemIndexInFiltered, 1);
         self.favoriteLocationsList.push( mapItem );
@@ -408,21 +408,21 @@ var ViewModel = function(data) {
   };
 
   // Some variables for errors.
-  self.displayErrorMessage = ko.observable(
+  self.settingDisplayErrorMessage = ko.observable(
     self.getSetting('displayErrorMessage')
   );
   self.errorMessageText = ko.observable();
   // Only display the error message when the setting is true and
   // there is text to display.
   self.displayErrorMessageComputed = ko.computed( function() {
-    return Boolean(self.displayErrorMessage()) &&
+    return Boolean(self.settingDisplayErrorMessage()) &&
       Boolean(self.errorMessageText());
   });
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocations, closeInfoWindow, openInfoWindow.
 
-  self.showCustomMapMarkers = ko.observable(
+  self.settingShowCustomMapMarkers = ko.observable(
     self.getSetting('showCustomMapMarkers')
   );
 
@@ -447,10 +447,10 @@ var ViewModel = function(data) {
 
       var latLng = new google.maps.LatLng(coords[0],coords[1]);
 
-      if (self.showCustomMapMarkers() === true) {
+      if (self.settingShowCustomMapMarkers() === true) {
         var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
-      if (self.showCustomMapMarkers() === false) {
+      if (self.settingShowCustomMapMarkers() === false) {
        var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
       }
 
@@ -470,10 +470,10 @@ var ViewModel = function(data) {
       var location = initialLocations[i];
       var type = location.type;
 
-      if (self.showCustomMapMarkers() === true) {
+      if (self.settingShowCustomMapMarkers() === true) {
         var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
-      if (self.showCustomMapMarkers() === false) {
+      if (self.settingShowCustomMapMarkers() === false) {
        var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
       }
 
@@ -504,10 +504,10 @@ var ViewModel = function(data) {
 
   // Combine self.favoriteLocationsList and self.filteredLocationsList.
   this.dynamicLocationsList = ko.computed( function() {
-    if (self.moveFavoritesToTop() === true ) {
+    if (self.settingMoveFavoritesToTop() === true ) {
       return self.favoriteLocationsList().concat(self.filteredLocationsList());
     }
-    if (self.moveFavoritesToTop() === false) {
+    if (self.settingMoveFavoritesToTop() === false) {
       return self.filteredLocationsList();
     }
   }, self);
@@ -556,7 +556,7 @@ var ViewModel = function(data) {
 
     // If alwaysShowFavorites was false and favorites have been filtered out,
     // re-add all favorites once alwaysShowFavorites is true.
-    if (self.alwaysShowFavorites()) {
+    if (self.settingAlwaysShowFavorites()) {
       self.favoriteLocationsList.removeAll();
       this.setFavorites();
     };
@@ -568,7 +568,7 @@ var ViewModel = function(data) {
       // by arrayToFilter.forEach(). Also, the ko.computed for
       // self.dynamicLocationsList will only be self.filteredLocationList, and
       // self.filteredLocationList will not be shown.
-      if (self.moveFavoritesToTop() === false) {
+      if (self.settingMoveFavoritesToTop() === false) {
         isFavorite = null;
       }
       arrayToFilter.forEach( function(mapItem){
@@ -578,8 +578,8 @@ var ViewModel = function(data) {
             // If alwaysShowFavorites === true and moveFavoritesToTop == false,
             // favorites need to be added regardless of the inputText because
             // self.favoriteLocationsList will not be shown.
-            if (Boolean(self.alwaysShowFavorites()) === true &&
-                  Boolean(self.moveFavoritesToTop()) === false &&
+            if (Boolean(self.settingAlwaysShowFavorites()) === true &&
+                  Boolean(self.settingMoveFavoritesToTop()) === false &&
                   Boolean(mapItem.favorite) === true) {
               arrayToPushTo.push( new Location(mapItem) );
             }
@@ -601,7 +601,7 @@ var ViewModel = function(data) {
     }
 
     // If !alwaysShowFavorites; ie, filter favorites.
-    if (!self.alwaysShowFavorites()) {
+    if (!self.settingAlwaysShowFavorites()) {
       var correctLocationsList = self.dynamicLocationsList;
       self.favoriteLocationsList.removeAll();
 
@@ -629,8 +629,8 @@ var ViewModel = function(data) {
     // In this case, correctLocationsList().length is never 0 if there is a
     // favorite marked, because favorites are in the same list as the rest of
     // the locations.
-    if (Boolean(self.alwaysShowFavorites()) === true &&
-          Boolean(self.moveFavoritesToTop()) === false &&
+    if (Boolean(self.settingAlwaysShowFavorites()) === true &&
+          Boolean(self.settingMoveFavoritesToTop()) === false &&
           correctLocationsList().length === self.favoriteLocationsList().length)
     {
         var showError = true;

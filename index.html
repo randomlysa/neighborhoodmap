@@ -40,24 +40,24 @@
               </a>
           </div>
             <div class="option">
-              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: alwaysShowFavorites, click:
+              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
                 toggleAndSaveSetting">
               <label for="alwaysShowFavorites">Always Show Favorites</label>
             </div>
             <div class="option">
-              <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: moveFavoritesToTop, click:
+              <input type="checkbox" id="moveFavoritesToTop" data-bind="checked: settingMoveFavoritesToTop, click:
                 toggleAndSaveSetting">
               <label for="moveFavoritesToTop">Move Favorites To Top</label>
             </div>
             <div class="option">
-              <input type="checkbox" id="displayErrorMessage" data-bind="checked: displayErrorMessage, click:
-                toggleAndSaveSetting">
-              <label for="displayErrorMessage">Display Error Messages</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="showCustomMapMarkers" data-bind="checked: showCustomMapMarkers, click:
+              <input type="checkbox" id="showCustomMapMarkers" data-bind="checked: settingShowCustomMapMarkers, click:
                 toggleAndSaveSetting">
               <label for="showCustomMapMarkers">Show Custom Map Markers</label>
+            </div>
+            <div class="option">
+              <input type="checkbox" id="displayErrorMessage" data-bind="checked: settingDisplayErrorMessage, click:
+                toggleAndSaveSetting">
+              <label for="displayErrorMessage">Display Error Messages</label>
             </div>
           </div>
           <!-- End of options block. -->
