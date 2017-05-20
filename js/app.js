@@ -154,7 +154,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
-  // checkOrientation, collapseLocationDiv, setFavorites, toggleFavorite,
+  // checkOrientation, collapseLocationDiv, setFavorites, toggleProperty,
   // clearAllFavorites, autocomplete using awesomplete, fadeVisible,
   // some variables for errors.
 
