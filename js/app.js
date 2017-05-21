@@ -320,12 +320,12 @@ var ViewModel = function(data) {
   // Save and get sortable lists.
   self.manageSortable = function(sortable, action) {
     if (action === 'get') {
+      // If order is null, it hasn't been saved to storage:
+      //  return undefined (use default list).
+      // If order isn't null, the group was emptied by the user and saved:
+      //  return the empty array.
       var order = localStorage.getItem(sortable.el.id);
-      if (order) {
-        return order ? order.split('|') : [];
-      } else {
-        return null;
-      }
+      return order === null ? undefined : order.split('|');
     };
     if (action === 'save') {
       var order = sortable.toArray();
@@ -349,20 +349,12 @@ var ViewModel = function(data) {
   // Create default lists or get from storage if they exist.
   self.groupAndSortItems = ko.computed( function() {
     var items = self.manageSortable(groupAndSort, 'get');
-    if (items) {
-      return items;
-    } else {
-      return ['Favorite and Visited', 'Favorite', 'Visited']
-    }
+    return items ? items : ['Favorite and Visited', 'Favorite', 'Visited'];
   });
 
   self.leaveInlineItems = ko.computed( function() {
     var items = self.manageSortable(leaveInline, 'get');
-    if (items) {
-      return items;
-    } else {
-      return ['Everything Else'];
-    }
+    return items ? items : ['Everything Else'];
   });
 
   self.overallPositionsItems = ko.computed( function() {
