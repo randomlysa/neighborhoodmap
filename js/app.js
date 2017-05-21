@@ -98,7 +98,7 @@ var ViewModel = function(data) {
 
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
-  this.getSetting = function( setting ) {
+  self.getSetting = function( setting ) {
     // No settings have been saved at all.
     if (settings === undefined) {
       settings = {};
@@ -114,7 +114,7 @@ var ViewModel = function(data) {
   }
 
   // Save settings and locations infomation.
-  this.saveToStorage = function() {
+  self.saveToStorage = function() {
     // Save locations and settings.
     localStorage.setItem('map-knockoutjs', ko.toJSON({
         locations: initialLocations,
@@ -123,7 +123,7 @@ var ViewModel = function(data) {
     );
   };
 
-  this.toggleAndSaveSetting = function ( vm, data ) {
+  self.toggleAndSaveSetting = function ( vm, data ) {
     var self = this;
     var option = data.currentTarget.id;
     var setting = data.currentTarget.checked;
@@ -149,7 +149,7 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
-  this.getAllSettings = (function() {
+  self.getAllSettings = (function() {
     // List all settings.
     var allSettings = [
       'alwaysShowFavorites',
@@ -201,7 +201,7 @@ var ViewModel = function(data) {
 
 
   // Pans the map, with some changes to x, y in certain cases.
-  this.panMap = function(newLatLng, x, y) {
+  self.panMap = function(newLatLng, x, y) {
     window.setTimeout( function() {
       map.setCenter(newLatLng);
       map.panBy(x, y);
@@ -212,10 +212,10 @@ var ViewModel = function(data) {
   // which flickr div opens (bottom or right), that the flickr div does not
   // overlap with the filter/header div, and re-pan the map to the marker.
   var pushFlickrImagesToObservable, pushFlickrImagesToDiv, orientation;
-  this.flickrResults = ko.observable('');
-  this.flickrResultsRight = ko.observable('');
-  this.flickrResultsBottom = ko.observable('');
-  this.checkOrientation = function() {
+  self.flickrResults = ko.observable('');
+  self.flickrResultsRight = ko.observable('');
+  self.flickrResultsBottom = ko.observable('');
+  self.checkOrientation = function() {
     var self = this;
     var availableWidth = $(document).width();
     var availableHeight = $(window).height();
@@ -260,8 +260,8 @@ var ViewModel = function(data) {
 
     // Set options and pan map after rotation.
     var panByX = 0, panByY = 0, newLatLng;
-    var lat = this.currentMarkerLocation[0];
-    var lng = this.currentMarkerLocation[1];
+    var lat = self.currentMarkerLocation[0];
+    var lng = self.currentMarkerLocation[1];
     // Center map on new marker and pan.
     if (lat && lng) {
       newLatLng = {lat: lat, lng: lng};
@@ -271,14 +271,14 @@ var ViewModel = function(data) {
       newLatLng = defaultMapCenter;
     }
 
-    this.panMap(newLatLng, panByX , panByY);
+    self.panMap(newLatLng, panByX , panByY);
 
   }.bind(this);
 
-  $( window ).resize(this.checkOrientation);
+  $( window ).resize(self.checkOrientation);
 
   // Toggle location list. This is needed for the button near the div.
-  this.collapseLocationDiv = function () {
+  self.collapseLocationDiv = function () {
       $( "#collapse-locations" ).slideToggle();
       if (jQuery.browser.mobile) {
         $( "#more-info-right").removeClass('open');
@@ -369,11 +369,11 @@ var ViewModel = function(data) {
       }
     }
 
-    this.saveToStorage();
+    self.saveToStorage();
   }.bind(this);
 
   // Clear all favorites.
-  this.clearAllFavorites = function() {
+  self.clearAllFavorites = function() {
     var self = this;
     alertify.confirm("Clear all favorites?", function() {
       // Loop through all locations, pass favorites to toggleFavorite.
@@ -395,7 +395,7 @@ var ViewModel = function(data) {
     list: allTitlesForAutoComplete
   });
   inputMapLocation.addEventListener("awesomplete-selectcomplete",
-    function( item ) { this.openInfoWindow(item.target.value); }.bind(this)
+    function( item ) { self.openInfoWindow(item.target.value); }.bind(this)
   );
 
   // http://knockoutjs.com/examples/animatedTransitions.html
@@ -487,27 +487,27 @@ var ViewModel = function(data) {
 
   // init stuff.
   var initHasRun = false;
-  this.init = function() {
-    this.loadMapMarkers();
-    this.addListenerToMarker(this);
-    this.addRemoveLocations();
-    this.checkOrientation();
+  self.init = function() {
+    self.loadMapMarkers();
+    self.addListenerToMarker(this);
+    self.addRemoveLocations();
+    self.checkOrientation();
     // Prevents duplication of favorites.
-    if (!this.settingAlwaysShowFavorites) {
-      this.setFavorites();
+    if (!self.settingAlwaysShowFavorites) {
+      self.setFavorites();
     }
     // Close an infoWindow by clicking on an empty area on the map.
     google.maps.event.addDomListener(map, 'click',
-        function() { this.closeInfoWindow(); }.bind(this));
+        function() { self.closeInfoWindow(); }.bind(this));
   }
 
-  this.mapSearchInputText = ko.observable("");
+  self.mapSearchInputText = ko.observable("");
 
   // For the user interface, a list that can be filtered when text is typed.
   self.filteredLocationsList = ko.observableArray();
 
   // Combine self.favoriteLocationsList and self.filteredLocationsList.
-  this.dynamicLocationsList = ko.computed( function() {
+  self.dynamicLocationsList = ko.computed( function() {
     if (self.settingMoveFavoritesToTop() === true ) {
       return self.favoriteLocationsList().concat(self.filteredLocationsList());
     }
@@ -516,7 +516,7 @@ var ViewModel = function(data) {
     }
   }, self);
 
-  this.addListenerToMarker = function() {
+  self.addListenerToMarker = function() {
     markersArray.forEach( function( marker, position ) {
       var title = markersArray[position].title;
       marker.addListener('click', function() {
@@ -529,7 +529,7 @@ var ViewModel = function(data) {
   // Determine what text is shown when no locations are found, based on whether
   // settingAlwaysShowFavorites is checked or not.
   self.noLocationsFoundText = ko.observable();
-  this.addRemoveLocations = function (inputText, updateMarkers) {
+  self.addRemoveLocations = function (inputText, updateMarkers) {
     var self = this;
 
     // So far, the only time to not update markers is when toggling
@@ -562,7 +562,7 @@ var ViewModel = function(data) {
     // out, re-add all favorites once settingAlwaysShowFavorites is true.
     if (self.settingAlwaysShowFavorites()) {
       self.favoriteLocationsList.removeAll();
-      this.setFavorites();
+      self.setFavorites();
     };
 
     // isFavorite sets whether this is a list of favorites (true) or
@@ -680,14 +680,14 @@ var ViewModel = function(data) {
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
   // Check mapSearchInputText for inputText and update makeMapList
   // (after 300 ms delay) based on inputText.
-  this.mapSearchInputText.extend({ rateLimit: 300 });
-  this.mapSearchInputText.subscribe(function (inputText) {
-    this.addRemoveLocations(inputText);
+  self.mapSearchInputText.extend({ rateLimit: 300 });
+  self.mapSearchInputText.subscribe(function (inputText) {
+    self.addRemoveLocations(inputText);
   }, this);
 
   // Keep track of open infoWindow(s). Use to close the previous infoWindow.
   var openInfoWindows = [];
-  this.closeInfoWindow = function () {
+  self.closeInfoWindow = function () {
     // Check if there's at least one openInfoWindows defined. If there is,
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, clear the window hash, and remove the 'open' class from
@@ -699,13 +699,13 @@ var ViewModel = function(data) {
       // but not in mobile emulation in Chrome.
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
       window.location.hash = '';
-      this.errorMessageText('');
+      self.errorMessageText('');
     };
   }.bind(this);
 
-  this.currentMarkerLocation = '';
-  this.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
-  this.openInfoWindow = function (title) {
+  self.currentMarkerLocation = '';
+  self.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
+  self.openInfoWindow = function (title) {
     var self = this;
     // The 'list view' sends the title as an object.
     // In this case, the title is actually title.title.
@@ -725,11 +725,11 @@ var ViewModel = function(data) {
     var itemindex = self.matchTitle(title, initialLocations);
 
     window.location.hash = title.replace(/ /g, '%20');
-    this.currentMarkerLocation = initialLocations[itemindex].coordinates;
+    self.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
     // Center map on new marker and adjust pan in a few situations.
-    var lat = this.currentMarkerLocation[0];
-    var lng = this.currentMarkerLocation[1];
+    var lat = self.currentMarkerLocation[0];
+    var lng = self.currentMarkerLocation[1];
     var newLatLng = {lat: lat, lng: lng};
     var panByX, panByY;
     if (orientation === 'wide') {
@@ -743,7 +743,7 @@ var ViewModel = function(data) {
     // floating-panel-header, especially on iPhone 5 size screens.
     panByY = -135;
 
-    this.panMap(newLatLng, panByX , panByY);
+    self.panMap(newLatLng, panByX , panByY);
 
     // Bounce the marker for 2800 ms. This seems to be when it reaches the
     // down position.
@@ -770,7 +770,7 @@ var ViewModel = function(data) {
     // searchAPIsAndDisplayResults does two things:
     // 1. Search flickr for images and update pushFlickrImagesToDiv.
     // 2. Search yelp for business info and update yelpInfoWindowContent.
-    this.searchAPIsAndDisplayResults(title);
+    self.searchAPIsAndDisplayResults(title);
     if (jQuery.browser.mobile) {
       $("#collapse-locations").slideUp();
     }
@@ -785,8 +785,8 @@ var ViewModel = function(data) {
     * Flickr photo source urls, or, working with results of photo.search:
         https://www.flickr.com/services/api/misc.urls.html
   */
-  this.flickrSearchURL = ko.observable();
-  this.searchFlickr = function (query) {
+  self.flickrSearchURL = ko.observable();
+  self.searchFlickr = function (query) {
     // Set to '' otherwise later, += will cause undefined to be added to the
     // string.
     var flickrResultsString = '';
@@ -883,8 +883,8 @@ var ViewModel = function(data) {
     https://discussions.udacity.com/t/how-to-make-ajax-request-to-yelp-api/13699/24
     https://discussions.udacity.com/t/yelp-api-not-working/163965/4
   */
-  this.yelpInfoWindowContent = ko.observable();
-  this.searchYelp = function (query) {
+  self.yelpInfoWindowContent = ko.observable();
+  self.searchYelp = function (query) {
     var self = this;
     // $(document).ready fixes Yelp not working on Firefox (and maybe others)
     // when loading the page with a location in the hash.
@@ -967,9 +967,9 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Search Flickr, Yelp, and display results in the user interface.
-  this.searchAPIsAndDisplayResults = function (title) {
-    this.searchFlickr(title);
-    this.searchYelp(title);
+  self.searchAPIsAndDisplayResults = function (title) {
+    self.searchFlickr(title);
+    self.searchYelp(title);
   }.bind(this);
 
   // urlHash, init
@@ -978,13 +978,13 @@ var ViewModel = function(data) {
     var title = urlHash.replace(/%20/g, ' ').slice(1);
     // If openInfoWindow is run here without init, pushFlickrImagesToDiv
     // is not defined.
-    this.init();
+    self.init();
     initHasRun = true;
-    this.openInfoWindow(title);
+    self.openInfoWindow(title);
   }
 
   if (initHasRun !== true) {
-    this.init();
+    self.init();
   }
 
   // Misc UI observables
