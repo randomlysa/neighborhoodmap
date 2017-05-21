@@ -317,18 +317,64 @@ var ViewModel = function(data) {
 
   self.setupLocationLists();
 
-  // Get order of lists from UI.
+  // Save and get sortable lists.
+  self.manageSortable = function(sortable, action) {
+    if (action === 'get') {
+      var order = localStorage.getItem(sortable.el.id);
+      if (order) {
+        return order ? order.split('|') : [];
+      } else {
+        return null;
+      }
+    };
+    if (action === 'save') {
+      var order = sortable.toArray();
+      localStorage.setItem(sortable.el.id, order.join('|'));
+    };
+  }
+
+  // Make lists sortable.
   var groupAndSort = document.getElementById('groupAndSort');
   var leaveInline = document.getElementById('leaveInline');
   var overallPositions = document.getElementById('overallPositions');
 
-  var groupAndSort = Sortable.create(groupAndSort, {group: 'default', draggable: 'li'});
-  var leaveInline = Sortable.create(leaveInline, {group: 'default', draggable: 'li'});
-  var overallPositions = Sortable.create(overallPositions, {draggable: 'li'});
+  var groupAndSort = Sortable.create(groupAndSort, {group: 'defaultSortList', draggable: 'li',
+        onSort: function() { self.manageSortable(groupAndSort, 'save')} });
+  var leaveInline = Sortable.create(leaveInline, {group: 'defaultSortList', draggable: 'li',
+        onSort: function() { self.manageSortable(leaveInline, 'save')} });
+  var overallPositions = Sortable.create(overallPositions, {draggable: 'li',
+        onSort: function() { self.manageSortable(overallPositions, 'save')} });
 
-  var groupAndSortOrder = groupAndSort.el.innerText;
-  var leaveInline = leaveInline.el.innerText;
-  var overallPositions = overallPositions.el.innerText;
+
+  // Create default lists or get from storage if they exist.
+  self.groupAndSortItems = ko.computed( function() {
+    var items = self.manageSortable(groupAndSort, 'get');
+    if (items) {
+      return items;
+    } else {
+      return ['Favorite and Visited', 'Favorite', 'Visited']
+    }
+  });
+
+  self.leaveInlineItems = ko.computed( function() {
+    var items = self.manageSortable(leaveInline, 'get');
+    if (items) {
+      return items;
+    } else {
+      return ['Everything Else'];
+    }
+  });
+
+  self.overallPositionsItems = ko.computed( function() {
+    var items = self.manageSortable(overallPositions, 'get');
+    if (items) {
+      return items;
+    } else {
+      return ['Make Group', 'Leave Inline']
+    }
+  });
+
+
 
   Location.prototype.toggleProperty = function( mapItem, event, property) {
     var self = this;

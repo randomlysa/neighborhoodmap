@@ -70,25 +70,22 @@
 
               <div class="sortGroup">
                 <strong>Make Group</strong>
-                  <ul class="list-group" id="groupAndSort">
-                    <li class="list-group-item">Favorite and Visited</li>
-                    <li class="list-group-item">Favorite</li>
-                    <li class="list-group-item">Visited</li>
+                  <ul id="groupAndSort" data-bind="foreach: groupAndSortItems" class="list-group">
+                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
 
               <div class="sortGroup">
                 <strong>Leave Inline (Unsorted)</strong>
-                  <ul class="list-group" id="leaveInline" >
-                    <li class="list-group-item">Everything else</li>
+                <ul id="leaveInline" data-bind="foreach: leaveInlineItems" class="list-group">
+                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
 
               <div class="sortGroup">
                 <strong>Overall Positioning</strong>
-                  <ul class="list-group" id="overallPositions">
-                    <li class="list-group-item">Make Group</li>
-                    <li class="list-group-item">Leave Inline</li>
+                  <ul id="overallPositions" data-bind="foreach: overallPositionsItems" class="list-group">
+                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
 
