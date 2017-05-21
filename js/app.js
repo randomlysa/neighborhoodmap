@@ -324,47 +324,37 @@ var ViewModel = function(data) {
       //  return undefined (use default list).
       // If order isn't null, the group was emptied by the user and saved:
       //  return the empty array.
-      var order = localStorage.getItem(sortable.el.id);
+      var order = localStorage.getItem(sortable);
       return order === null ? undefined : order.split('|');
     };
     if (action === 'save') {
-      // Bug: dragging item into empty group makes item named '2qz' - why?
+      // Bug: dragging item into empty group and refreshing
+      // makes item named '2qz' - why?
       var order = sortable.toArray();
       localStorage.setItem(sortable.el.id, order.join('|'));
     };
   }
 
+  var sortableLocationLists = ['topSortableList', 'middleSortableList', 'bottomSortableList'];
   // Make lists sortable.
-  var groupAndSort = document.getElementById('groupAndSort');
-  var leaveInline = document.getElementById('leaveInline');
-  var overallPositions = document.getElementById('overallPositions');
+  sortableLocationLists.forEach( function ( list ) {
+    var list = document.getElementById(list);
+    list  = Sortable.create(list, {group: 'defaultSortList', draggable: 'li',
+        onSort: function() { self.manageSortable(list, 'save')} });
+  });
 
-  var groupAndSort = Sortable.create(groupAndSort, {group: 'defaultSortList', draggable: 'li',
-        onSort: function() { self.manageSortable(groupAndSort, 'save')} });
-  var leaveInline = Sortable.create(leaveInline, {group: 'defaultSortList', draggable: 'li',
-        onSort: function() { self.manageSortable(leaveInline, 'save')} });
-  var overallPositions = Sortable.create(overallPositions, {draggable: 'li',
-        onSort: function() { self.manageSortable(overallPositions, 'save')} });
-
-
-  // Create default lists or get from storage if they exist.
-  self.groupAndSortItems = ko.computed( function() {
-    var items = self.manageSortable(groupAndSort, 'get');
+  // Create default lists or get list order from storage if they exist.
+  self.topSortableList = ko.computed( function() {
+    var items = self.manageSortable('topSortableList', 'get');
     return items ? items : ['Favorite and Visited', 'Favorite', 'Visited'];
   });
-
-  self.leaveInlineItems = ko.computed( function() {
-    var items = self.manageSortable(leaveInline, 'get');
+  self.middleSortableList = ko.computed( function() {
+    var items = self.manageSortable('middleSortableList', 'get');
     return items ? items : ['Everything Else'];
   });
-
-  self.overallPositionsItems = ko.computed( function() {
-    var items = self.manageSortable(overallPositions, 'get');
-    if (items) {
-      return items;
-    } else {
-      return ['Make Group', 'Leave Inline']
-    }
+  self.bottomSortableList = ko.computed( function() {
+    var items = self.manageSortable('bottomSortableList', 'get');
+    return items || [""];
   });
 
 

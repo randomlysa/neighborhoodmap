@@ -69,22 +69,22 @@
             <div class="option">
 
               <div class="sortGroup">
-                <strong>Make Group</strong>
-                  <ul id="groupAndSort" data-bind="foreach: groupAndSortItems" class="list-group">
+                <strong>Top (Sorted)</strong>
+                  <ul id="topSortableList" data-bind="foreach: topSortableList" class="list-group">
                     <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
 
               <div class="sortGroup">
-                <strong>Leave Inline (Unsorted)</strong>
-                <ul id="leaveInline" data-bind="foreach: leaveInlineItems" class="list-group">
+                <strong>Middle (Unsorted)</strong>
+                <ul id="middleSortableList" data-bind="foreach: middleSortableList" class="list-group">
                     <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
 
               <div class="sortGroup">
-                <strong>Overall Positioning</strong>
-                  <ul id="overallPositions" data-bind="foreach: overallPositionsItems" class="list-group">
+                <strong>Bottom (Sorted)</strong>
+                  <ul id="bottomSortableList" data-bind="foreach: bottomSortableList" class="list-group">
                     <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
                   </ul>
               </div>
