@@ -98,7 +98,8 @@ var ViewModel = function(data) {
     return self.displayOptionsStatus(!self.displayOptionsStatus());
   };
 
-  // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting.
+  // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting,
+  // getAllSettings (IIFE).
 
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
@@ -153,11 +154,25 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
-  // Misc settings that don't fit elsewhere.
+  this.getAllSettings = (function() {
+    // List all settings.
+    var allSettings = [
+      'alwaysShowFavorites',
+      'moveFavoritesToTop',
+      'displayBeenHereColumn',
+      'displayErrorMessage',
+      'displayCustomMapMarkers'
+    ];
 
-  self.settingDisplayBeenHereColumn = ko.observable(
-    self.getSetting('displayBeenHereColumn')
-  );
+    // Get gettings from storage.
+    allSettings.forEach( function(setting) {
+      // convert setting into settingSettingName
+      var settingName = 'setting' + setting[0].toUpperCase() + setting.slice(1);
+      self[settingName] = ko.observable(
+        self.getSetting(setting)
+      );
+    });
+  })();
 
   // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
   // checkOrientation, collapseLocationDiv, setFavorites, toggleProperty,
@@ -278,12 +293,6 @@ var ViewModel = function(data) {
   // An observable array for favorites, to move favorite locations to the top
   // of the list.
   self.favoriteLocationsList = ko.observableArray();
-  self.settingAlwaysShowFavorites = ko.observable(
-    self.getSetting('alwaysShowFavorites')
-  );
-  self.settingMoveFavoritesToTop = ko.observable(
-    self.getSetting('moveFavoritesToTop')
-  );
 
   // Set up self.favoriteLocationsList from initialLocations,
   // which should have been loaded from local storage if it existed there.
@@ -413,10 +422,6 @@ var ViewModel = function(data) {
     }
   };
 
-  // Some variables for errors.
-  self.settingDisplayErrorMessage = ko.observable(
-    self.getSetting('displayErrorMessage')
-  );
   self.errorMessageText = ko.observable();
   // Only display the error message when the setting is true and
   // there is text to display.
@@ -427,10 +432,6 @@ var ViewModel = function(data) {
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocations, closeInfoWindow, openInfoWindow.
-
-  self.settingDisplayCustomMapMarkers = ko.observable(
-    self.getSetting('displayCustomMapMarkers')
-  );
 
   // Keep track of markers.
   var markersArray = [];
