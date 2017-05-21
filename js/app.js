@@ -328,6 +328,7 @@ var ViewModel = function(data) {
       return order === null ? undefined : order.split('|');
     };
     if (action === 'save') {
+      // Bug: dragging item into empty group makes item named '2qz' - why?
       var order = sortable.toArray();
       localStorage.setItem(sortable.el.id, order.join('|'));
     };
