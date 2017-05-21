@@ -93,11 +93,6 @@ var Location = function(data) {
 var ViewModel = function(data) {
   var self = this;
 
-  self.displayOptionsStatus = ko.observable(false);
-  self.displayOptions = function () {
-    return self.displayOptionsStatus(!self.displayOptionsStatus());
-  };
-
   // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting,
   // getAllSettings (IIFE).
 
@@ -987,4 +982,17 @@ var ViewModel = function(data) {
   if (initHasRun !== true) {
     this.init();
   }
+
+  // Misc UI observables
+
+  self.displayOptionsStatus = ko.observable(false);
+  self.displayOptions = function () {
+    return self.displayOptionsStatus(!self.displayOptionsStatus());
+  };
+
+  self.disableClearAllFavoritesButton = ko.computed(function() {
+    if (self.favoriteLocationsList().length > 0) { return false; }
+    else {return true;}
+  });
+
 };

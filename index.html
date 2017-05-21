@@ -36,7 +36,9 @@
           <div id="options" data-bind="fadeVisible: displayOptionsStatus">
             <div class="option text-right">
               <a href="#" data-bind="click: clearAllFavorites">
-                <button type="button" class="btn btn-small btn-danger btn-block">Clear All Favorites</button>
+                <button type="button" class="btn btn-small btn-danger btn-block"
+                data-bind="attr: {disabled: disableClearAllFavoritesButton}">
+                  Clear All Favorites</button>
               </a>
           </div>
             <div class="option">
