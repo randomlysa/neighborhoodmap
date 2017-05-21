@@ -495,7 +495,7 @@ var ViewModel = function(data) {
     this.addRemoveLocations();
     this.checkOrientation();
     // Prevents duplication of favorites.
-    if (!this.alwaysShowFavorites) {
+    if (!this.settingAlwaysShowFavorites) {
       this.setFavorites();
     }
     // Close an infoWindow by clicking on an empty area on the map.
@@ -529,7 +529,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Determine what text is shown when no locations are found, based on whether
-  // alwaysShowFavorites is checked or not.
+  // settingAlwaysShowFavorites is checked or not.
   self.noLocationsFoundText = ko.observable();
   this.addRemoveLocations = function (inputText, updateMarkers) {
     var self = this;
@@ -546,11 +546,11 @@ var ViewModel = function(data) {
       correctLocationsList is the list that determines when a message is shown
       that indicates that no locations have been found.
 
-      If alwaysShowFavorites is false, then self.favoriteLocationsList can be
+      If settingAlwaysShowFavorites is false, then self.favoriteLocationsList can be
       filtered, and there should be a message when the entire list, ie
       self.dynamicLocationsList, is empty.
 
-      If alwaysShowFavorites is true, then there should be a message when
+      If settingAlwaysShowFavorites is true, then there should be a message when
       self.filteredLocationsList is empty, because self.favoriteLocationsList
       will not be changed.
 
@@ -560,8 +560,8 @@ var ViewModel = function(data) {
     var correctLocationsList = self.filteredLocationsList;
     self.noLocationsFoundText('No Locations Found');
 
-    // If alwaysShowFavorites was false and favorites have been filtered out,
-    // re-add all favorites once alwaysShowFavorites is true.
+    // If settingAlwaysShowFavorites was false and favorites have been filtered out,
+    // re-add all favorites once settingAlwaysShowFavorites is true.
     if (self.settingAlwaysShowFavorites()) {
       self.favoriteLocationsList.removeAll();
       this.setFavorites();
@@ -581,7 +581,7 @@ var ViewModel = function(data) {
         if (isFavorite === null || isFavorite === Boolean(mapItem.favorite)) {
           if (inputText) {
             $( '#collapse-locations').css('display', 'inline');
-            // If alwaysShowFavorites === true and moveFavoritesToTop == false,
+            // If settingAlwaysShowFavorites === true and moveFavoritesToTop == false,
             // favorites need to be added regardless of the inputText because
             // self.favoriteLocationsList will not be shown.
             if (Boolean(self.settingAlwaysShowFavorites()) === true &&
@@ -606,7 +606,7 @@ var ViewModel = function(data) {
       });
     }
 
-    // If !alwaysShowFavorites; ie, filter favorites.
+    // If !settingAlwaysShowFavorites; ie, filter favorites.
     if (!self.settingAlwaysShowFavorites()) {
       var correctLocationsList = self.dynamicLocationsList;
       self.favoriteLocationsList.removeAll();
@@ -614,7 +614,7 @@ var ViewModel = function(data) {
       // Push favorites in initialLocations to self.favoriteLocationsList
       filterLocationList (initialLocations, self.favoriteLocationsList, true);
 
-    // If alwaysShowFavorites.length > 0 and there are favorites selected
+    // If settingAlwaysShowFavorites.length > 0 and there are favorites selected
     // by the user, update self.noLocationsFoundText ('the error message.')
     } else {
       if (self.favoriteLocationsList().length > 0) {
@@ -631,7 +631,7 @@ var ViewModel = function(data) {
     self.sortList(self.filteredLocationsList);
 
     // Handle error case:
-    // If alwaysShowFavorites === true and moveFavoritesToTop === false.
+    // If settingAlwaysShowFavorites === true and moveFavoritesToTop === false.
     // In this case, correctLocationsList().length is never 0 if there is a
     // favorite marked, because favorites are in the same list as the rest of
     // the locations.
