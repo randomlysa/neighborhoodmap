@@ -285,19 +285,50 @@ var ViewModel = function(data) {
       }
   }.bind(this);
 
-  // An observable array for favorites, to move favorite locations to the top
-  // of the list.
-  self.favoriteLocationsList = ko.observableArray();
+  // Observable arrays for different item types.
+  var allLists = [
+    'favoriteAndBeenhereLocationsList',
+    'favoriteLocationsList',
+    'beenhereLocationsList',
+    'otherLocationsList',
+  ];
 
-  // Set up self.favoriteLocationsList from initialLocations,
-  // which should have been loaded from local storage if it existed there.
-  self.setFavorites = function() {
+  allLists.forEach( function(list) {
+    self[list] = ko.observableArray();
+  });
+
+  // Set up the different lists from initialLocations.
+  self.setupLocationLists = function() {
     initialLocations.forEach( function ( mapItem ) {
-      if (mapItem.favorite === true) {
+      if (mapItem.favorite === true && mapItem.beenHereDisabled === false) {
+        self.favoriteAndBeenhereLocationsList.push( new Location(mapItem) );
+      }
+      else if (mapItem.favorite === true) {
         self.favoriteLocationsList.push( new Location(mapItem) );
+      }
+      else if (mapItem.beenHereDisabled === false) {
+        self.beenhereLocationsList.push( new Location(mapItem) );
+      }
+      else {
+        self.otherLocationsList.push( new Location(mapItem) );
       }
     });
   }
+
+  self.setupLocationLists();
+
+  // Get order of lists from UI.
+  var groupAndSort = document.getElementById('groupAndSort');
+  var leaveInline = document.getElementById('leaveInline');
+  var overallPositions = document.getElementById('overallPositions');
+
+  var groupAndSort = Sortable.create(groupAndSort, {group: 'default', draggable: 'li'});
+  var leaveInline = Sortable.create(leaveInline, {group: 'default', draggable: 'li'});
+  var overallPositions = Sortable.create(overallPositions, {draggable: 'li'});
+
+  var groupAndSortOrder = groupAndSort.el.innerText;
+  var leaveInline = leaveInline.el.innerText;
+  var overallPositions = overallPositions.el.innerText;
 
   Location.prototype.toggleProperty = function( mapItem, event, property) {
     var self = this;
@@ -494,7 +525,7 @@ var ViewModel = function(data) {
     self.checkOrientation();
     // Prevents duplication of favorites.
     if (!self.settingAlwaysShowFavorites) {
-      self.setFavorites();
+      self.setupLocationLists;
     }
     // Close an infoWindow by clicking on an empty area on the map.
     google.maps.event.addDomListener(map, 'click',
@@ -562,7 +593,7 @@ var ViewModel = function(data) {
     // out, re-add all favorites once settingAlwaysShowFavorites is true.
     if (self.settingAlwaysShowFavorites()) {
       self.favoriteLocationsList.removeAll();
-      self.setFavorites();
+      self.setupLocationLists();
     };
 
     // isFavorite sets whether this is a list of favorites (true) or
