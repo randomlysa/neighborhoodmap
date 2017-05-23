@@ -285,20 +285,25 @@ var ViewModel = function(data) {
       }
   }.bind(this);
 
+
+
+
   // Observable arrays for different item types.
-  var allLists = [
+  [
     'favoriteAndBeenhereLocationsList',
     'favoriteLocationsList',
     'beenhereLocationsList',
     'otherLocationsList',
-  ];
-
-  allLists.forEach( function(list) {
+  ].forEach( function(list) {
     self[list] = ko.observableArray();
   });
 
   // Set up the different lists from initialLocations.
   self.setupLocationLists = function() {
+    self.favoriteAndBeenhereLocationsList.removeAll();
+    self.favoriteLocationsList.removeAll();
+    self.beenhereLocationsList.removeAll();
+    self.otherLocationsList.removeAll();
     initialLocations.forEach( function ( mapItem ) {
       if (mapItem.favorite === true && mapItem.beenHereDisabled === false) {
         self.favoriteAndBeenhereLocationsList.push( new Location(mapItem) );
@@ -357,8 +362,7 @@ var ViewModel = function(data) {
     return items || [""];
   });
 
-
-
+  // Toggle property (currently favorite or beenHereDisabled) on a Location.
   Location.prototype.toggleProperty = function( mapItem, event, property) {
     var self = this;
 
@@ -568,12 +572,50 @@ var ViewModel = function(data) {
 
   // Combine self.favoriteLocationsList and self.filteredLocationsList.
   self.dynamicLocationsList = ko.computed( function() {
-    if (self.settingMoveFavoritesToTop() === true ) {
-      return self.favoriteLocationsList().concat(self.filteredLocationsList());
+    self.setupLocationLists();
+
+    var addedArrays = [];
+    var listOfLocations = [];
+
+    var convertNameToList = {
+     'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
+     'Favorite': 'favoriteLocationsList',
+     'Visited': 'beenhereLocationsList',
+     'Everything Else': 'otherLocationsList'
     }
-    if (self.settingMoveFavoritesToTop() === false) {
-      return self.filteredLocationsList();
-    }
+
+    // Take an array of locations and push each location to an array.
+    var addToArray = function( arrayToProcess, arrayToPushTo ) {
+      if (!arrayToPushTo) { arrayToPushTo = listOfLocations; }
+      if (arrayToProcess !== undefined) {
+        self[arrayToProcess]().forEach( function( item ) {
+          arrayToPushTo.push( item );
+        });
+      }
+    };
+
+    // Loop through the three arrays (top/middle/bottom), then loop through
+    // the lists contained in each array. Use addToArray to add items in the
+    // location array to a list.
+
+    // This will match the location list order to the order selected in the UI.
+    sortableLocationLists.forEach( function( locationLists ) {
+      self[locationLists]().forEach( function ( locationList, index, array ) {
+        // If the array contains 'Everything Else'...
+        // TODO: The middle section is not unsorted...
+        if( array.indexOf('Everything Else') !== -1 ) {
+          array.forEach( function ( list ) {
+            if (addedArrays.indexOf(list) === -1) {
+              addedArrays.push(list);
+              addToArray(convertNameToList[list]);
+            }
+          })
+        } else {
+          addToArray(convertNameToList[locationList]);
+        }
+      });
+    });
+    return listOfLocations;
   }, self);
 
   self.addListenerToMarker = function() {
@@ -1058,3 +1100,5 @@ var ViewModel = function(data) {
     else {return true;}
   });
 };
+
+
