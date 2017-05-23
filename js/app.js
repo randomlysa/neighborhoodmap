@@ -568,8 +568,13 @@ var ViewModel = function(data) {
   // For the user interface, a list that can be filtered when text is typed.
   self.filteredLocationsList = ko.observableArray();
 
-  // Combine self.favoriteLocationsList and self.filteredLocationsList.
+  // Set up the list in the order specified in the UI or return a filtered list
+  // if text has been entered into the textbox.
   self.dynamicLocationsList = ko.computed( function() {
+    if (self.mapSearchInputText()) {
+      return self.filteredLocationsList();
+    }
+
     self.setupLocationLists();
 
     var addedArrays = [];
@@ -626,154 +631,58 @@ var ViewModel = function(data) {
 
   }.bind(this);
 
-  // Determine what text is shown when no locations are found, based on whether
-  // settingAlwaysShowFavorites is checked or not.
-  self.noLocationsFoundText = ko.observable();
   self.addRemoveLocations = function (inputText, updateMarkers) {
     var self = this;
 
-    // So far, the only time to not update markers is when toggling
-    // moveFavoritesToTop.
-    if (updateMarkers === undefined) {
-      updateMarkers = true;
-    }
-
     // Remove items from filteredLocationsList.
     self.filteredLocationsList.removeAll();
-    /*
-      correctLocationsList is the list that determines when a message is shown
-      that indicates that no locations have been found.
 
-      If settingAlwaysShowFavorites is false, then self.favoriteLocationsList
-      can be filtered, and there should be a message when the entire list, ie
-      self.dynamicLocationsList, is empty.
-
-      If settingAlwaysShowFavorites is true, then there should be a message when
-      self.filteredLocationsList is empty, because self.favoriteLocationsList
-      will not be changed.
-
-      self.dynamicLocationsList contains both self.favoriteLocationsList
-      and self.filteredLocationsList.
-    */
-    var correctLocationsList = self.filteredLocationsList;
-    self.noLocationsFoundText('No Locations Found');
-
-    // If settingAlwaysShowFavorites was false and favorites have been filtered
-    // out, re-add all favorites once settingAlwaysShowFavorites is true.
-    if (self.settingAlwaysShowFavorites()) {
-      self.favoriteLocationsList.removeAll();
-      self.setupLocationLists();
-    };
-
-    // isFavorite sets whether this is a list of favorites (true) or
-    // list of filtered items (false.)
-    function filterLocationList( arrayToFilter, arrayToPushTo, isFavorite) {
-      // By setting isFavorite to null, all mapItem(s) will be processed
-      // by arrayToFilter.forEach(). Also, the ko.computed for
-      // self.dynamicLocationsList will only be self.filteredLocationList, and
-      // self.filteredLocationList will not be shown.
-      if (self.settingMoveFavoritesToTop() === false) {
-        isFavorite = null;
-      }
-      arrayToFilter.forEach( function(mapItem){
-        if (isFavorite === null || isFavorite === Boolean(mapItem.favorite)) {
-          if (inputText) {
-            $( '#collapse-locations').css('display', 'inline');
-            // If settingAlwaysShowFavorites === true and moveFavoritesToTop ==
-            // false, favorites need to be added regardless of the inputText
-            // because self.favoriteLocationsList will not be shown.
-            if (Boolean(self.settingAlwaysShowFavorites()) === true
-                && Boolean(self.settingMoveFavoritesToTop()) === false
-                && Boolean(mapItem.favorite) === true)
-            {
-              arrayToPushTo.push( new Location(mapItem) );
-            }
-            else if (
-              mapItem.title.toLowerCase().includes(inputText.toLowerCase())
-            ) {
-              arrayToPushTo.push( new Location(mapItem) );
-            }
-          }
-          if (!inputText) {
-            // No letters input, return all items.
-            if (jQuery.browser.mobile) {
-              $( '#collapse-locations').css('display', 'none');
-            }
+    function filterLocationList( arrayToFilter, arrayToPushTo) {
+      arrayToFilter.forEach( function(mapItem) {
+        if (inputText
+            && mapItem.title.toLowerCase().includes(inputText.toLowerCase()))
+        {
+          // $( '#collapse-locations').css('display', 'inline');
             arrayToPushTo.push( new Location(mapItem) );
-          }
+        }
+        if (!inputText) {
+          // No letters input, return all items.
+          // if (jQuery.browser.mobile) {
+          //   $( '#collapse-locations').css('display', 'none');
+          // }
+          arrayToPushTo.push( new Location(mapItem) );
         }
       });
-    }
-
-    // If !settingAlwaysShowFavorites; ie, filter favorites.
-    if (!self.settingAlwaysShowFavorites()) {
-      var correctLocationsList = self.dynamicLocationsList;
-      self.favoriteLocationsList.removeAll();
-
-      // Push favorites in initialLocations to self.favoriteLocationsList
-      filterLocationList (initialLocations, self.favoriteLocationsList, true);
-
-    // If settingAlwaysShowFavorites.length > 0 and there are favorites selected
-    // by the user, update self.noLocationsFoundText ('the error message.')
-    } else {
-      if (self.favoriteLocationsList().length > 0) {
-        self.noLocationsFoundText('No locations found. Displaying favorites.')
-      }
-    }
-
+    };
     // Filter non-favorites (runs always)
     // push items from initialLocations that match input text to
     // self.filteredLocationsList.
-    filterLocationList (initialLocations, self.filteredLocationsList, false);
+    filterLocationList (initialLocations, self.filteredLocationsList);
 
     // Sort list alphabetically.
     self.sortList(self.filteredLocationsList);
 
-    // Handle error case:
-    // If settingAlwaysShowFavorites === true and moveFavoritesToTop === false.
-    // In this case, correctLocationsList().length is never 0 if there is a
-    // favorite marked, because favorites are in the same list as the rest of
-    // the locations.
-    if (Boolean(self.settingAlwaysShowFavorites()) === true
-        && Boolean(self.settingMoveFavoritesToTop()) === false
-        && correctLocationsList().length ===
-           self.favoriteLocationsList().length)
-    {
-        var showError = true;
+    // Add/remove markers from the map.
+    // First check if markersArray has been created.
+    if (typeof markersArray !== 'undefined') {
+      // Make an array of self.dynamicLocationsList titles.
+      var dynamicLocationsListTitles = [];
+      self.dynamicLocationsList().forEach(function (Location) {
+        dynamicLocationsListTitles.push(Location.title);
+      });
 
-    }
-
-    if(showError === true || inputText && correctLocationsList().length === 0) {
-      $( '#no-locations-found' ).css('display', 'inline');
-    } else {
-      $( '#no-locations-found' ).css('display', 'none');
-    }
-
-    // So far, the only time to not update markers is when toggling
-    // moveFavoritesToTop.
-    if (updateMarkers === true) {
-      // Add/remove markers from the map.
-      // First check if markersArray has been created.
-      if (typeof markersArray !== 'undefined') {
-        // Make an array of self.dynamicLocationsList titles.
-        var dynamicLocationsListTitles = [];
-        self.dynamicLocationsList().forEach(function (Location) {
-          dynamicLocationsListTitles.push(Location.title);
-        });
-
-        // Loop through markers array and check if the marker title is in
-        // self.dynamicLocationsListTitles. If it is not, remove the marker
-        // from the map. Otherwise, set the marker to this map.
-        markersArray.forEach( function(item, position) {
-          var title = markersArray[position].title;
-          var result = dynamicLocationsListTitles.indexOf(item.title);
-          if (result === -1) {
-            markersArray[position].setMap(null);
-          } else {
-            markersArray[position].setMap(map);
-          }
-        });
-      }
+      // Loop through markers array and check if the marker title is in
+      // self.dynamicLocationsListTitles. If it is not, remove the marker
+      // from the map. Otherwise, set the marker to this map.
+      markersArray.forEach( function(item, position) {
+        var title = markersArray[position].title;
+        var result = dynamicLocationsListTitles.indexOf(item.title);
+        if (result === -1) {
+          markersArray[position].setMap(null);
+        } else {
+          markersArray[position].setMap(map);
+        }
+      });
     }
   }.bind(this);
 
@@ -1098,5 +1007,3 @@ var ViewModel = function(data) {
     else {return true;}
   });
 };
-
-
