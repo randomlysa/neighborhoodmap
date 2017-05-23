@@ -132,12 +132,6 @@ var ViewModel = function(data) {
     settings[option] = setting;
     self.saveToStorage();
 
-    // For moveFavoritesToTop checkbox, do not redraw map markers because
-    // they should not change.
-    if (option === 'moveFavoritesToTop') {
-      var redrawMapMarkers = false;
-    }
-
     if (option === 'displayCustomMapMarkers') {
       self.updateMarkerIcons();
     }
@@ -153,7 +147,6 @@ var ViewModel = function(data) {
     // List all settings.
     var allSettings = [
       'alwaysShowFavorites',
-      'moveFavoritesToTop',
       'displayBeenHereColumn',
       'displayErrorMessage',
       'displayCustomMapMarkers'
@@ -408,7 +401,9 @@ var ViewModel = function(data) {
       mapItem[propertyToUpdate](false);
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = false;
-      // For favorites only.
+
+      // moveFavoritesToTop was removed but this might be useful later.
+      /*
       if (propertyToUpdate === 'favorite'
           && self.settingMoveFavoritesToTop() === true)
       {
@@ -416,6 +411,7 @@ var ViewModel = function(data) {
         self.filteredLocationsList.push( mapItem );
         self.sortList(self.filteredLocationsList);
       }
+      */
     }
     // Toggle property to true.
     else if (Boolean(mapItem[propertyToUpdate]()) === false) {
@@ -424,13 +420,15 @@ var ViewModel = function(data) {
       mapItem[propertyToUpdate](true);
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = true;
-      // For favorites only.
+      // moveFavoritesToTop was removed but this might be useful later.
+      /*
       if (propertyToUpdate === 'favorite'
           && self.settingMoveFavoritesToTop() === true)
       {
         self.filteredLocationsList.splice(itemIndexInFiltered, 1);
         self.favoriteLocationsList.push( mapItem );
       }
+      */
     }
 
     self.saveToStorage();
