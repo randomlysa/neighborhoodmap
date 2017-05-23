@@ -136,8 +136,8 @@ var ViewModel = function(data) {
       self.updateMarkerIcons();
     }
 
-    // Send currently input text to addRemoveLocations.
-    self.addRemoveLocations(self.mapSearchInputText(), redrawMapMarkers);
+    // Send currently input text to addRemoveLocationsAndMapMarkers.
+    self.addRemoveLocationsAndMapMarkers(self.mapSearchInputText(), redrawMapMarkers);
 
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
@@ -490,7 +490,7 @@ var ViewModel = function(data) {
   });
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
-  // addRemoveLocations, closeInfoWindow, openInfoWindow.
+  // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow.
 
   // Keep track of markers.
   var markersArray = [];
@@ -552,7 +552,7 @@ var ViewModel = function(data) {
   self.init = function() {
     self.loadMapMarkers();
     self.addListenerToMarker(this);
-    self.addRemoveLocations();
+    self.addRemoveLocationsAndMapMarkers();
     self.checkOrientation();
     // Prevents duplication of favorites.
     if (!self.settingAlwaysShowFavorites) {
@@ -631,7 +631,7 @@ var ViewModel = function(data) {
 
   }.bind(this);
 
-  self.addRemoveLocations = function (inputText, updateMarkers) {
+  self.addRemoveLocationsAndMapMarkers = function (inputText, updateMarkers) {
     var self = this;
 
     // Remove items from filteredLocationsList.
@@ -691,7 +691,7 @@ var ViewModel = function(data) {
   // (after 300 ms delay) based on inputText.
   self.mapSearchInputText.extend({ rateLimit: 300 });
   self.mapSearchInputText.subscribe(function (inputText) {
-    self.addRemoveLocations(inputText);
+    self.addRemoveLocationsAndMapMarkers(inputText);
   }, this);
 
   // Keep track of open infoWindow(s). Use to close the previous infoWindow.
