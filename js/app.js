@@ -365,7 +365,7 @@ var ViewModel = function(data) {
 
     // For clearAllFavorites, there is no event.target.innerText
     if (event) {
-      var innerText = event.target.innerText;
+      var innerText = event.target.innerText.trim();
 
       // Which property to toggle.
       if (innerText === 'bookmark_border' || innerText === 'bookmark') {
@@ -381,22 +381,30 @@ var ViewModel = function(data) {
       var propertyToUpdate = property;
     }
 
+    // Used by whichList to lookup what LocationsList the item is is.
+    var itemToListLookup = {
+    'truetrue' : 'favoriteAndBeenhereLocationsList',
+    'truefalse' : 'favoriteLocationsList',
+    'falsetrue' : 'beenhereLocationsList',
+    'falsefalse' : 'otherLocationsList',
+    };
+
+    // Check what list the item currently belongs to based on favorite/beenhere.
+    var whichList = function() {
+      return itemToListLookup[
+        Boolean(mapItem.favorite()) + "" + Boolean(mapItem.beenhere())
+      ];
+    }
+
+    // Remove item from the list it is in.
+    self[whichList()].remove(mapItem);
+
     // Find item in initialLocations, because initialLocations is what
     // is saved to local storage.
     var initialLocationsMapItemToUpdate = initialLocations.find(
       function( tempMapItem ) {
         return tempMapItem.title === mapItem.title;
     })
-
-    // Gets the index of the mapItem in each array
-    var itemIndexInFavorites = self.matchTitle(mapItem.title,
-      self.favoriteLocationsList());
-    var itemIndexInFiltered = self.matchTitle(mapItem.title,
-      self.filteredLocationsList());
-
-    // TODO: make this code more concise.
-    // Using !Boolean( item.favorite() ) to toggle the favorite causes the
-    // favorite to not be saved.
 
     // Toggle property to false.
     if (Boolean(mapItem[propertyToUpdate]()) === true) {
@@ -405,17 +413,6 @@ var ViewModel = function(data) {
       mapItem[propertyToUpdate](false);
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = false;
-
-      // moveFavoritesToTop was removed but this might be useful later.
-      /*
-      if (propertyToUpdate === 'favorite'
-          && self.settingMoveFavoritesToTop() === true)
-      {
-        self.favoriteLocationsList.splice(itemIndexInFavorites, 1);
-        self.filteredLocationsList.push( mapItem );
-        self.sortList(self.filteredLocationsList);
-      }
-      */
     }
     // Toggle property to true.
     else if (Boolean(mapItem[propertyToUpdate]()) === false) {
@@ -424,16 +421,10 @@ var ViewModel = function(data) {
       mapItem[propertyToUpdate](true);
       // Update initialLocations because it get saved to local storage.
       initialLocationsMapItemToUpdate[propertyToUpdate] = true;
-      // moveFavoritesToTop was removed but this might be useful later.
-      /*
-      if (propertyToUpdate === 'favorite'
-          && self.settingMoveFavoritesToTop() === true)
-      {
-        self.filteredLocationsList.splice(itemIndexInFiltered, 1);
-        self.favoriteLocationsList.push( mapItem );
-      }
-      */
     }
+
+    // Add item to the list it now belongs to.
+    self[whichList()].push(mapItem);
 
     self.saveToStorage();
   }.bind(this);
@@ -578,8 +569,6 @@ var ViewModel = function(data) {
     if (self.mapSearchInputText()) {
       return self.filteredLocationsList();
     }
-
-    self.setupLocationLists();
 
     var addedArrays = [];
     var listOfLocations = [];
