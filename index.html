@@ -47,9 +47,9 @@
               <label for="alwaysShowFavorites">Always Show Favorites</label>
             </div>
             <div class="option">
-              <input type="checkbox" id="displayBeenHereColumn" data-bind="checked: settingDisplayBeenHereColumn, click:
+              <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
                 toggleAndSaveSetting">
-              <label for="displayBeenHereColumn">Display Been Here Column</label>
+              <label for="displayBeenhereColumn">Display Been Here Column</label>
             </div>
             <div class="option">
               <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
@@ -99,9 +99,9 @@
             </span>
 
             <span data-bind="click: Location.prototype.toggleProperty,
-              if: $parent.settingDisplayBeenHereColumn">
-              <i class="link material-icons md-18"
-                data-bind="css: {'md-dark md-inactive': beenHereDisabled }">
+              if: $parent.settingDisplayBeenhereColumn">
+              <i class="link material-icons"
+                data-bind="css: beenhereCSS">
                 beenhere
               </i>
             </span>

@@ -77,6 +77,7 @@ if (!initialLocations) {
 }
 
 var Location = function(data) {
+  var self = this;
   this.title = data.title;
   this.coordinates = data.coordinates;
   this.type = data.type;
@@ -85,9 +86,12 @@ var Location = function(data) {
   this.favoriteText = ko.pureComputed( function() {
     return this.favorite() === true ? "bookmark" : "bookmark_border";
   }, this);
-  // Determine if the beenhere icon should be disabled. Default to true.
-  if (data.beenHereDisabled === undefined) { data.beenHereDisabled = true; }
-  this.beenHereDisabled = ko.observable(data.beenHereDisabled);
+  // Default the beenhere icon to false.
+  if (data.beenhere === undefined) { data.beenhere = false; }
+  this.beenhere = ko.observable(data.beenhere);
+  this.beenhereCSS = ko.computed( function() {
+    return self.beenhere() ? '' : 'md-dark md-inactive';
+  })
 };
 
 var ViewModel = function(data) {
@@ -147,7 +151,7 @@ var ViewModel = function(data) {
     // List all settings.
     var allSettings = [
       'alwaysShowFavorites',
-      'displayBeenHereColumn',
+      'displayBeenhereColumn',
       'displayErrorMessage',
       'displayCustomMapMarkers'
     ];
@@ -298,13 +302,13 @@ var ViewModel = function(data) {
     self.beenhereLocationsList.removeAll();
     self.otherLocationsList.removeAll();
     initialLocations.forEach( function ( mapItem ) {
-      if (mapItem.favorite === true && mapItem.beenHereDisabled === false) {
+      if (mapItem.favorite === true && mapItem.beenhere === true) {
         self.favoriteAndBeenhereLocationsList.push( new Location(mapItem) );
       }
       else if (mapItem.favorite === true) {
         self.favoriteLocationsList.push( new Location(mapItem) );
       }
-      else if (mapItem.beenHereDisabled === false) {
+      else if (mapItem.beenhere === true) {
         self.beenhereLocationsList.push( new Location(mapItem) );
       }
       else {
@@ -355,7 +359,7 @@ var ViewModel = function(data) {
     return items || [""];
   });
 
-  // Toggle property (currently favorite or beenHereDisabled) on a Location.
+  // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function( mapItem, event, property) {
     var self = this;
 
@@ -368,7 +372,7 @@ var ViewModel = function(data) {
         var propertyToUpdate = 'favorite';
       }
       if (innerText === 'beenhere') {
-        var propertyToUpdate = 'beenHereDisabled'
+        var propertyToUpdate = 'beenhere'
       }
     }
 
