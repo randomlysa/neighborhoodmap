@@ -341,8 +341,13 @@ var ViewModel = function(data) {
   // Make lists sortable.
   sortableLocationLists.forEach( function ( list ) {
     var list = document.getElementById(list);
-    list  = Sortable.create(list, {group: 'defaultSortList', draggable: 'li',
-        onSort: function() { self.manageSortable(list, 'save')} });
+    list  = Sortable.create(list, {
+      group: 'defaultSortList',
+      draggable: 'li',
+      onSort: function() {
+        self.manageSortable(list, 'save')
+      }
+    });
   });
 
   // Create default lists or get list order from storage if they exist.
