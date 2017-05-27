@@ -341,9 +341,12 @@ var ViewModel = function(data) {
       return order === null ? undefined : self[sortable + "Observable"]();
     };
     if (action === 'save') {
-      // Bug: dragging item into empty group and refreshing the page
-      // makes item named '2qz' - why?
+      // Bug dragging item into empty group and refreshing the page makes an
+      // extra item named '2qz'.
       var order = sortable.toArray();
+      if (order.indexOf("2qz") !== -1) {
+        var newOrder = order.splice( order.indexOf("2qz"), 1)
+      }
       localStorage.setItem(sortable.el.id, order.join('|'));
     };
   }
