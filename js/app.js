@@ -326,11 +326,22 @@ var ViewModel = function(data) {
       //  return undefined (use default list).
       // If order isn't null, the group was emptied by the user and saved:
       //  return the empty array.
+
+      // Convert sortable object to sortable name.
+      if (typeof(sortable) === 'object') { sortable = sortable.el.id; }
       var order = localStorage.getItem(sortable);
-      return order === null ? undefined : order.split('|');
+      // Bug: sometimes duplicate items are made when dragging from one list
+      // to another.
+      if (order) {
+        self[sortable + "Observable"].removeAll();
+        order.split('|').forEach( function ( item ) {
+          self[sortable + "Observable"].push(item);
+        })
+      }
+      return order === null ? undefined : self[sortable + "Observable"]();
     };
     if (action === 'save') {
-      // Bug: dragging item into empty group and refreshing
+      // Bug: dragging item into empty group and refreshing the page
       // makes item named '2qz' - why?
       var order = sortable.toArray();
       localStorage.setItem(sortable.el.id, order.join('|'));
@@ -340,12 +351,14 @@ var ViewModel = function(data) {
   var sortableLocationLists = ['topSortableList', 'middleSortableList', 'bottomSortableList'];
   // Make lists sortable.
   sortableLocationLists.forEach( function ( list ) {
+    self[list + "Observable"] = ko.observableArray();
     var list = document.getElementById(list);
     list  = Sortable.create(list, {
       group: 'defaultSortList',
       draggable: 'li',
       onSort: function() {
-        self.manageSortable(list, 'save')
+        self.manageSortable(list, 'save');
+        self.manageSortable(list, 'get');
       }
     });
   });
@@ -361,7 +374,7 @@ var ViewModel = function(data) {
   });
   self.bottomSortableList = ko.computed( function() {
     var items = self.manageSortable('bottomSortableList', 'get');
-    return items || [""];
+    return items ? items : [""];
   });
 
   // Toggle property (currently favorite or beenhere) on a Location.
