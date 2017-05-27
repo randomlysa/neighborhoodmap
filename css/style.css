@@ -63,10 +63,12 @@ a:hover {
 }
 
 #options {
+    top: 70px;
+    position: absolute;
     background-color: #fff;
-    padding: 15px;
-    margin-left: -15px;
-    margin-right: -15px;
+    z-index: 5;
+    max-height: calc(100% - 70px);
+    overflow-y: auto;
 }
 
 #collapse-locations {
@@ -74,7 +76,7 @@ a:hover {
     position: absolute;
     background-color: #fff;
     /* Set height to (100% - #floating-panel height) */
-    max-height: calc(100% - 70px);
+    max-height: (100% - 70px);
     overflow-y: auto;
     padding-bottom: 10px;
 }

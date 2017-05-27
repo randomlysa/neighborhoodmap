@@ -31,65 +31,66 @@
           <button type="button" class="btn btn-small" id="toggle-location-list" data-bind='click: displayOptions'>
             <span class="glyphicon glyphicon-option-vertical"></span>
           </button>
+        </div>
+      </div>
 
-          <!-- Options - hidden by default. -->
-          <div id="options" data-bind="fadeVisible: displayOptionsStatus">
-            <div class="option text-right">
-              <a href="#" data-bind="click: clearAllFavorites">
-                <button type="button" class="btn btn-small btn-danger btn-block"
-                data-bind="attr: {disabled: disableClearAllFavoritesButton}">
-                  Clear All Favorites</button>
-              </a>
+      <!-- Options - hidden by default. -->
+      <div id="options" class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+        data-bind="fadeVisible: displayOptionsStatus">
+
+        <div class="option text-right">
+          <a href="#" data-bind="click: clearAllFavorites">
+            <button type="button" class="btn btn-small btn-danger btn-block"
+            data-bind="attr: {disabled: disableClearAllFavoritesButton}">
+              Clear All Favorites</button>
+          </a>
+      </div>
+        <div class="option">
+          <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
+            toggleAndSaveSetting">
+          <label for="alwaysShowFavorites">Always Show Favorites</label>
+        </div>
+        <div class="option">
+          <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
+            toggleAndSaveSetting">
+          <label for="displayBeenhereColumn">Display Been Here Column</label>
+        </div>
+        <div class="option">
+          <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
+            toggleAndSaveSetting">
+          <label for="displayCustomMapMarkers">Display Custom Map Markers</label>
+        </div>
+        <div class="option">
+          <input type="checkbox" id="displayErrorMessage" data-bind="checked: settingDisplayErrorMessage, click:
+            toggleAndSaveSetting">
+          <label for="displayErrorMessage">Display Error Messages</label>
+        </div>
+        <div class="option">
+
+          <div class="sortGroup">
+            <strong>Top (Sorted)</strong>
+              <ul id="topSortableList" data-bind="foreach: topSortableList" class="list-group">
+                <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
+              </ul>
           </div>
-            <div class="option">
-              <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
-                toggleAndSaveSetting">
-              <label for="alwaysShowFavorites">Always Show Favorites</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
-                toggleAndSaveSetting">
-              <label for="displayBeenhereColumn">Display Been Here Column</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
-                toggleAndSaveSetting">
-              <label for="displayCustomMapMarkers">Display Custom Map Markers</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="displayErrorMessage" data-bind="checked: settingDisplayErrorMessage, click:
-                toggleAndSaveSetting">
-              <label for="displayErrorMessage">Display Error Messages</label>
-            </div>
-            <div class="option">
 
-              <div class="sortGroup">
-                <strong>Top (Sorted)</strong>
-                  <ul id="topSortableList" data-bind="foreach: topSortableList" class="list-group">
-                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
-                  </ul>
-              </div>
-
-              <div class="sortGroup">
-                <strong>Middle (Unsorted)</strong>
-                <ul id="middleSortableList" data-bind="foreach: middleSortableList" class="list-group">
-                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
-                  </ul>
-              </div>
-
-              <div class="sortGroup">
-                <strong>Bottom (Sorted)</strong>
-                  <ul id="bottomSortableList" data-bind="foreach: bottomSortableList" class="list-group">
-                    <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
-                  </ul>
-              </div>
-
-            </div>
+          <div class="sortGroup">
+            <strong>Middle (Unsorted)</strong>
+            <ul id="middleSortableList" data-bind="foreach: middleSortableList" class="list-group">
+                <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
+              </ul>
           </div>
-          <!-- End of options block. -->
+
+          <div class="sortGroup">
+            <strong>Bottom (Sorted)</strong>
+              <ul id="bottomSortableList" data-bind="foreach: bottomSortableList" class="list-group">
+                <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
+              </ul>
+          </div>
 
         </div>
       </div>
+      <!-- End of options block. -->
 
       <div id="collapse-locations" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <div data-bind="foreach: dynamicLocationsList">
