@@ -321,21 +321,40 @@ var ViewModel = function(data) {
 
   // Save and get sortable lists.
   self.manageSortable = function(sortable, action) {
+    // Get name of sortable.
+    var sortableName;
+    if (typeof(sortable) === 'object') {
+      sortableName = sortable.el.id;
+    } else {
+      sortableName = sortable;
+    }
+
     if (action === 'get') {
-      // If order is null, it hasn't been saved to storage:
-      //  return undefined (use default list).
-      // If order isn't null, the group was emptied by the user and saved:
-      //  return the empty array.
-
-      // Convert sortable object to sortable name.
-      if (typeof(sortable) === 'object') { sortable = sortable.el.id; }
-      var order = localStorage.getItem(sortable);
-
-      if (order) {
-        self[sortable + "Observable"].removeAll();
-        var orderArray = order.split('|');
+      // Default items for each list.
+      var sortableListDefaultItems  = {
+        'topSortableList' : ['Favorite and Visited', 'Favorite', 'Visited'],
+        'middleSortableList' : ['Everything Else'],
+        'bottomSortableList' : ['']
       }
-      return order === null ? undefined : orderArray;
+
+      var order = localStorage.getItem(sortableName);
+
+      // If order is null, it hasn't been saved to storage.
+      // Return the default list.
+      if (order == null) {
+        return sortableListDefaultItems[sortableName]
+      }
+      // If order.length === 0, the list was emptied by the user and saved.
+      // Return an empty array (so forEach doesn't fail)
+      else if (order.length === 0) {
+        return [""];
+      }
+      // Remove current items from the observable, and return items from storage
+      // in an array. (Items are stored with a | separator.)
+      else {
+        self[sortableName + "Observable"].removeAll();
+        return order.split('|');
+      }
     };
     if (action === 'save') {
       // Bug dragging item into empty group and refreshing the page makes an
@@ -365,17 +384,16 @@ var ViewModel = function(data) {
 
   // Create default lists or get list order from storage if they exist.
   self.topSortableList = ko.computed( function() {
-    var items = self.manageSortable('topSortableList', 'get');
-    return items ? items : ['Favorite and Visited', 'Favorite', 'Visited'];
-  });
+    return self.manageSortable('topSortableList', 'get');
+  }).extend({ rateLimit: 500 });
+
   self.middleSortableList = ko.computed( function() {
-    var items = self.manageSortable('middleSortableList', 'get');
-    return items ? items : ['Everything Else'];
-  });
+    return self.manageSortable('middleSortableList', 'get');
+  }).extend({ rateLimit: 500 });
+
   self.bottomSortableList = ko.computed( function() {
-    var items = self.manageSortable('bottomSortableList', 'get');
-    return items ? items : [""];
-  });
+    return self.manageSortable('bottomSortableList', 'get');
+  }).extend({ rateLimit: 500 });
 
   // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function( mapItem, event, property) {
