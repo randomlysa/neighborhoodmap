@@ -330,15 +330,12 @@ var ViewModel = function(data) {
       // Convert sortable object to sortable name.
       if (typeof(sortable) === 'object') { sortable = sortable.el.id; }
       var order = localStorage.getItem(sortable);
-      // Bug: sometimes duplicate items are made when dragging from one list
-      // to another.
+
       if (order) {
         self[sortable + "Observable"].removeAll();
-        order.split('|').forEach( function ( item ) {
-          self[sortable + "Observable"].push(item);
-        })
+        var orderArray = order.split('|');
       }
-      return order === null ? undefined : self[sortable + "Observable"]();
+      return order === null ? undefined : orderArray;
     };
     if (action === 'save') {
       // Bug dragging item into empty group and refreshing the page makes an
