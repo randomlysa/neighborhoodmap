@@ -581,6 +581,7 @@ var ViewModel = function(data) {
   // init stuff.
   var initHasRun = false;
   self.init = function() {
+    self.groupLocations();
     self.loadMapMarkers();
     self.addListenerToMarker(this);
     self.addRemoveLocationsAndMapMarkers();
@@ -599,15 +600,18 @@ var ViewModel = function(data) {
   // For the user interface, a list that can be filtered when text is typed.
   self.filteredLocationsList = ko.observableArray();
 
-  // Set up the list in the order specified in the UI or return a filtered list
-  // if text has been entered into the textbox.
-  self.dynamicLocationsList = ko.computed( function() {
-    if (self.mapSearchInputText()) {
-      return self.filteredLocationsList();
-    }
+  // For the user interface, a list of items sorted according to the sort order
+  // specified by the user.
+  self.locationsInGroupsLocationList = ko.observableArray();
 
-    var addedArrays = [];
-    var listOfLocations = [];
+  self.groupLocations = function() {
+
+    var finalArrayOfLocations = [];
+    var topSortableList = [];
+    var middleSortableList = [];
+    var bottomSortableList = [];
+    // var addedArrays = [];
+    // var listOfLocations = [];
 
     var convertNameToList = {
      'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
@@ -616,38 +620,51 @@ var ViewModel = function(data) {
      'Everything Else': 'otherLocationsList'
     }
 
-    // Take an array of locations and push each location to an array.
-    var addToArray = function( arrayToProcess, arrayToPushTo ) {
-      if (!arrayToPushTo) { arrayToPushTo = listOfLocations; }
-      if (arrayToProcess !== undefined) {
-        self[arrayToProcess]().forEach( function( item ) {
-          arrayToPushTo.push( item );
-        });
-      }
-    };
-
-    // Loop through the three arrays (top/middle/bottom), then loop through
-    // the lists contained in each array. Use addToArray to add items in the
-    // location array to a list.
-
+    // 1. Loop through the three arrays (top/middle/bottom), and push each array
+    // of locations to array for that location.
+    // 2. Sort the middle array by name (no groups).
+    // 3. Concat the three arrays into one and return the final list.
     // This will match the location list order to the order selected in the UI.
     sortableLocationLists.forEach( function( locationLists ) {
       self[locationLists]().forEach( function ( locationList, index, array ) {
-        // If the array contains 'Everything Else'...
-        // TODO: The middle section is not unsorted...
-        if( array.indexOf('Everything Else') !== -1 ) {
-          array.forEach( function ( list ) {
-            if (addedArrays.indexOf(list) === -1) {
-              addedArrays.push(list);
-              addToArray(convertNameToList[list]);
-            }
-          })
-        } else {
-          addToArray(convertNameToList[locationList]);
+        // Convert name of list in the UI to name of the list array.
+        var listName = convertNameToList[locationList];
+
+        // If the list is undefined, self[listName]() is not a function.
+        if (self[listName] !== undefined) {
+          if (locationLists === 'topSortableList') {
+            topSortableList = topSortableList.concat(self[listName]())
+          }
+          else if (locationLists === 'middleSortableList') {
+            middleSortableList = middleSortableList.concat(self[listName]())
+          }
+          else if (locationLists === 'bottomSortableList') {
+            bottomSortableList = bottomSortableList.concat(self[listName]())
+          }
         }
       });
     });
-    return listOfLocations;
+
+    // The middle list is all the items in the middle list sorted
+    // alphabetically, not by group.
+    self.sortList(middleSortableList);
+
+    // Put the three lists together into one array.
+    finalArrayOfLocations = topSortableList.concat(
+      middleSortableList, bottomSortableList
+    );
+
+    self.locationsInGroupsLocationList(finalArrayOfLocations);
+  }
+
+  // Return a filtered list if text has been entered into the textbox or a
+  // list of locations grouped according to the order in the UI.
+  self.dynamicLocationsList = ko.computed( function() {
+    if (self.mapSearchInputText()) {
+      return self.filteredLocationsList();
+    } else {
+      return self.locationsInGroupsLocationList();
+    }
   }, self).extend({ rateLimit: 200 });
 
   self.addListenerToMarker = function() {
