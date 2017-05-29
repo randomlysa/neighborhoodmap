@@ -633,7 +633,7 @@ var ViewModel = function(data) {
       });
     });
     return listOfLocations;
-  }, self);
+  }, self).extend({ rateLimit: 200 });
 
   self.addListenerToMarker = function() {
     markersArray.forEach( function( marker, position ) {
