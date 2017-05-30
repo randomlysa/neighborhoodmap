@@ -339,23 +339,25 @@ var ViewModel = function(data) {
 
       var order = localStorage.getItem(sortableName);
 
-      // If order is null, it hasn't been saved to storage.
-      // Return the default list.
+      // If order is null, the list hasn't been saved to storage.
+      // Set to the default list.
       if (order == null) {
-        return sortableListDefaultItems[sortableName]
+        self[sortableName](
+          sortableListDefaultItems[sortableName]
+        );
       }
       // If order.length === 0, the list was emptied by the user and saved.
-      // Return an empty array (so forEach doesn't fail)
+      // Set to an empty array (so forEach doesn't fail)
       else if (order.length === 0) {
-        return [""];
+        self[sortableName]('');
       }
-      // Remove current items from the observable, and return items from storage
-      // in an array. (Items are stored with a | separator.)
+      // Remove current items from the observable, and add items from storage.
       else {
-        self[sortableName + "Observable"].removeAll();
-        return order.split('|');
+        self[sortableName].removeAll();
+        self[sortableName]( order.split('|') )
       }
     };
+
     if (action === 'save') {
       // Bug dragging item into empty group and refreshing the page makes an
       // extra item named '2qz'.
@@ -370,30 +372,19 @@ var ViewModel = function(data) {
   var sortableLocationLists = ['topSortableList', 'middleSortableList', 'bottomSortableList'];
   // Make lists sortable.
   sortableLocationLists.forEach( function ( list ) {
-    self[list + "Observable"] = ko.observableArray();
+    self[list] = ko.observableArray();
     var list = document.getElementById(list);
     list  = Sortable.create(list, {
       group: 'defaultSortList',
       draggable: 'li',
       onSort: function() {
         self.manageSortable(list, 'save');
-        self.manageSortable(list, 'get');
       }
     });
+
+    // Set up lists.
+    self.manageSortable(list, 'get');
   });
-
-  // Create default lists or get list order from storage if they exist.
-  self.topSortableList = ko.computed( function() {
-    return self.manageSortable('topSortableList', 'get');
-  }).extend({ rateLimit: 500 });
-
-  self.middleSortableList = ko.computed( function() {
-    return self.manageSortable('middleSortableList', 'get');
-  }).extend({ rateLimit: 500 });
-
-  self.bottomSortableList = ko.computed( function() {
-    return self.manageSortable('bottomSortableList', 'get');
-  }).extend({ rateLimit: 500 });
 
   // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function( mapItem, event, property) {
