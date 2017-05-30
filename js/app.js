@@ -347,7 +347,7 @@ var ViewModel = function(data) {
         );
       }
       // If order.length === 0, the list was emptied by the user and saved.
-      // Set to an empty array (so forEach doesn't fail)
+      // Set to an empty array (groupLocations forEach doesn't fail.)
       else if (order.length === 0) {
         self[sortableName]('');
       }
@@ -617,23 +617,25 @@ var ViewModel = function(data) {
     // 3. Concat the three arrays into one and return the final list.
     // This will match the location list order to the order selected in the UI.
     sortableLocationLists.forEach( function( locationLists ) {
-      self[locationLists]().forEach( function ( locationList, index, array ) {
-        // Convert name of list in the UI to name of the list array.
-        var listName = convertNameToList[locationList];
+      if (self[locationLists]().length > 0) {
+        self[locationLists]().forEach( function ( locationList, index, array ) {
+          // Convert name of list in the UI to name of the list array.
+          var listName = convertNameToList[locationList];
 
-        // If the list is undefined, self[listName]() is not a function.
-        if (self[listName] !== undefined) {
-          if (locationLists === 'topSortableList') {
-            topSortableList = topSortableList.concat(self[listName]())
+          // If the list is undefined, self[listName]() is not a function.
+          if (self[listName] !== undefined) {
+            if (locationLists === 'topSortableList') {
+              topSortableList = topSortableList.concat(self[listName]())
+            }
+            else if (locationLists === 'middleSortableList') {
+              middleSortableList = middleSortableList.concat(self[listName]())
+            }
+            else if (locationLists === 'bottomSortableList') {
+              bottomSortableList = bottomSortableList.concat(self[listName]())
+            }
           }
-          else if (locationLists === 'middleSortableList') {
-            middleSortableList = middleSortableList.concat(self[listName]())
-          }
-          else if (locationLists === 'bottomSortableList') {
-            bottomSortableList = bottomSortableList.concat(self[listName]())
-          }
-        }
-      });
+        });
+      }
     });
 
     // The middle list is all the items in the middle list sorted
