@@ -206,3 +206,9 @@ a:hover {
     padding: 5px;
     text-align: center;
 }
+
+.list-group {
+    /* Make sure empty groups still show a "drop area." */
+    min-height: 30px;
+    background-color: #fff;
+}
