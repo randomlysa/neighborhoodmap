@@ -353,7 +353,9 @@ var ViewModel = function(data) {
       }
       // Remove current items from the observable, and add items from storage.
       else {
-        self[sortableName].removeAll();
+        if (self[sortableName]().length > 0) {
+          self[sortableName].removeAll();
+        }
         self[sortableName]( order.split('|') )
       }
     };
