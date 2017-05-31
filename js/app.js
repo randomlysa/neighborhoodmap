@@ -332,9 +332,9 @@ var ViewModel = function(data) {
     if (action === 'get') {
       // Default items for each list.
       var sortableListDefaultItems  = {
-        'topSortableList' : ['Favorite and Visited', 'Favorite', 'Visited'],
-        'middleSortableList' : ['Everything Else'],
-        'bottomSortableList' : ['']
+        'topSortableList' : ['Favorite and Visited', 'Favorite', 'Visited', 'Everything Else'],
+        // 'middleSortableList' : ['Everything Else'],
+        // 'bottomSortableList' : ['']
       }
 
       var order = localStorage.getItem(sortableName);
@@ -371,7 +371,10 @@ var ViewModel = function(data) {
     };
   }
 
-  var sortableLocationLists = ['topSortableList', 'middleSortableList', 'bottomSortableList'];
+  //  var sortableLocationLists = [
+  //   'topSortableList', 'middleSortableList', 'bottomSortableList'
+  // ];
+  var sortableLocationLists = ['topSortableList'];
   // Make lists sortable.
   sortableLocationLists.forEach( function ( list ) {
     self[list] = ko.observableArray();
