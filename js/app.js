@@ -320,76 +320,63 @@ var ViewModel = function(data) {
   self.setupLocationLists();
 
   // Save and get sortable lists.
-  self.manageSortable = function(sortable, action) {
-    // Get name of sortable.
-    var sortableName;
-    if (typeof(sortable) === 'object') {
-      sortableName = sortable.el.id;
-    } else {
-      sortableName = sortable;
+  self.getSortable = function(sortable) {
+    // Set name of sortable.
+    var sortableName = 'topSortableList';
+
+    // Default items for the list.
+    var sortableListDefaultItems  = {
+      'topSortableList' :
+        ['Favorite', 'Visited', 'Everything Else', 'Favorite and Visited']
     }
 
-    if (action === 'get') {
-      // Default items for each list.
-      var sortableListDefaultItems  = {
-        'topSortableList' : ['Favorite and Visited', 'Favorite', 'Visited', 'Everything Else'],
-        // 'middleSortableList' : ['Everything Else'],
-        // 'bottomSortableList' : ['']
-      }
+    // Object to look up list name and convert it to observable name.
+    var convertNameToList = {
+   'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
+   'Favorite': 'favoriteLocationsList',
+   'Visited': 'beenhereLocationsList',
+   'Everything Else': 'otherLocationsList'
+    }
 
-      var order = localStorage.getItem(sortableName);
+    var order = localStorage.getItem(sortableName);
 
-      // If order is null, the list hasn't been saved to storage.
-      // Set to the default list.
-      if (order == null) {
-        self[sortableName](
-          sortableListDefaultItems[sortableName]
-        );
-      }
-      // If order.length === 0, the list was emptied by the user and saved.
-      // Set to an empty array (groupLocations forEach doesn't fail.)
-      else if (order.length === 0) {
-        self[sortableName]('');
-      }
-      // Remove current items from the observable, and add items from storage.
-      else {
-        if (self[sortableName]().length > 0) {
-          self[sortableName].removeAll();
-        }
-        self[sortableName]( order.split('|') )
-      }
-    };
 
-    if (action === 'save') {
-      // Bug dragging item into empty group and refreshing the page makes an
-      // extra item named '2qz'.
-      var order = sortable.toArray();
-      if (order.indexOf("2qz") !== -1) {
-        var newOrder = order.splice( order.indexOf("2qz"), 1)
-      }
-      localStorage.setItem(sortable.el.id, order.join('|'));
-    };
+    // If order is null, the list hasn't been saved to storage.
+    // Set to the default list.
+    if (order == null) {
+      var orderAsArray = sortableListDefaultItems[sortableName];
+      self[sortableName]( orderAsArray );
+    }
+    // Order has been set in storage. Get the order for the UI Observable.
+    else {
+      var orderAsArray = order.split(',');
+      self[sortableName].removeAll();
+      self[sortableName]( orderAsArray );
+    }
+
+    // Always update the observable
+    self.sortOrderOfLocationsObservable.removeAll();
+    orderAsArray.forEach( function ( list ) {
+      self.sortOrderOfLocationsObservable.push(convertNameToList[list])
+    })
+  };
+
+  self.saveSortable = function ( sortable ) {
+    var sortableName = sortable.sourceParentNode.id;
+    var sortOrder = self[sortableName]();
+    localStorage.setItem(sortableName, sortOrder);
+    // To update the observable.
+    self.getSortable();
   }
 
-  //  var sortableLocationLists = [
-  //   'topSortableList', 'middleSortableList', 'bottomSortableList'
-  // ];
-  var sortableLocationLists = ['topSortableList'];
-  // Make lists sortable.
-  sortableLocationLists.forEach( function ( sortableName ) {
-    self[sortableName] = ko.observableArray();
-    var sortableName = document.getElementById(sortableName);
-    sortableName  = Sortable.create(sortableName, {
-      draggable: 'li',
-      onSort: function() {
-        self.manageSortable(sortableName, 'save');
-        self.manageSortable(sortableName, 'get');
-      }
-    });
+  // Update this observable when the list is sorted.
+  self.sortOrderOfLocationsObservable = ko.observableArray('');
 
-    // Set up lists.
-    self.manageSortable(sortableName, 'get');
-  });
+  // This is what make the list in the UI.
+  self.topSortableList = ko.observableArray();
+  // Create topSortableList from storage or use defaults if storage is empty.
+  self.getSortable();
+
 
   // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function( mapItem, event, property) {
@@ -596,64 +583,22 @@ var ViewModel = function(data) {
   // For the user interface, a list that can be filtered when text is typed.
   self.filteredLocationsList = ko.observableArray();
 
-  // For the user interface, a list of items sorted according to the sort order
-  // specified by the user.
-  self.locationsInGroupsLocationList = ko.observableArray();
-
-  self.groupLocations = function() {
-
-    var finalArrayOfLocations = [];
-    var topSortableList = [];
-    var middleSortableList = [];
-    var bottomSortableList = [];
-    // var addedArrays = [];
-    // var listOfLocations = [];
-
-    var convertNameToList = {
-     'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
-     'Favorite': 'favoriteLocationsList',
-     'Visited': 'beenhereLocationsList',
-     'Everything Else': 'otherLocationsList'
+  // Return all the lists in the order specified in the UI.
+  self.groupLocations = ko.computed( function() {
+    // Wait until all four items are re-added to the list, since .removeAll()
+    // is used to clear the list.
+    if (self.sortOrderOfLocationsObservable().length !== 3) {
+      var selfSOOLO = self.sortOrderOfLocationsObservable();
+      // TODO: There has to be a better way to do this...
+      return self[selfSOOLO[0]]().concat(
+          self[selfSOOLO[1]](),
+            self[selfSOOLO[2]](),
+              self[selfSOOLO[3]]()
+      );
+    } else {
+      return null;
     }
-
-    // 1. Loop through the three arrays (top/middle/bottom), and push each array
-    // of locations to array for that location.
-    // 2. Sort the middle array by name (no groups).
-    // 3. Concat the three arrays into one and return the final list.
-    // This will match the location list order to the order selected in the UI.
-    sortableLocationLists.forEach( function( locationLists ) {
-      if (self[locationLists]().length > 0) {
-        self[locationLists]().forEach( function ( locationList, index, array ) {
-          // Convert name of list in the UI to name of the list array.
-          var listName = convertNameToList[locationList];
-
-          // If the list is undefined, self[listName]() is not a function.
-          if (self[listName] !== undefined) {
-            if (locationLists === 'topSortableList') {
-              topSortableList = topSortableList.concat(self[listName]())
-            }
-            else if (locationLists === 'middleSortableList') {
-              middleSortableList = middleSortableList.concat(self[listName]())
-            }
-            else if (locationLists === 'bottomSortableList') {
-              bottomSortableList = bottomSortableList.concat(self[listName]())
-            }
-          }
-        });
-      }
-    });
-
-    // The middle list is all the items in the middle list sorted
-    // alphabetically, not by group.
-    self.sortList(middleSortableList);
-
-    // Put the three lists together into one array.
-    finalArrayOfLocations = topSortableList.concat(
-      middleSortableList, bottomSortableList
-    );
-
-    self.locationsInGroupsLocationList(finalArrayOfLocations);
-  }
+  }).extend({ rateLimit: 150 });
 
   // Return a filtered list if text has been entered into the textbox or a
   // list of locations grouped according to the order in the UI.
@@ -661,7 +606,7 @@ var ViewModel = function(data) {
     if (self.mapSearchInputText()) {
       return self.filteredLocationsList();
     } else {
-      return self.locationsInGroupsLocationList();
+      return self.groupLocations();
     }
   }, self).extend({ rateLimit: 200 });
 

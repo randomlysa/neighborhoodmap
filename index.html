@@ -69,9 +69,11 @@
 
           <div class="sortGroup">
             <strong>Sort Order:</strong>
-              <ul id="topSortableList" data-bind="foreach: topSortableList" class="list-group">
-                <li data-bind="text: $data, attr: { 'data-id': $data }" class="list-group-item"></li>
-              </ul>
+              <div id="topSortableList"
+                data-bind="sortable: {data: topSortableList, afterMove: saveSortable}"
+                class="list-group">
+                <span data-bind="text: $data" class="list-group-item"></span>
+              </div>
           </div>
 
           <!-- <div class="sortGroup">
@@ -176,7 +178,8 @@
     <script src="js/lightbox.min.js"></script>
     <script src="js/awesomplete.js"></script>
     <script src="js/alertify.js"></script>
-    <script src="js/Sortable.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/knockout-sortable.js"></script>
     <script src="js/app.js"></script>
 
   </body>
