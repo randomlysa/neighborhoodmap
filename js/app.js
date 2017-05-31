@@ -376,19 +376,19 @@ var ViewModel = function(data) {
   // ];
   var sortableLocationLists = ['topSortableList'];
   // Make lists sortable.
-  sortableLocationLists.forEach( function ( list ) {
-    self[list] = ko.observableArray();
-    var list = document.getElementById(list);
-    list  = Sortable.create(list, {
-      group: 'defaultSortList',
+  sortableLocationLists.forEach( function ( sortableName ) {
+    self[sortableName] = ko.observableArray();
+    var sortableName = document.getElementById(sortableName);
+    sortableName  = Sortable.create(sortableName, {
       draggable: 'li',
       onSort: function() {
-        self.manageSortable(list, 'save');
+        self.manageSortable(sortableName, 'save');
+        self.manageSortable(sortableName, 'get');
       }
     });
 
     // Set up lists.
-    self.manageSortable(list, 'get');
+    self.manageSortable(sortableName, 'get');
   });
 
   // Toggle property (currently favorite or beenhere) on a Location.
