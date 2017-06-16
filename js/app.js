@@ -633,6 +633,13 @@ var ViewModel = function(data) {
           // $( '#collapse-locations').css('display', 'inline');
             arrayToPushTo.push( new Location(mapItem) );
         }
+        // Add favorites if settingAlwaysShowFavorites is true.
+        if (inputText
+            && self.settingAlwaysShowFavorites() === true
+            && mapItem.favorite === true)
+        {
+          arrayToPushTo.push( new Location(mapItem) );
+        }
         if (!inputText) {
           // No letters input, return all items.
           // if (jQuery.browser.mobile) {
