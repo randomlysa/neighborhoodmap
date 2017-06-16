@@ -585,9 +585,8 @@ var ViewModel = function(data) {
 
   // Return all the lists in the order specified in the UI.
   self.groupLocations = ko.computed( function() {
-    // Wait until all four items are re-added to the list, since .removeAll()
-    // is used to clear the list.
-    if (self.sortOrderOfLocationsObservable().length !== 3) {
+    // Don't concat the arrays until all four arrays are created.
+    if (self.sortOrderOfLocationsObservable().length === 4) {
       var selfSOOLO = self.sortOrderOfLocationsObservable();
       // TODO: There has to be a better way to do this...
       return self[selfSOOLO[0]]().concat(
