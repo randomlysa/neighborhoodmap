@@ -627,6 +627,7 @@ var ViewModel = function(data) {
 
     function filterLocationList( arrayToFilter, arrayToPushTo) {
       arrayToFilter.forEach( function(mapItem) {
+        // Add items that match the letters that were input.
         if (inputText
             && mapItem.title.toLowerCase().includes(inputText.toLowerCase()))
         {
@@ -641,7 +642,7 @@ var ViewModel = function(data) {
           arrayToPushTo.push( new Location(mapItem) );
         }
         if (!inputText) {
-          // No letters input, return all items.
+        // No letters input, return all items.
           // if (jQuery.browser.mobile) {
           //   $( '#collapse-locations').css('display', 'none');
           // }
