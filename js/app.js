@@ -754,9 +754,12 @@ var ViewModel = function(data) {
     self.infowindow.setContent('Loading Infomation from Yelp');
     self.infowindow.open(map, markersArray[itemindex]);
     self.infowindow.addListener('closeclick', function() {
-      // TODO Check this, don't want the slideDown on mobile.
       window.location.hash = '';
-      $("#collapse-locations").slideDown();
+      // Don't slide down the location list on mobile browsers.
+      // It hides the map.
+      if (!jQuery.browser.mobile) {
+        $("#collapse-locations").slideDown();
+      }
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
     }.bind(this));
 
