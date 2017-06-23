@@ -166,10 +166,50 @@ var ViewModel = function(data) {
     });
   })();
 
-  // Helper functions: check for mobile browser, matchTitle, sortList, panMap,
-  // checkOrientation, collapseLocationDiv, setFavorites, toggleProperty,
-  // clearAllFavorites, autocomplete using awesomplete, fadeVisible,
-  // some variables for errors.
+  // Helper functions: set up key bindings, check for mobile browser,
+  // matchTitle, sortList, panMap, checkOrientation, collapseLocationDiv,
+  // setFavorites, toggleProperty, clearAllFavorites, autocomplete using
+  // awesomplete, fadeVisible, some variables for errors.
+
+  // Set up key bindings. Taken from todomvc knockoutjs code:
+  // https://github.com/tastejs/todomvc/blob/master/examples/knockoutjs/js/app.js
+  var RIGHTARROW_KEY = 39;
+  var LEFTARROW_KEY = 37;
+  var ESCAPE_KEY = 27;
+
+  // A factory function we can use to create binding handlers for specific
+  // keycodes.
+  function keyhandlerBindingFactory(keyCode) {
+    return {
+      init: function (element, valueAccessor, allBindingsAccessor, data, bindingContext) {
+        var wrappedHandler, newValueAccessor;
+
+        // wrap the handler with a check for the enter key
+        wrappedHandler = function (data, event) {
+          // console.log(data, event)
+          if (event.keyCode === keyCode) {
+            valueAccessor().call(this, data, event);
+          }
+        };
+
+        // create a valueAccessor with the options that we would want to pass to the event binding
+        newValueAccessor = function () {
+          return {
+            keyup: wrappedHandler
+          };
+        };
+
+        // call the real event binding's init function
+        ko.bindingHandlers.event.init(element, newValueAccessor, allBindingsAccessor, data, bindingContext);
+      }
+    };
+  }
+
+  // Custom bindings for keys.
+  ko.bindingHandlers.rightArrowKey = keyhandlerBindingFactory(RIGHTARROW_KEY);
+  ko.bindingHandlers.leftArrowKey = keyhandlerBindingFactory(LEFTARROW_KEY);
+  ko.bindingHandlers.escapeKey = keyhandlerBindingFactory(ESCAPE_KEY);
+
 
   /**
    * Check for mobile browser.
