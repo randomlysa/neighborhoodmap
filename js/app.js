@@ -737,9 +737,10 @@ var ViewModel = function(data) {
     var lng = self.currentMarkerLocation[1];
     var newLatLng = {lat: lat, lng: lng};
     var panByX, panByY;
-    if (orientation === 'wide') {
-      // Roughly centers the space around the infoWindow.
-      // Adjusted for the size of 'small' flickr images on right (75 px / 2).
+
+    // For mobile landscape, panByX to center infoWindow in the open space left
+    // by the flickr div on the right.
+    if (orientation === 'wide' && jQuery.browser.mobile) {
       panByX = 37;
     } else {
       panByX = 0;
