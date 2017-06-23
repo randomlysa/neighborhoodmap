@@ -826,6 +826,8 @@ var ViewModel = function(data) {
     }
   }.bind(this);
 
+
+  // Opens next/previous location using keyboard shortcuts.
   this.cycleThroughLocations = function( data, event ) {
     var whichKey = event.originalEvent.key;
 
@@ -833,13 +835,27 @@ var ViewModel = function(data) {
     var title = openInfoWindows[openInfoWindows.length - 1].title;
     // Find title in dynamicLocationsList and get the index.
     var index = self.matchTitle(title, self.dynamicLocationsList());
+    // Subtract one from length since arrays are zero based.
+    var indexLength = self.dynamicLocationsList().length - 1;
 
     if (whichKey === 'ArrowLeft') {
-      var nextIndex = index - 1;
+      // Loop around.
+      if (index === 0) {
+        nextIndex = indexLength;
+      } else {
+        var nextIndex = index - 1;
+      }
     }
+
     if (whichKey === 'ArrowRight') {
-      var nextIndex = index + 1;
+      // Loop around.
+      if (index === indexLength) {
+        var nextIndex = 0;
+      } else {
+        var nextIndex = index + 1;
+      }
     }
+
     // Open the next item in dynamicLocationsList.
     self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
   }
