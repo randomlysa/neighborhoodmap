@@ -169,7 +169,8 @@ var ViewModel = function(data) {
   // Helper functions: set up key bindings, check for mobile browser,
   // matchTitle, sortList, panMap, checkOrientation, collapseLocationDiv,
   // setFavorites, toggleProperty, clearAllFavorites, autocomplete using
-  // awesomplete, fadeVisible, some variables for errors.
+  // awesomplete, fadeVisible, some variables for errors, function for esc key
+  // binding.
 
   // Set up key bindings. Taken from todomvc knockoutjs code:
   // https://github.com/tastejs/todomvc/blob/master/examples/knockoutjs/js/app.js
@@ -321,9 +322,6 @@ var ViewModel = function(data) {
         $( "#more-info-right").removeClass('open');
       }
   }.bind(this);
-
-
-
 
   // Observable arrays for different item types.
   [
@@ -542,6 +540,14 @@ var ViewModel = function(data) {
     return Boolean(self.settingDisplayErrorMessage())
         && Boolean(self.errorMessageText());
   });
+
+  // Runs when esc key is pressed.
+  self.clearAndFocusTextBox = function() {
+    $("#main-search-input").val('').focus();
+    // Using val('') doesn't trigger addRemoveLocationsAndMapMarkers so run it
+    // manually with an empty string.
+    self.addRemoveLocationsAndMapMarkers('')
+  }
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,

@@ -15,13 +15,13 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   </head>
-  <body data-bind="rightArrowKey: cycleThroughLocations, leftArrowKey: cycleThroughLocations">
+  <body data-bind="rightArrowKey: cycleThroughLocations, leftArrowKey: cycleThroughLocations, escapeKey: clearAndFocusTextBox">
 
       <div id="map"></div>
       <div id="floating-panel" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 
         <div id="floating-panel-header">
-          <input id="main-search-input" data-bind="textInput: mapSearchInputText, escapeKey: clearTextBox" placeholder="filter locations" autofocus />
+          <input id="main-search-input" data-bind="textInput: mapSearchInputText" placeholder="filter locations" autofocus />
 
           <button type="button" class="btn btn-small" id="toggle-location-list"
             aria-label="Toggle Location List" data-bind="click: collapseLocationDiv">
