@@ -544,7 +544,8 @@ var ViewModel = function(data) {
   });
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
-  // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow.
+  // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
+  // cycleThroughLocations.
 
   // Keep track of markers.
   var markersArray = [];
@@ -730,15 +731,15 @@ var ViewModel = function(data) {
     self.addRemoveLocationsAndMapMarkers(inputText);
   }, this);
 
-  // Keep track of open infoWindow(s). Use to close the previous infoWindow.
+  // Keep track of open infoWindow(s). Used to close the previous infoWindow.
   var openInfoWindows = [];
   self.closeInfoWindow = function () {
     // Check if there's at least one openInfoWindows defined. If there is,
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, clear the window hash, and remove the 'open' class from
     // pushFlickrImagesToDiv.
-    if (openInfoWindows[0]) {
-      openInfoWindows[openInfoWindows.length - 1].close();
+    if (openInfoWindows.length > 1) {
+      openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
       pushFlickrImagesToObservable('');
       // TODO Check why this div closes on desktop without this line,
       // but not in mobile emulation in Chrome.
@@ -812,9 +813,9 @@ var ViewModel = function(data) {
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
     }.bind(this));
 
-    // Add the infoWindow to the array that keeps track of which infoWindow
+    // Add title, infoWindow to the array that keeps track of which infoWindow
     // to close.
-    openInfoWindows.push(self.infowindow);
+    openInfoWindows.push({'title': title, 'infoWindow': self.infowindow});
 
     // searchAPIsAndDisplayResults does two things:
     // 1. Search flickr for images and update pushFlickrImagesToDiv.
@@ -824,6 +825,24 @@ var ViewModel = function(data) {
       $("#collapse-locations").slideUp();
     }
   }.bind(this);
+
+  this.cycleThroughLocations = function( data, event ) {
+    var whichKey = event.originalEvent.key;
+
+    // Get title of open infoWindow.
+    var title = openInfoWindows[openInfoWindows.length - 1].title;
+    // Find title in dynamicLocationsList and get the index.
+    var index = self.matchTitle(title, self.dynamicLocationsList());
+
+    if (whichKey === 'ArrowLeft') {
+      var nextIndex = index - 1;
+    }
+    if (whichKey === 'ArrowRight') {
+      var nextIndex = index + 1;
+    }
+    // Open the next item in dynamicLocationsList.
+    self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
+  }
 
   // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.
 
