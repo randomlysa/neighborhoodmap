@@ -91,18 +91,36 @@ var Location = function(data) {
   this.beenhere = ko.observable(data.beenhere);
   this.beenhereCSS = ko.computed( function() {
     return self.beenhere() ? '' : 'md-dark md-inactive';
-  })
+  });
 };
 
 var ViewModel = function(data) {
   var self = this;
+
+  // init stuff.
+  var initHasRun = false;
+  self.init = function() {
+    self.groupLocations();
+    self.loadMapMarkers();
+    self.addListenerToMarker(this);
+    self.addRemoveLocationsAndMapMarkers();
+    self.checkOrientation();
+    // Prevents duplication of favorites.
+    if (!self.settingAlwaysShowFavorites) {
+      self.setupLocationLists();
+    }
+    // Close an infoWindow by clicking on an empty area on the map.
+    google.maps.event.addDomListener(map, 'click',
+        function() { self.closeInfoWindow(); }.bind(this));
+  };
+
 
   // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting,
   // getAllSettings (IIFE).
 
   // Gets a setting from local storage.
   // If settings is undefined, return true. This might have to be changed later.
-  self.getSetting = function( setting ) {
+  self.getSetting = function(setting) {
     // No settings have been saved at all.
     if (settings === undefined) {
       settings = {};
@@ -115,7 +133,7 @@ var ViewModel = function(data) {
     } else {
       return true;
     }
-  }
+  };
 
   // Save settings and locations infomation.
   self.saveToStorage = function() {
@@ -127,7 +145,7 @@ var ViewModel = function(data) {
     );
   };
 
-  self.toggleAndSaveSetting = function ( vm, data ) {
+  self.toggleAndSaveSetting = function(vm, data) {
     var self = this;
     var option = data.currentTarget.id;
     var setting = data.currentTarget.checked;
@@ -147,6 +165,8 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
+  // Is an IIFE, otherwise self.displayErrorMessageComputed /
+  // self.settingDisplayErrorMessage() doesn't exist when it needs to.
   self.getAllSettings = (function() {
     // List all settings.
     var allSettings = [
@@ -182,11 +202,11 @@ var ViewModel = function(data) {
   // keycodes.
   function keyhandlerBindingFactory(keyCode) {
     return {
-      init: function (element, valueAccessor, allBindingsAccessor, data, bindingContext) {
+      init: function(element, valueAccessor, allBindingsAccessor, data, bindingContext) {
         var wrappedHandler, newValueAccessor;
 
         // wrap the handler with a check for the enter key
-        wrappedHandler = function (data, event) {
+        wrappedHandler = function(data, event) {
           // console.log(data, event)
           if (event.keyCode === keyCode) {
             valueAccessor().call(this, data, event);
@@ -194,7 +214,7 @@ var ViewModel = function(data) {
         };
 
         // create a valueAccessor with the options that we would want to pass to the event binding
-        newValueAccessor = function () {
+        newValueAccessor = function() {
           return {
             keyup: wrappedHandler
           };
@@ -212,30 +232,28 @@ var ViewModel = function(data) {
   ko.bindingHandlers.escapeKey = keyhandlerBindingFactory(ESCAPE_KEY);
 
 
-  /**
-   * Check for mobile browser.
-   * jQuery.browser.mobile (http://detectmobilebrowser.com/)
-   * jQuery.browser.mobile will be true if the browser is a mobile device
-   **/
+  // Check for mobile browser.
+  // jQuery.browser.mobile (http://detectmobilebrowser.com/)
+  // jQuery.browser.mobile will be true if the browser is a mobile device
   (function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
 
   // Find the title the specified array and return the 'id' (i).
-  self.matchTitle = function ( title, array ) {
+  self.matchTitle = function(title, array) {
     for (var i = 0; i < array.length; i++) {
       if (title === array[i].title) {
         return i;
       }
     }
-  }
+  };
 
   // Sort a list.
-  self.sortList = function( list ) {
-    list.sort(function (left, right) {
+  self.sortList = function(list) {
+    list.sort(function(left, right) {
       var sortByA = left.title;
       var sortByB = right.title;
-      return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1)
+      return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1);
     });
-  }
+  };
 
 
   // Pans the map, with some changes to x, y in certain cases.
@@ -259,9 +277,9 @@ var ViewModel = function(data) {
     var availableHeight = $(window).height();
 
     if (availableHeight > availableWidth) {
-      orientation = 'tall'
+      orientation = 'tall';
     } else {
-      orientation = 'wide'
+      orientation = 'wide';
     }
 
     // Check and save to a variable the current Flickr images.
@@ -316,7 +334,7 @@ var ViewModel = function(data) {
   $( window ).resize(self.checkOrientation);
 
   // Toggle location list. This is needed for the button near the div.
-  self.collapseLocationDiv = function () {
+  self.collapseLocationDiv = function() {
       $( "#collapse-locations" ).slideToggle();
       if (jQuery.browser.mobile) {
         $( "#more-info-right").removeClass('open');
@@ -339,7 +357,7 @@ var ViewModel = function(data) {
     self.favoriteLocationsList.removeAll();
     self.beenhereLocationsList.removeAll();
     self.otherLocationsList.removeAll();
-    initialLocations.forEach( function ( mapItem ) {
+    initialLocations.forEach( function(mapItem) {
       if (mapItem.favorite === true && mapItem.beenhere === true) {
         self.favoriteAndBeenhereLocationsList.push( new Location(mapItem) );
       }
@@ -353,7 +371,7 @@ var ViewModel = function(data) {
         self.otherLocationsList.push( new Location(mapItem) );
       }
     });
-  }
+  };
 
   self.setupLocationLists();
 
@@ -366,15 +384,15 @@ var ViewModel = function(data) {
     var sortableListDefaultItems  = {
       'topSortableList' :
         ['Favorite', 'Visited', 'Everything Else', 'Favorite and Visited']
-    }
+    };
 
     // Object to look up list name and convert it to observable name.
     var convertNameToList = {
-   'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
-   'Favorite': 'favoriteLocationsList',
-   'Visited': 'beenhereLocationsList',
-   'Everything Else': 'otherLocationsList'
-    }
+      'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
+      'Favorite': 'favoriteLocationsList',
+      'Visited': 'beenhereLocationsList',
+      'Everything Else': 'otherLocationsList'
+    };
 
     var order = localStorage.getItem(sortableName);
 
@@ -394,18 +412,18 @@ var ViewModel = function(data) {
 
     // Always update the observable
     self.sortOrderOfLocationsObservable.removeAll();
-    orderAsArray.forEach( function ( list ) {
-      self.sortOrderOfLocationsObservable.push(convertNameToList[list])
-    })
+    orderAsArray.forEach( function(list) {
+      self.sortOrderOfLocationsObservable.push(convertNameToList[list]);
+    });
   };
 
-  self.saveSortable = function ( sortable ) {
+  self.saveSortable = function(sortable) {
     var sortableName = sortable.sourceParentNode.id;
     var sortOrder = self[sortableName]();
     localStorage.setItem(sortableName, sortOrder);
     // To update the observable.
     self.getSortable();
-  }
+  };
 
   // Update this observable when the list is sorted.
   self.sortOrderOfLocationsObservable = ko.observableArray('');
@@ -417,7 +435,7 @@ var ViewModel = function(data) {
 
 
   // Toggle property (currently favorite or beenhere) on a Location.
-  Location.prototype.toggleProperty = function( mapItem, event, property) {
+  Location.prototype.toggleProperty = function(mapItem, event, property) {
     var self = this;
 
     // For clearAllFavorites, there is no event.target.innerText
@@ -429,7 +447,7 @@ var ViewModel = function(data) {
         var propertyToUpdate = 'favorite';
       }
       if (innerText === 'beenhere') {
-        var propertyToUpdate = 'beenhere'
+        var propertyToUpdate = 'beenhere';
       }
     }
 
@@ -440,10 +458,10 @@ var ViewModel = function(data) {
 
     // Used by whichList to lookup what LocationsList the item is is.
     var itemToListLookup = {
-    'truetrue' : 'favoriteAndBeenhereLocationsList',
-    'truefalse' : 'favoriteLocationsList',
-    'falsetrue' : 'beenhereLocationsList',
-    'falsefalse' : 'otherLocationsList',
+      'truetrue' : 'favoriteAndBeenhereLocationsList',
+      'truefalse' : 'favoriteLocationsList',
+      'falsetrue' : 'beenhereLocationsList',
+      'falsefalse' : 'otherLocationsList',
     };
 
     // Check what list the item currently belongs to based on favorite/beenhere.
@@ -451,7 +469,7 @@ var ViewModel = function(data) {
       return itemToListLookup[
         Boolean(mapItem.favorite()) + "" + Boolean(mapItem.beenhere())
       ];
-    }
+    };
 
     // Remove item from the list it is in.
     self[whichList()].remove(mapItem);
@@ -459,9 +477,9 @@ var ViewModel = function(data) {
     // Find item in initialLocations, because initialLocations is what
     // is saved to local storage.
     var initialLocationsMapItemToUpdate = initialLocations.find(
-      function( tempMapItem ) {
+      function(tempMapItem) {
         return tempMapItem.title === mapItem.title;
-    })
+    });
 
     // Toggle property to false.
     if (Boolean(mapItem[propertyToUpdate]()) === true) {
@@ -491,17 +509,17 @@ var ViewModel = function(data) {
     var self = this;
     alertify.confirm("Clear all favorites?", function() {
       // Loop through all locations, pass favorites to toggleFavorite.
-      self.dynamicLocationsList().forEach( function ( mapItem ) {
+      self.dynamicLocationsList().forEach( function(mapItem) {
         if (mapItem.favorite() === true) {
           Location.prototype.toggleProperty(mapItem, '', 'favorite');
         }
-      })
-    })
+      });
+    });
   }.bind(this);
 
   // Make an array of all titles from initialLocations for autocomplete to work.
   var allTitlesForAutoComplete = [];
-  initialLocations.forEach(function (Location) {
+  initialLocations.forEach( function(Location) {
     allTitlesForAutoComplete.push(Location.title);
   });
   var inputMapLocation = document.getElementById("main-search-input");
@@ -509,7 +527,7 @@ var ViewModel = function(data) {
     list: allTitlesForAutoComplete
   });
   inputMapLocation.addEventListener("awesomplete-selectcomplete",
-    function( item ) { self.openInfoWindow(item.target.value); }.bind(this)
+    function(item) { self.openInfoWindow(item.target.value); }.bind(this)
   );
 
   // http://knockoutjs.com/examples/animatedTransitions.html
@@ -537,8 +555,8 @@ var ViewModel = function(data) {
   // Only display the error message when the setting is true and
   // there is text to display.
   self.displayErrorMessageComputed = ko.computed( function() {
-    return Boolean(self.settingDisplayErrorMessage())
-        && Boolean(self.errorMessageText());
+    return Boolean(self.settingDisplayErrorMessage()) &&
+      Boolean(self.errorMessageText());
   });
 
   // Runs when esc key is pressed.
@@ -546,8 +564,8 @@ var ViewModel = function(data) {
     $("#main-search-input").val('').focus();
     // Using val('') doesn't trigger addRemoveLocationsAndMapMarkers so run it
     // manually with an empty string.
-    self.addRemoveLocationsAndMapMarkers('')
-  }
+    self.addRemoveLocationsAndMapMarkers('');
+  };
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
@@ -589,7 +607,7 @@ var ViewModel = function(data) {
       });
 
       markersArray.push(marker);
-    }; // close for loop
+    } // close for loop
   };
 
   self.updateMarkerIcons = function() {
@@ -606,24 +624,7 @@ var ViewModel = function(data) {
 
       markersArray[i].setOptions({ icon: imageIcon});
     }
-  }
-
-  // init stuff.
-  var initHasRun = false;
-  self.init = function() {
-    self.groupLocations();
-    self.loadMapMarkers();
-    self.addListenerToMarker(this);
-    self.addRemoveLocationsAndMapMarkers();
-    self.checkOrientation();
-    // Prevents duplication of favorites.
-    if (!self.settingAlwaysShowFavorites) {
-      self.setupLocationLists;
-    }
-    // Close an infoWindow by clicking on an empty area on the map.
-    google.maps.event.addDomListener(map, 'click',
-        function() { self.closeInfoWindow(); }.bind(this));
-  }
+  };
 
   self.mapSearchInputText = ko.observable("");
 
@@ -657,7 +658,7 @@ var ViewModel = function(data) {
   }, self).extend({ rateLimit: 200 });
 
   self.addListenerToMarker = function() {
-    markersArray.forEach( function( marker, position ) {
+    markersArray.forEach( function(marker, position ) {
       var title = markersArray[position].title;
       marker.addListener('click', function() {
         self.openInfoWindow(title, 'map');
@@ -666,25 +667,25 @@ var ViewModel = function(data) {
 
   }.bind(this);
 
-  self.addRemoveLocationsAndMapMarkers = function (inputText, updateMarkers) {
+  self.addRemoveLocationsAndMapMarkers = function(inputText, updateMarkers) {
     var self = this;
 
     // Remove items from filteredLocationsList.
     self.filteredLocationsList.removeAll();
 
-    function filterLocationList( arrayToFilter, arrayToPushTo) {
+    function filterLocationList(arrayToFilter, arrayToPushTo) {
       arrayToFilter.forEach( function(mapItem) {
         // Add items that match the letters that were input.
-        if (inputText
-            && mapItem.title.toLowerCase().includes(inputText.toLowerCase()))
+        if (inputText &&
+            mapItem.title.toLowerCase().includes(inputText.toLowerCase()))
         {
           // $( '#collapse-locations').css('display', 'inline');
             arrayToPushTo.push( new Location(mapItem) );
         }
         // Add favorites if settingAlwaysShowFavorites is true.
-        if (inputText
-            && self.settingAlwaysShowFavorites() === true
-            && mapItem.favorite === true)
+        if (inputText &&
+            self.settingAlwaysShowFavorites() === true &&
+            mapItem.favorite === true)
         {
           arrayToPushTo.push( new Location(mapItem) );
         }
@@ -710,7 +711,7 @@ var ViewModel = function(data) {
     if (typeof markersArray !== 'undefined') {
       // Make an array of self.dynamicLocationsList titles.
       var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach(function (Location) {
+      self.dynamicLocationsList().forEach( function(Location) {
         dynamicLocationsListTitles.push(Location.title);
       });
 
@@ -733,13 +734,13 @@ var ViewModel = function(data) {
   // Check mapSearchInputText for inputText and update makeMapList
   // (after 300 ms delay) based on inputText.
   self.mapSearchInputText.extend({ rateLimit: 300 });
-  self.mapSearchInputText.subscribe(function (inputText) {
+  self.mapSearchInputText.subscribe(function(inputText) {
     self.addRemoveLocationsAndMapMarkers(inputText);
   }, this);
 
   // Keep track of open infoWindow(s). Used to close the previous infoWindow.
   var openInfoWindows = [];
-  self.closeInfoWindow = function () {
+  self.closeInfoWindow = function() {
     // Check if there's at least one openInfoWindows defined. If there is,
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, clear the window hash, and remove the 'open' class from
@@ -757,7 +758,7 @@ var ViewModel = function(data) {
 
   self.currentMarkerLocation = '';
   self.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
-  self.openInfoWindow = function (title) {
+  self.openInfoWindow = function(title) {
     var self = this;
     // The 'list view' sends the title as an object.
     // In this case, the title is actually title.title.
@@ -834,7 +835,7 @@ var ViewModel = function(data) {
 
 
   // Opens next/previous location using keyboard shortcuts.
-  this.cycleThroughLocations = function( data, event ) {
+  this.cycleThroughLocations = function(data, event ) {
     var whichKey = event.originalEvent.key;
 
     // Get title of open infoWindow.
@@ -876,7 +877,7 @@ var ViewModel = function(data) {
         https://www.flickr.com/services/api/misc.urls.html
   */
   self.flickrSearchURL = ko.observable();
-  self.searchFlickr = function (query) {
+  self.searchFlickr = function(query) {
     // Set to '' otherwise later, += will cause undefined to be added to the
     // string.
     var flickrResultsString = '';
@@ -896,7 +897,7 @@ var ViewModel = function(data) {
     request.fail(function(){
       self.errorMessageText('there was an error connecting to flickr');
     });
-    request.done(function( data ){
+    request.done(function(data){
       var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
       var numberOfPhotoResults = newData.photos.photo.length;
 
@@ -974,7 +975,7 @@ var ViewModel = function(data) {
     https://discussions.udacity.com/t/yelp-api-not-working/163965/4
   */
   self.yelpInfoWindowContent = ko.observable();
-  self.searchYelp = function (query) {
+  self.searchYelp = function(query) {
     var self = this;
     // $(document).ready fixes Yelp not working on Firefox (and maybe others)
     // when loading the page with a location in the hash.
@@ -1057,7 +1058,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Search Flickr, Yelp, and display results in the user interface.
-  self.searchAPIsAndDisplayResults = function (title) {
+  self.searchAPIsAndDisplayResults = function(title) {
     self.searchFlickr(title);
     self.searchYelp(title);
   }.bind(this);
@@ -1079,7 +1080,7 @@ var ViewModel = function(data) {
 
   // Misc UI observables
   self.displayOptionsStatus = ko.observable(false);
-  self.displayOptions = function () {
+  self.displayOptions = function() {
     return self.displayOptionsStatus(!self.displayOptionsStatus());
   };
 
