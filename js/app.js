@@ -668,7 +668,6 @@ var ViewModel = function(data) {
     // If marker doesn't exist, run the function on markersArray.
     marker = marker || markersArray;
     markersArray.forEach( function(marker, position ) {
-      console.log(marker)
       var title = markersArray[position].title;
       marker.addListener('click', function() {
         self.openInfoWindow(title, 'map');
@@ -923,7 +922,6 @@ var ViewModel = function(data) {
     });
 
     markersArray.push(marker);
-
   }
 
   self.addNewLocation = function(data) {
@@ -938,13 +936,14 @@ var ViewModel = function(data) {
       addLocationDiv.fadeOut('slow');
       alertify.warning('Location Not Added', 3);
     } else {
+      // Object to add to initialLocations
       var newLocationToAdd = {
         'title': self.newLocationTitle(),
         'coordinates': [
           self.newLocationLatLng().lat(), self.newLocationLatLng().lng()
         ],
         'type': self.selectedType(),
-      }
+      };
       initialLocations.push(newLocationToAdd);
       self.otherLocationsList.push(new Location(newLocationToAdd));
 
