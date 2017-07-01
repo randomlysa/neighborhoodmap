@@ -111,30 +111,12 @@ var ViewModel = function(data) {
     }
     // Close an infoWindow by clicking on an empty area on the map.
     google.maps.event.addDomListener(map, 'click',
-        function() { self.closeInfoWindow(); }.bind(this));
+      function() { self.closeInfoWindow(); }.bind(this));
     // Add a marker by right clicking on the map.
     // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
     google.maps.event.addDomListener(map, 'rightclick',
-      function(e) {
-        var title = 'test title';
-        var type = 'test type';
-
-        // if (self.settingDisplayCustomMapMarkers() === true) {
-        //   var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
-        // }
-        // if (self.settingDisplayCustomMapMarkers() === false) {
-         var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
-        // }
-
-        var marker = new google.maps.Marker({
-          title: title,
-          position: e.latLng,
-          map: map,
-          icon: imageIcon
-        });
-
-        markersArray.push(marker);
-      }.bind(this));
+      function(e) { self.addNewLocation(e); }.bind(this)
+    );
   };
 
 
@@ -592,7 +574,7 @@ var ViewModel = function(data) {
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
-  // cycleThroughLocations.
+  // cycleThroughLocations, addNewLocation
 
   // Keep track of markers.
   var markersArray = [];
@@ -888,6 +870,37 @@ var ViewModel = function(data) {
 
     // Open the next item in dynamicLocationsList.
     self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
+  }
+
+  // Lets the user add a custom location anywhere on the map by right clicking.
+  self.addNewLocation = function(e) {
+    var latLng = e.latLng;
+    var positionInPixels = e.pixel;
+
+    var title = 'test title';
+    var type = 'test type';
+
+    // https://stackoverflow.com/a/4666381
+    $('#add-location-menu').css(
+      {'top': positionInPixels.y, 'left': positionInPixels.x}
+    ).fadeIn('slow');
+
+    // if (self.settingDisplayCustomMapMarkers() === true) {
+    //   var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+    // }
+    // if (self.settingDisplayCustomMapMarkers() === false) {
+     var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+    // }
+
+    var marker = new google.maps.Marker({
+      title: title,
+      position: latLng,
+      map: map,
+      icon: imageIcon
+    });
+
+    markersArray.push(marker);
+
   }
 
   // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.

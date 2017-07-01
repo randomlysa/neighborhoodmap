@@ -212,3 +212,10 @@ a:hover {
     min-height: 30px;
     background-color: #fff;
 }
+
+#add-location-menu {
+    position: absolute;
+    background-color: #fff;
+    padding: 15px;
+    display: none;
+}
