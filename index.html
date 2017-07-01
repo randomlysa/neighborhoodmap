@@ -124,7 +124,12 @@
       <!-- Menu to add a new location that opens when right clicking on a map -->
       <div id="add-location-menu">
         <strong>Add a new location</strong><br>
-        Name<input type="text"><br>
+        <form data-bind="submit: addNewLocation">
+          Name: <input data-bind="textInput: newLocationTitle"><br>
+          Type: <select data-bind="options: availableTypes, value: selectedType"></select><br>
+          <button type="submit">Add Location</button>
+          <button type="reset" data-bind="click: addNewLocation.bind($data, 'cancel');">Cancel</button>
+        </form>
       </div>
 
       <div id="other-error" data-bind="visible: displayErrorMessageComputed">

@@ -115,7 +115,7 @@ var ViewModel = function(data) {
     // Add a marker by right clicking on the map.
     // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
     google.maps.event.addDomListener(map, 'rightclick',
-      function(e) { self.addNewLocation(e); }.bind(this)
+      function(e) { self.openAddNewLocationMenu(e); }.bind(this)
     );
   };
 
@@ -574,7 +574,7 @@ var ViewModel = function(data) {
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
-  // cycleThroughLocations, addNewLocation
+  // cycleThroughLocations, openAddNewLocationMenu, addNewLocation.
 
   // Keep track of markers.
   var markersArray = [];
@@ -872,35 +872,81 @@ var ViewModel = function(data) {
     self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
   }
 
-  // Lets the user add a custom location anywhere on the map by right clicking.
-  self.addNewLocation = function(e) {
-    var latLng = e.latLng;
+  // Must be declared outside the function or the binding will fail when the
+  // page is loaded.
+  self.availableTypes = ko.observableArray();
+  self.newLocationTitle = ko.observable();
+  self.selectedType = ko.observable();
+  self.newLocationLatLng = ko.observable();
+  // Opens a menu that lets the user add a custom location anywhere on the map
+  // by right clicking.
+  self.openAddNewLocationMenu = function(e) {
+    var self = this;
     var positionInPixels = e.pixel;
+    self.newLocationLatLng(e.latLng);
 
-    var title = 'test title';
-    var type = 'test type';
+    // Populate self.availableTypes
+    initialLocations.forEach(function(location) {
+      // If type doesn't exist in the availableTypes array, add it.
+      if(self.availableTypes().indexOf(location.type) === -1) {
+        self.availableTypes.push(location.type);
+      }
+    })
+    // A custom location type that will not try to lookup info on Yelp.
+    self.availableTypes.push('Custom / Ignore Yelp');
 
+    // Fade in the menu under right click location.
     // https://stackoverflow.com/a/4666381
     $('#add-location-menu').css(
       {'top': positionInPixels.y, 'left': positionInPixels.x}
     ).fadeIn('slow');
 
-    // if (self.settingDisplayCustomMapMarkers() === true) {
-    //   var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
-    // }
-    // if (self.settingDisplayCustomMapMarkers() === false) {
+    // Set the marker icon.
+    if (self.settingDisplayCustomMapMarkers() === true) {
+      var imageIcon = 'images/mapicons/' + iconToImage[self.selectedType()]
+        + '.png';
+    }
+    if (self.settingDisplayCustomMapMarkers() === false) {
      var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
-    // }
+    }
 
+    // Put the marker on the map.
     var marker = new google.maps.Marker({
       title: title,
-      position: latLng,
+      position: self.newLocationLatLng(),
       map: map,
       icon: imageIcon
     });
 
     markersArray.push(marker);
 
+  }
+
+  self.addNewLocation = function(data) {
+    var addLocationDiv = $('#add-location-menu');
+
+    if (data === 'cancel') {
+      // Remove marker from the markers array.
+      var lastLocation = markersArray.pop();
+      // Remove marker from the map.
+      lastLocation.setMap(null);
+      // Remove menu from the map.
+      addLocationDiv.fadeOut('slow');
+    } else {
+      var newLocationToAdd = {
+        'title': self.newLocationTitle(),
+        'coordinates': [
+          self.newLocationLatLng().lat(), self.newLocationLatLng().lng()
+        ],
+        'type': self.selectedType(),
+      }
+      initialLocations.push(newLocationToAdd);
+      self.otherLocationsList.push(new Location(newLocationToAdd));
+      // Confirmation message and fade out the div after one second.
+      addLocationDiv.html('<h2>Location Added!</h2>')
+        .delay('1000')
+        .fadeOut('slow');
+    }
   }
 
   // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.
