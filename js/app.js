@@ -785,6 +785,13 @@ var ViewModel = function(data) {
     // Ie, markersArray[itemindex] === marker that was clicked.
     var itemindex = self.matchTitle(title, initialLocations);
 
+    // itemindex might not be found if random text is entered into the url hash.
+    // Without this, the list of locations disappears and the app is unuseable.
+    if (!itemindex) {
+      alertify.error('Location "' + title + '" Not Found!', 3);
+      return;
+    }
+
     window.location.hash = title.replace(/ /g, '%20');
     self.currentMarkerLocation = initialLocations[itemindex].coordinates;
 
