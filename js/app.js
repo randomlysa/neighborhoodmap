@@ -112,6 +112,29 @@ var ViewModel = function(data) {
     // Close an infoWindow by clicking on an empty area on the map.
     google.maps.event.addDomListener(map, 'click',
         function() { self.closeInfoWindow(); }.bind(this));
+    // Add a marker by right clicking on the map.
+    // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
+    google.maps.event.addDomListener(map, 'rightclick',
+      function(e) {
+        var title = 'test title';
+        var type = 'test type';
+
+        // if (self.settingDisplayCustomMapMarkers() === true) {
+        //   var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+        // }
+        // if (self.settingDisplayCustomMapMarkers() === false) {
+         var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+        // }
+
+        var marker = new google.maps.Marker({
+          title: title,
+          position: e.latLng,
+          map: map,
+          icon: imageIcon
+        });
+
+        markersArray.push(marker);
+      }.bind(this));
   };
 
 
