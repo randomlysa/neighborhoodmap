@@ -662,15 +662,19 @@ var ViewModel = function(data) {
     }
   }, self).extend({ rateLimit: 200 });
 
-  self.addListenerToMarker = function() {
+  // Add listener to all markers, or to a single new marker that is added by
+  // the user.
+  self.addListenerToMarker = function(x, marker) {
+    // If marker doesn't exist, run the function on markersArray.
+    marker = marker || markersArray;
     markersArray.forEach( function(marker, position ) {
+      console.log(marker)
       var title = markersArray[position].title;
       marker.addListener('click', function() {
         self.openInfoWindow(title, 'map');
       });
-    }, this);
-
-  }.bind(this);
+    });
+  };
 
   self.addRemoveLocationsAndMapMarkers = function(inputText, updateMarkers) {
     var self = this;
