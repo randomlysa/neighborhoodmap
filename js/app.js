@@ -932,6 +932,7 @@ var ViewModel = function(data) {
       lastLocation.setMap(null);
       // Remove menu from the map.
       addLocationDiv.fadeOut('slow');
+      alertify.warning('Location Not Added', 3);
     } else {
       var newLocationToAdd = {
         'title': self.newLocationTitle(),
@@ -943,9 +944,13 @@ var ViewModel = function(data) {
       initialLocations.push(newLocationToAdd);
       self.otherLocationsList.push(new Location(newLocationToAdd));
       // Confirmation message and fade out the div after one second.
-      addLocationDiv.html('<h2>Location Added!</h2>')
-        .delay('1000')
-        .fadeOut('slow');
+      alertify.success('Location Added!', 3);
+      addLocationDiv.fadeOut('slow');
+
+      // Clear observables.
+      self.newLocationTitle('');
+      self.selectedType('');
+      self.newLocationLatLng('');
     }
   }
 
