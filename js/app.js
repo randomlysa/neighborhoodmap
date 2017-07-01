@@ -947,6 +947,12 @@ var ViewModel = function(data) {
       }
       initialLocations.push(newLocationToAdd);
       self.otherLocationsList.push(new Location(newLocationToAdd));
+
+      // Get and update the marker that was just made.
+      var lastMarker = markersArray[markersArray.length - 1];
+      lastMarker.title = self.newLocationTitle();
+      self.addListenerToMarker(lastMarker);
+
       // Confirmation message and fade out the div after one second.
       alertify.success('Location Added!', 3);
       addLocationDiv.fadeOut('slow');
@@ -955,6 +961,8 @@ var ViewModel = function(data) {
       self.newLocationTitle('');
       self.selectedType('');
       self.newLocationLatLng('');
+
+      self.saveToStorage();
     }
   }
 
