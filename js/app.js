@@ -753,7 +753,7 @@ var ViewModel = function(data) {
     // close the last infoWindow, remove images from ko.observable
     // flickrResults, clear the window hash, and remove the 'open' class from
     // pushFlickrImagesToDiv.
-    if (openInfoWindows.length > 1) {
+    if (openInfoWindows.length > 0) {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
       pushFlickrImagesToObservable('');
       // TODO Check why this div closes on desktop without this line,
