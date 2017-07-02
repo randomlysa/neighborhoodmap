@@ -170,8 +170,8 @@ var ViewModel = function(data) {
     return true;
   }.bind(this);
 
-  // Is an IIFE, otherwise self.displayErrorMessageComputed /
-  // self.settingDisplayErrorMessage() doesn't exist when it needs to.
+  // Is an IIFE, otherwise self.settingDisplayErrorMessage() doesn't exist
+  // when it needs to.
   self.getAllSettings = (function() {
     // List all settings.
     var allSettings = [
@@ -556,14 +556,6 @@ var ViewModel = function(data) {
     }
   };
 
-  self.errorMessageText = ko.observable();
-  // Only display the error message when the setting is true and
-  // there is text to display.
-  self.displayErrorMessageComputed = ko.computed( function() {
-    return Boolean(self.settingDisplayErrorMessage()) &&
-      Boolean(self.errorMessageText());
-  });
-
   // Runs when esc key is pressed.
   self.clearAndFocusTextBox = function() {
     $("#main-search-input").val('').focus();
@@ -760,7 +752,6 @@ var ViewModel = function(data) {
       // but not in mobile emulation in Chrome.
       $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
       window.location.hash = '';
-      self.errorMessageText('');
     };
   }.bind(this);
 
@@ -1000,7 +991,9 @@ var ViewModel = function(data) {
 
     var request = $.ajax(fullFlickrAPIsearch);
     request.fail(function(){
-      self.errorMessageText('there was an error connecting to flickr');
+      if (self.settingDisplayErrorMessage()) {
+        alertify.error('There was an error connecting to Flickr.', 6);
+      }
     });
     request.done(function(data){
       var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
@@ -1121,6 +1114,19 @@ var ViewModel = function(data) {
 
       // Send AJAX query via jQuery library.
       var yelpQuery = $.ajax(settings);
+
+      // Used when the ajax call fails or when all the necessary info isn't
+      // available from Yelp.
+      function failedYelpQuery() {
+        if (self.settingDisplayErrorMessage()) {
+          alertify.error('There was an error connecting to Yelp.', 6);
+        }
+        self.infowindow.setContent(
+          '<div class="infoWindowTitle">' + query + '</div>' +
+          '<div><br><em>Information from Yelp not available.</em></div>'
+        );
+      }
+
       yelpQuery.done(function(results) {
         var businessInfo = results.businesses[0];
         var businessIsClosedText = '';
@@ -1130,34 +1136,36 @@ var ViewModel = function(data) {
             '<strong>Yelp reports this business is closed.</strong><br>';
         }
 
-        self.infowindow.setContent(
-          '<div class="infoWindowTitle">' +
-            '<a href="' + businessInfo.url + '">' +
-              businessInfo.name +
-            '</a>' +
+        try {
+          self.infowindow.setContent(
+            '<div class="infoWindowTitle">' +
+              '<a href="' + businessInfo.url + '">' +
+                businessInfo.name +
+              '</a>' +
 
-            '<a href="' + businessInfo.url + ' " target="_new">' +
-              '<span class="glyphicon glyphicon-new-window" ' +
-              'aria-hidden="true"></span>' +
-            '</a>' +
-          '</div>' +
+              '<a href="' + businessInfo.url + ' " target="_new">' +
+                '<span class="glyphicon glyphicon-new-window" ' +
+                'aria-hidden="true"></span>' +
+              '</a>' +
+            '</div>' +
 
-          businessIsClosedText +
-          businessInfo.categories[0][0] + '<br>' +
+            businessIsClosedText +
+            businessInfo.categories[0][0] + '<br>' +
 
-          '<span class="glyphicon glyphicon-earphone" ' +
-          'aria-hidden="true"></span>' +
-          businessInfo.display_phone +
-          '<br><img src="' + businessInfo.rating_img_url +'">' +
-          '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
-
+            '<span class="glyphicon glyphicon-earphone" ' +
+            'aria-hidden="true"></span>' +
+            businessInfo.display_phone +
+            '<br><img src="' + businessInfo.rating_img_url +'">' +
+            '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
+        }
+        catch (e) {
+          // User entered locations might not have all the right info available
+          // on Yelp.
+          failedYelpQuery();
+        }
       }),
-      yelpQuery.fail( function() {
-        self.infowindow.setContent(
-          '<div class="infoWindowTitle">' + query + '</div>' +
-          '<div class="error small-text text-center">' +
-          'there was an error connecting to yelp</div>'
-        );
+      yelpQuery.fail(function(){
+        failedYelpQuery();
       });
     })
   }.bind(this);
