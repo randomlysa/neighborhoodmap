@@ -959,6 +959,8 @@ var ViewModel = function(data) {
       // Remove menu from the map.
       addLocationDiv.fadeOut('slow');
       alertify.warning('Location Not Added', 3);
+    } else if(!self.newLocationTitle()) {
+      alertify.warning('Please enter a name for the location.')
     } else {
       // Object to add to initialLocations
       var newLocationToAdd = {
