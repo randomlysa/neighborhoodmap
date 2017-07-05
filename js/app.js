@@ -883,6 +883,15 @@ var ViewModel = function(data) {
   // by right clicking.
   self.openAddNewLocationMenu = function(e) {
     var self = this;
+
+    // Before opening a new menu, check if any marker.notSubmitted = true.
+    // This means the menu was opened, but not submitted or cancelled.
+    // Without this check, right clicking all over the map would keep adding new
+    // location markers without any information associated/saved with them.
+    markersArray.forEach(function(marker) {
+      if(marker.notSubmitted) { marker.setMap(null); }
+    });
+
     var positionInPixels = e.pixel;
     // Default to the traditional location icon.
     self.imageIconObservable = ko.observable(
@@ -911,7 +920,8 @@ var ViewModel = function(data) {
       title: title,
       position: self.newLocationLatLng(),
       map: map,
-      icon: self.imageIconObservable()
+      icon: self.imageIconObservable(),
+      notSubmitted: true
     });
 
     markersArray.push(marker);
@@ -956,7 +966,7 @@ var ViewModel = function(data) {
         'coordinates': [
           self.newLocationLatLng().lat(), self.newLocationLatLng().lng()
         ],
-        'type': self.selectedType(),
+        'type': self.selectedType()
       };
       initialLocations.push(newLocationToAdd);
       self.otherLocationsList.push(new Location(newLocationToAdd));
@@ -964,6 +974,7 @@ var ViewModel = function(data) {
       // Get and update the marker that was just made.
       var lastMarker = markersArray[markersArray.length - 1];
       lastMarker.title = self.newLocationTitle();
+      lastMarker.notSubmitted = false;
       self.addListenerToMarker(lastMarker);
 
       // Confirmation message and fade out the div after one second.
