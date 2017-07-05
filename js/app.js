@@ -884,6 +884,10 @@ var ViewModel = function(data) {
   self.openAddNewLocationMenu = function(e) {
     var self = this;
     var positionInPixels = e.pixel;
+    // Default to the traditional location icon.
+    self.imageIconObservable = ko.observable(
+      'images/mapicons/ic_place_black_24dp_1x.png'
+    );
     self.newLocationLatLng(e.latLng);
 
     // Populate self.availableTypes
@@ -902,24 +906,36 @@ var ViewModel = function(data) {
       {'top': positionInPixels.y, 'left': positionInPixels.x}
     ).fadeIn('slow');
 
-    // Set the marker icon.
-    if (self.settingDisplayCustomMapMarkers() === true) {
-      var imageIcon = 'images/mapicons/' + iconToImage[self.selectedType()]
-        + '.png';
-    }
-    if (self.settingDisplayCustomMapMarkers() === false) {
-     var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
-    }
-
     // Put the marker on the map.
     var marker = new google.maps.Marker({
       title: title,
       position: self.newLocationLatLng(),
       map: map,
-      icon: imageIcon
+      icon: self.imageIconObservable()
     });
 
     markersArray.push(marker);
+
+    // Update the map icon when a new option is selected.
+    self.selectedType.subscribe(function(icon) {
+      // Set the marker icon.
+      if (self.settingDisplayCustomMapMarkers() === true) {
+        self.imageIconObservable(
+          'images/mapicons/' + iconToImage[self.selectedType()] + '.png'
+        );
+      }
+      if (self.settingDisplayCustomMapMarkers() === false) {
+        self.imageIconObservable(
+        'images/mapicons/' + iconToImage['Default'] + '.png'
+        );
+      }
+
+      var lastMarker = markersArray[markersArray.length - 1];
+      lastMarker.icon = self.imageIconObservable();
+      // Remove/readd the map marker to draw the new icon.
+      lastMarker.setMap(null);
+      lastMarker.setMap(map);
+    });
   }
 
   self.addNewLocation = function(data) {
