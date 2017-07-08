@@ -111,7 +111,11 @@ var ViewModel = function(data) {
     }
     // Close an infoWindow by clicking on an empty area on the map.
     google.maps.event.addDomListener(map, 'click',
-      function() { self.closeInfoWindow(); }.bind(this));
+      function() {
+        self.closeInfoWindow();
+        self.addNewLocation('cancel');
+      }.bind(this)
+    );
     // Add a marker by right clicking on the map.
     // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
     google.maps.event.addDomListener(map, 'rightclick',
@@ -766,6 +770,8 @@ var ViewModel = function(data) {
       title = title.title;
     }
 
+    // Close any open infoWindows or addNewLocation menus.
+    self.addNewLocation('cancel');
     self.closeInfoWindow();
 
     // Show the area that will display flickr images.
@@ -880,6 +886,7 @@ var ViewModel = function(data) {
   self.newLocationTitle = ko.observable();
   self.selectedType = ko.observable();
   self.newLocationLatLng = ko.observable();
+  var openAddNewLocationMenuStatus = 'closed';
   // Opens a menu that lets the user add a custom location anywhere on the map
   // by right clicking.
   self.openAddNewLocationMenu = function(e) {
@@ -892,6 +899,8 @@ var ViewModel = function(data) {
     markersArray.forEach(function(marker) {
       if(marker.notSubmitted) { marker.setMap(null); }
     });
+
+    self.closeInfoWindow();
 
     var positionInPixels = e.pixel;
     // Default to the traditional location icon.
@@ -910,6 +919,10 @@ var ViewModel = function(data) {
     // A custom location type that will not try to lookup info on Yelp.
     // Temporarily disabled.
     // self.availableTypes.push('Custom / Ignore Yelp');
+
+    // Only show the 'location not added' notification when the menu was open
+    // and is being closed. To do this, keep track of when the menu is open.
+    openAddNewLocationMenuStatus = 'open';
 
     // Fade in the menu under right click location.
     // https://stackoverflow.com/a/4666381
@@ -960,7 +973,10 @@ var ViewModel = function(data) {
       lastLocation.setMap(null);
       // Remove menu from the map.
       addLocationDiv.fadeOut('slow');
-      alertify.warning('Location Not Added', 3);
+      if (openAddNewLocationMenuStatus === 'open') {
+        alertify.warning('Location Not Added', 3);
+      }
+      openAddNewLocationMenuStatus = 'closed';
     } else if(!self.newLocationTitle()) {
       alertify.warning('Please enter a name for the location.')
     } else {
@@ -984,6 +1000,7 @@ var ViewModel = function(data) {
       // Confirmation message and fade out the div after one second.
       alertify.success('Location Added!', 3);
       addLocationDiv.fadeOut('slow');
+      openAddNewLocationMenuStatus = 'closed';
 
       // Clear observables.
       self.newLocationTitle('');
