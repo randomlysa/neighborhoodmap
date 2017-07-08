@@ -777,8 +777,9 @@ var ViewModel = function(data) {
     var itemindex = self.matchTitle(title, initialLocations);
 
     // itemindex might not be found if random text is entered into the url hash.
-    // Without this, the list of locations disappears and the app is unuseable.
-    if (!itemindex) {
+    // Without this check, if random text is entered for the url hash,
+    // the list of locations disappears and the app is unuseable.
+    if (itemindex === undefined) {
       alertify.error('Location "' + title + '" Not Found!', 3);
       return;
     }
