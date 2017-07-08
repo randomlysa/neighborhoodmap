@@ -513,6 +513,15 @@ var ViewModel = function(data) {
     self.saveToStorage();
   }.bind(this);
 
+  // Delete a location.
+  Location.prototype.deleteLocation = function(mapItem) {
+    alertify.confirm("Delete location: " + mapItem.title + "?", function() {
+      console.log(mapItem.title)
+      // TODO: Give items unique IDs before proceeding with delete function.
+      // Don't want to rely on titles when deleting.
+    });
+  }
+
   // Clear all favorites.
   self.clearAllFavorites = function() {
     var self = this;
