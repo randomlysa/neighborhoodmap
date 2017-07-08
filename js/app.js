@@ -561,7 +561,8 @@ var ViewModel = function(data) {
   };
 
   // Runs when esc key is pressed.
-  self.clearAndFocusTextBox = function() {
+  self.escapeKeyBinding = function() {
+    self.addNewLocation('cancel');
     $("#main-search-input").val('').focus();
     // Using val('') doesn't trigger addRemoveLocationsAndMapMarkers so run it
     // manually with an empty string.
@@ -929,6 +930,7 @@ var ViewModel = function(data) {
     $('#add-location-menu').css(
       {'top': positionInPixels.y, 'left': positionInPixels.x}
     ).fadeIn('slow');
+    $("#new-location-input").focus();
 
     // Put the marker on the map.
     var marker = new google.maps.Marker({

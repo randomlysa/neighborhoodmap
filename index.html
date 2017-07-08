@@ -16,7 +16,7 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   </head>
-  <body data-bind="rightArrowKey: cycleThroughLocations, leftArrowKey: cycleThroughLocations, escapeKey: clearAndFocusTextBox">
+  <body data-bind="rightArrowKey: cycleThroughLocations, leftArrowKey: cycleThroughLocations, escapeKey: escapeKeyBinding">
 
       <div id="map"></div>
       <div id="floating-panel" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
@@ -126,7 +126,7 @@
       <div id="add-location-menu">
         <strong>Add a new location</strong><br>
         <form data-bind="submit: addNewLocation">
-          Name: <input data-bind="textInput: newLocationTitle"><br>
+          Name: <input id="new-location-input" data-bind="textInput: newLocationTitle"><br>
           Type: <select data-bind="options: availableTypes, value: selectedType"></select><br>
           <button type="submit">Add Location</button>
           <button type="reset" data-bind="click: addNewLocation.bind($data, 'cancel');">Cancel</button>
