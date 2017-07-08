@@ -969,10 +969,13 @@ var ViewModel = function(data) {
     var addLocationDiv = $('#add-location-menu');
 
     if (data === 'cancel') {
-      // Remove marker from the markers array.
-      var lastLocation = markersArray.pop();
-      // Remove marker from the map.
-      lastLocation.setMap(null);
+      var lastMarker = markersArray[markersArray.length - 1];
+      if (lastMarker.notSubmitted === true) {
+        // Remove marker from array.
+        markersArray.pop();
+        // Remove marker from the map.
+        lastMarker.setMap(null);
+      }
       // Remove menu from the map.
       addLocationDiv.fadeOut('slow');
       if (openAddNewLocationMenuStatus === 'open') {
