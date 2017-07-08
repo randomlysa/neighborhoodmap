@@ -908,7 +908,8 @@ var ViewModel = function(data) {
       }
     })
     // A custom location type that will not try to lookup info on Yelp.
-    self.availableTypes.push('Custom / Ignore Yelp');
+    // Temporarily disabled.
+    // self.availableTypes.push('Custom / Ignore Yelp');
 
     // Fade in the menu under right click location.
     // https://stackoverflow.com/a/4666381
