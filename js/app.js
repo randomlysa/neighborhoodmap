@@ -3,6 +3,15 @@
 // Get API info.
 var getConfig = $.getJSON("js/config_secret.json");
 
+// Generate random ID for a location.
+var randomID = function() {
+  var id = '';
+  while (id.length < 10) {
+    id = id + (Math.floor(Math.random() * 10));
+  }
+  return id;
+}
+
 // Check local storage for map-knockoutjs, which might hold
 // locations and settings.
 var getFromStorage = ko.utils.parseJson(localStorage.getItem('map-knockoutjs'));
@@ -78,18 +87,19 @@ if (!initialLocations) {
 
 var Location = function(data) {
   var self = this;
-  this.title = data.title;
-  this.coordinates = data.coordinates;
-  this.type = data.type;
-  this.favorite = ko.observable(data.favorite);
+  self.id = randomID();
+  self.title = data.title;
+  self.coordinates = data.coordinates;
+  self.type = data.type;
+  self.favorite = ko.observable(data.favorite);
   // Determine if the item is a favorite and return the correct icon.
-  this.favoriteText = ko.pureComputed( function() {
-    return this.favorite() === true ? "bookmark" : "bookmark_border";
-  }, this);
+  self.favoriteText = ko.pureComputed( function() {
+    return self.favorite() === true ? "bookmark" : "bookmark_border";
+  }, self);
   // Default the beenhere icon to false.
   if (data.beenhere === undefined) { data.beenhere = false; }
-  this.beenhere = ko.observable(data.beenhere);
-  this.beenhereCSS = ko.computed( function() {
+  self.beenhere = ko.observable(data.beenhere);
+  self.beenhereCSS = ko.computed( function() {
     return self.beenhere() ? '' : 'md-dark md-inactive';
   });
 };
@@ -146,12 +156,15 @@ var ViewModel = function(data) {
 
   // Save settings and locations infomation.
   self.saveToStorage = function() {
-    // Save locations and settings.
-    localStorage.setItem('map-knockoutjs', ko.toJSON({
-        locations: initialLocations,
-        settings: settings
-      })
-    );
+    window.setTimeout(function(){
+      // Save locations and settings.
+      // Delayed 400 ms to allow observables to update.
+      localStorage.setItem('map-knockoutjs', ko.toJSON({
+          locations: self.dynamicLocationsList,
+          settings: settings
+        })
+      );
+    }, 400);
   };
 
   self.toggleAndSaveSetting = function(vm, data) {
@@ -516,9 +529,19 @@ var ViewModel = function(data) {
   // Delete a location.
   Location.prototype.deleteLocation = function(mapItem) {
     alertify.confirm("Delete location: " + mapItem.title + "?", function() {
-      console.log(mapItem.title)
-      // TODO: Give items unique IDs before proceeding with delete function.
-      // Don't want to rely on titles when deleting.
+      [
+        'favoriteAndBeenhereLocationsList',
+        'favoriteLocationsList',
+        'beenhereLocationsList',
+        'otherLocationsList',
+      ].forEach(function(list){
+        // Check for item in the array.
+        var mapItemLocationInArray = self[list]().indexOf(mapItem);
+        if (mapItemLocationInArray !== -1) {
+          self[list].remove(mapItem);
+          self.saveToStorage();
+        }
+      });
     });
   }
 
