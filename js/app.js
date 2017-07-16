@@ -777,17 +777,9 @@ var ViewModel = function(data) {
   // Keep track of open infoWindow(s). Used to close the previous infoWindow.
   var openInfoWindows = [];
   self.closeInfoWindow = function() {
-    // Check if there's at least one openInfoWindows defined. If there is,
-    // close the last infoWindow, remove images from ko.observable
-    // flickrResults, clear the window hash, and remove the 'open' class from
-    // pushFlickrImagesToDiv.
+    // Check if there's at least one openInfoWindows.
     if (openInfoWindows.length > 0) {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
-
-      //pushFlickrImagesToObservable('');
-
-      // TODO Check why this div closes on desktop without this line,
-      // but not in mobile emulation in Chrome.
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
       window.location.hash = '';
     };
