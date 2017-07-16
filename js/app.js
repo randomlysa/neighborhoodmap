@@ -309,7 +309,7 @@ var ViewModel = function(data) {
       var previousFlickrImages = pushFlickrImagesToObservable();
     }
 
-    $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
+    $( "#" + pushFlickrImagesToDiv ).fadeOut();
 
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickrContainerRight';
@@ -324,7 +324,6 @@ var ViewModel = function(data) {
     // If previousFlickrImages exist, open the new flickr div and add the
     // previous images to it.
     if(previousFlickrImages) {
-      $('#' + pushFlickrImagesToDiv).addClass('open');
       pushFlickrImagesToObservable(previousFlickrImages);
     }
 
@@ -784,10 +783,12 @@ var ViewModel = function(data) {
     // pushFlickrImagesToDiv.
     if (openInfoWindows.length > 0) {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
-      pushFlickrImagesToObservable('');
+
+      //pushFlickrImagesToObservable('');
+
       // TODO Check why this div closes on desktop without this line,
       // but not in mobile emulation in Chrome.
-      $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
+      $( "#" + pushFlickrImagesToDiv ).fadeOut();
       window.location.hash = '';
     };
   }.bind(this);
@@ -806,9 +807,6 @@ var ViewModel = function(data) {
     // Close any open infoWindows or addNewLocation menus.
     self.addNewLocation('cancel');
     self.closeInfoWindow();
-
-    // Show the area that will display flickr images.
-    $( "#" + pushFlickrImagesToDiv ).addClass( 'open' );
 
     // This is which marker number to attach the info window to.
     // Gets the index of the marker in markersArray.
@@ -863,7 +861,7 @@ var ViewModel = function(data) {
       if (!jQuery.browser.mobile) {
         $("#collapse-locations").slideDown();
       }
-      $( "#" + pushFlickrImagesToDiv ).removeClass( 'open' );
+      $( "#" + pushFlickrImagesToDiv ).fadeOut();
     }.bind(this));
 
     // Add title, infoWindow to the array that keeps track of which infoWindow
@@ -1140,6 +1138,9 @@ var ViewModel = function(data) {
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
       pushFlickrImagesToObservable(flickrResultsString);
+
+      // Show the area that will display flickr images.
+      $( "#" + pushFlickrImagesToDiv ).fadeIn();
 
     });
   }.bind(this); // End of searchFlickr().
