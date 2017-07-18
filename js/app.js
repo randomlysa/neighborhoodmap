@@ -314,9 +314,13 @@ var ViewModel = function(data) {
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickrContainerRight';
     pushFlickrImagesToObservable = self.flickrResultsRight;
+    $("#flickrContainerRight").css('display', 'inline');
+    $("#flickrContainerBottom").css('display', 'none');
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
+      $("#flickrContainerRight").css('display', 'none');
+      $("#flickrContainerBottom").css('display', 'inline');
       pushFlickrImagesToDiv = 'flickrContainerBottom';
       pushFlickrImagesToObservable = self.flickrResultsBottom;
     }
