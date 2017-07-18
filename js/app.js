@@ -784,8 +784,15 @@ var ViewModel = function(data) {
     // Check if there's at least one openInfoWindows.
     if (openInfoWindows.length > 0) {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
-      $( "#" + pushFlickrImagesToDiv ).fadeOut();
+
       window.location.hash = '';
+      $( "#" + pushFlickrImagesToDiv ).fadeOut();
+
+      // Don't slide down the location list on mobile browsers. 
+      // It hides the map.
+      if (!jQuery.browser.mobile) {
+        $("#collapse-locations").slideDown();
+      }
     };
   }.bind(this);
 
@@ -850,15 +857,7 @@ var ViewModel = function(data) {
     // a long time.
     self.infowindow.setContent('Loading Infomation from Yelp');
     self.infowindow.open(map, markersArray[itemindex]);
-    self.infowindow.addListener('closeclick', function() {
-      window.location.hash = '';
-      // Don't slide down the location list on mobile browsers.
-      // It hides the map.
-      if (!jQuery.browser.mobile) {
-        $("#collapse-locations").slideDown();
-      }
-      $( "#" + pushFlickrImagesToDiv ).fadeOut();
-    }.bind(this));
+    self.infowindow.addListener('closeclick', self.closeInfoWindow);
 
     // Add title, infoWindow to the array that keeps track of which infoWindow
     // to close.
