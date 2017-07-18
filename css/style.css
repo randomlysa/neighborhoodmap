@@ -36,6 +36,11 @@ a:hover {
     width: calc(100% - 90px);
 }
 
+#container {
+    /* Hide until map load success. */
+    display: none;
+}
+
 #main-search-input {
     width: 100%;
     padding: 5px;

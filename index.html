@@ -19,106 +19,103 @@
   <body data-bind="rightArrowKey: cycleThroughLocations, leftArrowKey: cycleThroughLocations, escapeKey: escapeKeyBinding">
 
       <div id="map"></div>
-      <div id="floating-panel" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div id="container">
+        <div id="floating-panel" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 
-        <div id="floating-panel-header">
-          <input id="main-search-input" data-bind="textInput: mapSearchInputText" placeholder="filter locations" autofocus />
+          <div id="floating-panel-header">
+            <input id="main-search-input" data-bind="textInput: mapSearchInputText" placeholder="filter locations" autofocus />
 
-          <button type="button" class="btn btn-small" id="toggle-location-list"
-            aria-label="Toggle Location List" data-bind="click: collapseLocationDiv">
-            <span id="toggle-button" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-          </button>
+            <button type="button" class="btn btn-small" id="toggle-location-list"
+              aria-label="Toggle Location List" data-bind="click: collapseLocationDiv">
+              <span id="toggle-button" class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+            </button>
 
-          <button type="button" class="btn btn-small" id="toggle-location-list" data-bind='click: displayOptions'>
-            <span class="glyphicon glyphicon-option-vertical"></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Options - hidden by default. -->
-      <div id="options" class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
-        data-bind="fadeVisible: displayOptionsStatus">
-
-        <div class="option text-right">
-          <a href="#" data-bind="click: clearAllFavorites">
-            <button type="button" class="btn btn-small btn-danger btn-block"
-            data-bind="attr: {disabled: disableClearAllFavoritesButton}">
-              Clear All Favorites</button>
-          </a>
-      </div>
-        <div class="option">
-          <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
-            toggleAndSaveSetting">
-          <label for="alwaysShowFavorites">Always Show Favorites</label>
-        </div>
-        <div class="option">
-          <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
-            toggleAndSaveSetting">
-          <label for="displayBeenhereColumn">Display Been Here Column</label>
-        </div>
-        <div class="option">
-          <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
-            toggleAndSaveSetting">
-          <label for="displayCustomMapMarkers">Display Custom Map Markers</label>
-        </div>
-        <div class="option">
-          <input type="checkbox" id="displayErrorMessage" data-bind="checked: settingDisplayErrorMessage, click:
-            toggleAndSaveSetting">
-          <label for="displayErrorMessage">Display Error Messages</label>
-        </div>
-        <div class="option">
-
-          <div class="sortGroup">
-            <strong>Sort Order:</strong>
-              <div id="topSortableList"
-                data-bind="sortable: {data: topSortableList, afterMove: saveSortable}"
-                class="list-group">
-                <span data-bind="text: $data" class="list-group-item"></span>
-              </div>
-          </div>
-        </div>
-      </div>
-      <!-- End of options block. -->
-
-      <div id="collapse-locations" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div data-bind="foreach: dynamicLocationsList">
-          <div>
-            <span data-bind="click: Location.prototype.toggleProperty">
-              <i class="link material-icons md-18" data-bind="text: favoriteText"></i>
-            </span>
-
-            <span data-bind="click: Location.prototype.toggleProperty,
-              if: $parent.settingDisplayBeenhereColumn">
-              <i class="link material-icons"
-                data-bind="css: beenhereCSS">
-                beenhere
-              </i>
-            </span>
-
-            <a href="#"
-              class="overlayMapListLinks"
-              data-bind="text: title,
-              click: $parent.openInfoWindow,
-              attr: { id: $index }"></a>
-
-             <span data-bind="click: Location.prototype.deleteLocation">
-               <i class="link material-icons md-18">delete</i>
-            </span>
+            <button type="button" class="btn btn-small" id="toggle-location-list" data-bind='click: displayOptions'>
+              <span class="glyphicon glyphicon-option-vertical"></span>
+            </button>
           </div>
         </div>
 
-        <!--
-          <div id="no-locations-found" data-bind="text: noLocationsFoundText"></div>
-        -->
+        <!-- Options - hidden by default. -->
+        <div id="options" class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+          data-bind="fadeVisible: displayOptionsStatus">
 
-      </div>
+          <div class="option text-right">
+            <a href="#" data-bind="click: clearAllFavorites">
+              <button type="button" class="btn btn-small btn-danger btn-block"
+              data-bind="attr: {disabled: disableClearAllFavoritesButton}">
+                Clear All Favorites</button>
+            </a>
+          </div>
+          <div class="option">
+            <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
+              toggleAndSaveSetting">
+            <label for="alwaysShowFavorites">Always Show Favorites</label>
+          </div>
+          <div class="option">
+            <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
+              toggleAndSaveSetting">
+            <label for="displayBeenhereColumn">Display Been Here Column</label>
+          </div>
+          <div class="option">
+            <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
+              toggleAndSaveSetting">
+            <label for="displayCustomMapMarkers">Display Custom Map Markers</label>
+          </div>
+          <div class="option">
+            <input type="checkbox" id="displayErrorMessage" data-bind="checked: settingDisplayErrorMessage, click:
+              toggleAndSaveSetting">
+            <label for="displayErrorMessage">Display Error Messages</label>
+          </div>
+          <div class="option">
 
-      <div id="flickrContainerRight">
-        <div id="flickrResultsRight" data-bind="html: flickrResultsRight"></div>
-      </div>
+            <div class="sortGroup">
+              <strong>Sort Order:</strong>
+                <div id="topSortableList"
+                  data-bind="sortable: {data: topSortableList, afterMove: saveSortable}"
+                  class="list-group">
+                  <span data-bind="text: $data" class="list-group-item"></span>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of options block. -->
 
-      <div id="flickrContainerBottom">
-        <div id="flickrResultsBottom" data-bind="html: flickrResultsBottom"></div>
+        <div id="collapse-locations" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+          <div data-bind="foreach: dynamicLocationsList">
+            <div>
+              <span data-bind="click: Location.prototype.toggleProperty">
+                <i class="link material-icons md-18" data-bind="text: favoriteText"></i>
+              </span>
+
+              <span data-bind="click: Location.prototype.toggleProperty,
+                if: $parent.settingDisplayBeenhereColumn">
+                <i class="link material-icons"
+                  data-bind="css: beenhereCSS">
+                  beenhere
+                </i>
+              </span>
+
+              <a href="#"
+                class="overlayMapListLinks"
+                data-bind="text: title,
+                click: $parent.openInfoWindow,
+                attr: { id: $index }"></a>
+
+               <span data-bind="click: Location.prototype.deleteLocation">
+                 <i class="link material-icons md-18">delete</i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div id="flickrContainerRight">
+          <div id="flickrResultsRight" data-bind="html: flickrResultsRight"></div>
+        </div>
+
+        <div id="flickrContainerBottom">
+          <div id="flickrResultsBottom" data-bind="html: flickrResultsBottom"></div>
+        </div>
       </div>
 
 
@@ -140,14 +137,14 @@
     <script>
       'use strict'
       function mapsError() {
-        // if maps didn't load, hide the floating panel, don't load the viewmodel,
-        // and show an error message
-        $("#floating-panel").css("display", "none");
+        // if maps didn't load, hide all content, show error message. 
+        $("#container").css("display", "none");
         $("#maps-error").css("display", "inline");
 
       }
       function mapSuccess() {
         $(document).ready(function() {
+         $("#container").css("display", "inline");          
           initMap();
           ko.applyBindings(new ViewModel());
         });
