@@ -48,18 +48,15 @@
             </a>
           </div>
           <div class="option">
-            <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click:
-              toggleAndSaveSetting">
+            <input type="checkbox" id="alwaysShowFavorites" data-bind="checked: settingAlwaysShowFavorites, click: toggleAndSaveSetting">
             <label for="alwaysShowFavorites">Always Show Favorites</label>
           </div>
           <div class="option">
-            <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click:
-              toggleAndSaveSetting">
+            <input type="checkbox" id="displayBeenhereColumn" data-bind="checked: settingDisplayBeenhereColumn, click: toggleAndSaveSetting">
             <label for="displayBeenhereColumn">Display Been Here Column</label>
           </div>
           <div class="option">
-            <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click:
-              toggleAndSaveSetting">
+            <input type="checkbox" id="displayCustomMapMarkers" data-bind="checked: settingDisplayCustomMapMarkers, click: toggleAndSaveSetting">
             <label for="displayCustomMapMarkers">Display Custom Map Markers</label>
           </div>
           <div class="option">
@@ -72,7 +69,6 @@
             <label for="enableEditMode">Enable Edit Mode</label>
           </div>
           <div class="option">
-
             <div class="sortGroup">
               <strong>Sort Order:</strong>
                 <div id="topSortableList"
@@ -141,14 +137,14 @@
     <script>
       'use strict'
       function mapsError() {
-        // if maps didn't load, hide all content, show error message. 
+        // if maps didn't load, hide all content, show error message.
         $("#container").css("display", "none");
         $("#maps-error").css("display", "inline");
 
       }
       function mapSuccess() {
         $(document).ready(function() {
-         $("#container").css("display", "inline");          
+         $("#container").css("display", "inline");
           initMap();
           ko.applyBindings(new ViewModel());
         });
