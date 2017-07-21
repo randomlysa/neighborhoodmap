@@ -195,7 +195,8 @@ var ViewModel = function(data) {
       'alwaysShowFavorites',
       'displayBeenhereColumn',
       'displayErrorMessage',
-      'displayCustomMapMarkers'
+      'displayCustomMapMarkers',
+      'enableEditMode'
     ];
 
     // Get gettings from storage.
