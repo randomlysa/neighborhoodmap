@@ -126,13 +126,33 @@ var ViewModel = function(data) {
         self.addNewLocation('cancel');
       }.bind(this)
     );
+
     // Add a marker by right clicking on the map.
     // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
-    google.maps.event.addDomListener(map, 'rightclick',
-      function(e) { self.openAddNewLocationMenu(e); }.bind(this)
-    );
-  };
+    var addRightClickHandler = function(){
+      google.maps.event.addDomListener(map, 'rightclick',
+        function(e) { self.openAddNewLocationMenu(e); }.bind(this)
+      );
+    }
 
+    var removeRightClickHandler = function() {
+      google.maps.event.clearListeners(map, 'rightclick');
+    }
+
+    if (self.settingEnableEditMode()){
+      addRightClickHandler();
+    } else {
+      removeRightClickHandler();
+    }
+
+    self.settingEnableEditMode.subscribe(function(){
+      if (self.settingEnableEditMode()){
+        addRightClickHandler();
+      } else {
+        removeRightClickHandler();
+      }
+    });
+  };
 
   // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting,
   // getAllSettings (IIFE).
