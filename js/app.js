@@ -289,14 +289,15 @@ var ViewModel = function(data) {
   // Checks the page orientation and adjusts the user interface, mainly setting
   // which flickr div opens (bottom or right), that the flickr div does not
   // overlap with the filter/header div, and re-pan the map to the marker.
-  var pushFlickrImagesToObservable, pushFlickrImagesToDiv, orientation;
+  var pushFlickrImagesToObservable, pushFlickrImagesToDiv, orientation,
+      availableWidth, availableHeight;
   self.flickrResults = ko.observable('');
   self.flickrResultsRight = ko.observable('');
   self.flickrResultsBottom = ko.observable('');
   self.checkOrientation = function() {
     var self = this;
-    var availableWidth = $(document).width();
-    var availableHeight = $(window).height();
+    availableWidth = $(document).width();
+    availableHeight = $(window).height();
 
     if (availableHeight > availableWidth) {
       orientation = 'tall';
@@ -780,7 +781,7 @@ var ViewModel = function(data) {
 
   // Keep track of open infoWindow(s). Used to close the previous infoWindow.
   var openInfoWindows = [];
-  self.closeInfoWindow = function() {
+  self.closeInfoWindow = function(callingFunction) {
     // Check if there's at least one openInfoWindows.
     if (openInfoWindows.length > 0) {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
@@ -788,11 +789,17 @@ var ViewModel = function(data) {
       window.location.hash = '';
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
 
-      // Don't slide down the location list on mobile browsers. 
-      // It hides the map.
-      if (!jQuery.browser.mobile) {
-        $("#collapse-locations").slideDown();
+      // callingFunction is undefined unless it is called from inside
+      // openInfowWindow. If another infoWindow is about to open, never slide
+      // down the location panel.
+      if (callingFunction === undefined) {
+        // Don't slide down the location list on mobile browsers.
+        // It hides the map.
+        if (!jQuery.browser.mobile || availableWidth < 992 ) {
+          $("#collapse-locations").slideDown();
+        }
       }
+
     };
   }.bind(this);
 
@@ -809,7 +816,7 @@ var ViewModel = function(data) {
 
     // Close any open infoWindows or addNewLocation menus.
     self.addNewLocation('cancel');
-    self.closeInfoWindow();
+    self.closeInfoWindow('openInfoWindow');
 
     // This is which marker number to attach the info window to.
     // Gets the index of the marker in markersArray.
@@ -867,7 +874,7 @@ var ViewModel = function(data) {
     // 1. Search flickr for images and update pushFlickrImagesToDiv.
     // 2. Search yelp for business info and update yelpInfoWindowContent.
     self.searchAPIsAndDisplayResults(title);
-    if (jQuery.browser.mobile) {
+    if (jQuery.browser.mobile || availableWidth < 992) {
       $("#collapse-locations").slideUp();
     }
   }.bind(this);
