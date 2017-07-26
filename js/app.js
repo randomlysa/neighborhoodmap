@@ -745,13 +745,13 @@ var ViewModel = function(data) {
             arrayToPushTo.push( new Location(mapItem) );
         }
         // Add favorites if settingAlwaysShowFavorites is true.
-        if (inputText &&
+        else if (inputText &&
             self.settingAlwaysShowFavorites() === true &&
             mapItem.favorite === true)
         {
           arrayToPushTo.push( new Location(mapItem) );
         }
-        if (!inputText) {
+        else if (!inputText) {
         // No letters input, return all items.
           // if (jQuery.browser.mobile) {
           //   $( '#collapse-locations').css('display', 'none');
