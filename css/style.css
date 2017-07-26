@@ -103,6 +103,12 @@ a:hover {
     font-size: 10pt;
 }
 
+.delete-icon {
+    position: absolute;
+    right: 5px;
+    padding-top: 5px;
+}
+
 /* info window and related items */
 .infoWindowTitle {
     text-align: center;
