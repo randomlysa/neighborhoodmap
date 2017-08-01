@@ -65,6 +65,10 @@
             <label for="displayErrorMessage">Display Error Messages</label>
           </div>
           <div class="option">
+            <input type="checkbox" id="disablePOIClickEvent" data-bind="checked: settingDisablePOIClickEvent, click: toggleAndSaveSetting">
+            <label for="disablePOIClickEvent" checked>Disable clicking on other locations</label>
+          </div>
+          <div class="option">
             <input type="checkbox" id="enableEditMode" data-bind="checked: settingEnableEditMode, click: toggleAndSaveSetting">
             <label for="enableEditMode">Enable Edit Mode</label>
           </div>

@@ -119,39 +119,6 @@ var ViewModel = function(data) {
     if (!self.settingAlwaysShowFavorites) {
       self.setupLocationLists();
     }
-    // Close an infoWindow by clicking on an empty area on the map.
-    google.maps.event.addDomListener(map, 'click',
-      function() {
-        self.closeInfoWindow();
-        self.addNewLocation('cancel');
-      }.bind(this)
-    );
-
-    // Add a marker by right clicking on the map.
-    // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
-    var addRightClickHandler = function(){
-      google.maps.event.addDomListener(map, 'rightclick',
-        function(e) { self.openAddNewLocationMenu(e); }.bind(this)
-      );
-    }
-
-    var removeRightClickHandler = function() {
-      google.maps.event.clearListeners(map, 'rightclick');
-    }
-
-    if (self.settingEnableEditMode()){
-      addRightClickHandler();
-    } else {
-      removeRightClickHandler();
-    }
-
-    self.settingEnableEditMode.subscribe(function(){
-      if (self.settingEnableEditMode()){
-        addRightClickHandler();
-      } else {
-        removeRightClickHandler();
-      }
-    });
   };
 
   // Settings functions: getSetting, saveToStorage, toggleAndSaveSetting,
@@ -216,6 +183,7 @@ var ViewModel = function(data) {
       'displayBeenhereColumn',
       'displayErrorMessage',
       'displayCustomMapMarkers',
+      'disablePOIClickEvent',
       'enableEditMode'
     ];
 
@@ -233,7 +201,7 @@ var ViewModel = function(data) {
   // matchTitle, sortList, panMap, checkOrientation, collapseLocationDiv,
   // setFavorites, toggleProperty, clearAllFavorites, autocomplete using
   // awesomplete, fadeVisible, some variables for errors, function for esc key
-  // binding.
+  // binding, custom left click and right click options.
 
   // Set up key bindings. Taken from todomvc knockoutjs code:
   // https://github.com/tastejs/todomvc/blob/master/examples/knockoutjs/js/app.js
@@ -625,6 +593,52 @@ var ViewModel = function(data) {
     // manually with an empty string.
     self.addRemoveLocationsAndMapMarkers('');
   };
+
+
+  // Custom left click and right click options.
+  // Left click:
+  google.maps.event.addDomListener(map, 'click',
+    function(event) {
+      // Close an infoWindow by clicking on an empty area on the map.
+      self.closeInfoWindow();
+      self.addNewLocation('cancel');
+
+      // Setting: prevent other locations (non-markers) from opening info
+      // windows.
+      // https://developers.google.com/maps/documentation/javascript/examples/event-poi
+      if (event.placeId && self.settingDisablePOIClickEvent()) {
+        event.stop();
+      }
+
+    }.bind(this)
+  );
+
+  // Right click:
+  // Add a marker by right clicking on the map when Edit Mode enabled.
+  // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
+  var addRightClickHandler = function(){
+    google.maps.event.addDomListener(map, 'rightclick',
+      function(e) { self.openAddNewLocationMenu(e); }.bind(this)
+    );
+  }
+
+  var removeRightClickHandler = function() {
+    google.maps.event.clearListeners(map, 'rightclick');
+  }
+
+  if (self.settingEnableEditMode()){
+    addRightClickHandler();
+  } else {
+    removeRightClickHandler();
+  }
+
+  self.settingEnableEditMode.subscribe(function(){
+    if (self.settingEnableEditMode()){
+      addRightClickHandler();
+    } else {
+      removeRightClickHandler();
+    }
+  });
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
