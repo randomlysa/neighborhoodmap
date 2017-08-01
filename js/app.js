@@ -521,21 +521,28 @@ var ViewModel = function(data) {
 
   // Delete a location.
   Location.prototype.deleteLocation = function(mapItem) {
-    alertify.confirm("Delete location: " + mapItem.title + "?", function() {
-      [
-        'favoriteAndBeenhereLocationsList',
-        'favoriteLocationsList',
-        'beenhereLocationsList',
-        'otherLocationsList',
-      ].forEach(function(list){
-        // Check for item in the array.
-        var mapItemLocationInArray = self[list]().indexOf(mapItem);
-        if (mapItemLocationInArray !== -1) {
-          self[list].remove(mapItem);
-          self.saveToStorage();
-        }
+    alertify.confirm("Delete location: " + mapItem.title + "?",
+      // Delete
+      function() {
+        [
+          'favoriteAndBeenhereLocationsList',
+          'favoriteLocationsList',
+          'beenhereLocationsList',
+          'otherLocationsList',
+        ].forEach(function(list){
+          // Check for item in the array.
+          var mapItemLocationInArray = self[list]().indexOf(mapItem);
+          if (mapItemLocationInArray !== -1) {
+            self[list].remove(mapItem);
+            self.saveToStorage();
+          }
+        });
+        alertify.notify('Location <b>' + mapItem.title + '</b> deleted.');
+      },
+      // Don't delete
+      function() {
+        alertify.notify('Location <b>' + mapItem.title + '</b> not deleted.');
       });
-    });
   }
 
   // Clear all favorites.
