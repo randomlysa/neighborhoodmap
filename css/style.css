@@ -209,3 +209,7 @@ a:hover {
     padding: 15px;
     display: none;
 }
+
+#helpMoreInfoText {
+    display: none;
+}
