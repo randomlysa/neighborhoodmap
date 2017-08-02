@@ -207,6 +207,7 @@ a:hover {
     position: absolute;
     background-color: #fff;
     padding: 15px;
+    width: 300px;
     display: none;
 }
 

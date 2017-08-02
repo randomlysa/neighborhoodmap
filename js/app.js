@@ -1005,6 +1005,23 @@ var ViewModel = function(data) {
     // and is being closed. To do this, keep track of when the menu is open.
     openAddNewLocationMenuStatus = 'open';
 
+    // Add some padding between the marker and menu.
+    positionInPixels.y += 20;
+
+    // Keep new location menu from opening off the page.
+    // Left side
+    if (positionInPixels.x < 150) {
+      positionInPixels.x += 20;
+    }
+    // Right side
+    if (positionInPixels.x + 300 > availableWidth) {
+      positionInPixels.x = availableWidth - 350;
+    }
+    // Bottom
+    if (positionInPixels.y + 150 > availableHeight) {
+      positionInPixels.y -= 200;
+    }
+
     // Fade in the menu under right click location.
     // https://stackoverflow.com/a/4666381
     $('#add-location-menu').css(
