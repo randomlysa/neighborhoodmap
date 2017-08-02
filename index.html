@@ -72,6 +72,12 @@
             <input type="checkbox" id="enableEditMode" data-bind="checked: settingEnableEditMode, click: toggleAndSaveSetting">
             <label for="enableEditMode">Enable edit mode</label>
           </div>
+          <div>
+            <a href="#" data-bind="click: helpMoreInfo">
+               <i class="material-icons">help_outline</i>
+               Help/More Info
+            </a>
+          </div>
           <div class="option">
             <div class="sortGroup">
               <strong>Sort Order:</strong>
@@ -138,6 +144,28 @@
           <button type="submit">Add Location</button>
           <button type="reset" data-bind="click: addNewLocation.bind($data, 'cancel');">Cancel</button>
         </form>
+      </div>
+
+      <!-- Popup for help/more info -->
+      <div id="helpMoreInfoText">
+        <strong>Always show favorites</strong><br/>
+        Don't filter out favorites when searching locations.<br/>
+
+        <strong>Display been here column</strong><br/>
+        Display the been here button, letting you set locations as visited.<br/>
+
+        <strong>Display custom map markers</strong><br/>
+        Show custom markers on the map, instead of the default "place" icon.
+        <i class="material-icons">place</i><br/>
+
+        <strong>Display error messages</strong><br/>
+        Lets you know when something goes wrong with Flickr or Yelp.<br/>
+
+        <strong>Disable clicking on other locations.</strong><br/>
+        Don't open information windows about locations other than the ones with your markers.<br/>
+
+        <strong>Enable edit mode</strong><br/>
+        Lets you add a location by right clicking on the map and delete locations from the location list.
       </div>
 
     <script>

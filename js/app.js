@@ -201,7 +201,7 @@ var ViewModel = function(data) {
   // matchTitle, sortList, panMap, checkOrientation, collapseLocationDiv,
   // setFavorites, toggleProperty, clearAllFavorites, autocomplete using
   // awesomplete, fadeVisible, some variables for errors, function for esc key
-  // binding, custom left click and right click options.
+  // binding, custom left click and right click options, helpMoreInfo.
 
   // Set up key bindings. Taken from todomvc knockoutjs code:
   // https://github.com/tastejs/todomvc/blob/master/examples/knockoutjs/js/app.js
@@ -646,6 +646,12 @@ var ViewModel = function(data) {
       removeRightClickHandler();
     }
   });
+
+  // Show help / more info
+  self.helpMoreInfo = function() {
+    var helpText = $("#helpMoreInfoText").html();
+    alertify.alert(helpText).set('label', 'Got it!');
+  }
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
