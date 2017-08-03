@@ -140,7 +140,12 @@
         <strong>Add a new location</strong><br>
         <form data-bind="submit: addNewLocation">
           Name: <input id="new-location-input" data-bind="textInput: newLocationTitle"><br>
-          Type: <select data-bind="options: availableTypes, value: selectedType"></select><br>
+          Type: <input list="locationTypes" name="chosenLocation" data-bind="textInput: selectedType">
+          <datalist id="locationTypes">
+            <div data-bind="foreach: availableTypes">
+              <option data-bind="text: $data">
+            </div>
+          </datalist>
           <button type="submit">Add Location</button>
           <button type="reset" data-bind="click: addNewLocation.bind($data, 'cancel');">Cancel</button>
         </form>
