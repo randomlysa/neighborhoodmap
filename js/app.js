@@ -932,8 +932,15 @@ var ViewModel = function(data) {
   this.cycleThroughLocations = function(data, event ) {
     var whichKey = event.originalEvent.key;
 
-    // Get title of open infoWindow.
-    var title = openInfoWindows[openInfoWindows.length - 1].title;
+    // Check if any open infoWindows exist.
+    if (!!openInfoWindows.length) {
+      // Get title of open infoWindow.
+      var title = openInfoWindows[openInfoWindows.length - 1].title;
+    } else {
+      // Otherwise get the title from the locations list.
+      title = self.dynamicLocationsList()[0].title
+    }
+
     // Find title in dynamicLocationsList and get the index.
     var index = self.matchTitle(title, self.dynamicLocationsList());
     // Subtract one from length since arrays are zero based.
