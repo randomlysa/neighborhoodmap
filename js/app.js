@@ -1170,12 +1170,9 @@ var ViewModel = function(data) {
         var numberOfPhotosToShow = 10;
       }
 
-      // Todo: replace with alertify
-      if (newData.photos.total < 0) {
-        self.flickrContainerRight(
-          '<span class="error text-center">' +
-          'no photos found on flickr' +
-          '</span>');
+      if (newData.photos.total === '0') {
+        var showPhotosDiv = false;
+        alertify.error('No photos found on Flickr.', 6);
       } else {
         for (var i = 0; i < numberOfPhotosToShow; i++) {
           var farm = newData.photos.photo[i].farm;
@@ -1215,7 +1212,9 @@ var ViewModel = function(data) {
       pushFlickrImagesToObservable(flickrResultsString);
 
       // Show the area that will display flickr images.
-      $( "#" + pushFlickrImagesToDiv ).fadeIn();
+      if (showPhotosDiv) {
+        $( "#" + pushFlickrImagesToDiv ).fadeIn();
+      }
 
     });
   }.bind(this); // End of searchFlickr().
