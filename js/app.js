@@ -1278,9 +1278,9 @@ var ViewModel = function(data) {
 
       // Used when the ajax call fails or when all the necessary info isn't
       // available from Yelp.
-      function failedYelpQuery() {
+      function failedYelpQuery(errorMessage) {
         if (self.settingDisplayErrorMessage()) {
-          alertify.error('There was an error connecting to Yelp.', 6);
+          alertify.error(errorMessage, 6);
         }
         self.infowindow.setContent(
           '<div class="infowindow-title">' + query + '</div>' +
@@ -1291,13 +1291,13 @@ var ViewModel = function(data) {
       yelpQuery.done(function(results) {
         var businessInfo = results.businesses[0];
         var businessIsClosedText = '';
+        if (businessInfo) {
 
-        if (businessInfo.is_closed === true) {
-          businessIsClosedText = '' +
-            '<strong>Yelp reports this business is closed.</strong><br>';
-        }
+          if (businessInfo.is_closed === true) {
+            businessIsClosedText = '' +
+              '<strong>Yelp reports this business is closed.</strong><br>';
+          }
 
-        try {
           self.infowindow.setContent(
             '<div class="infowindow-title">' +
               '<a href="' + businessInfo.url + '">' +
@@ -1318,15 +1318,13 @@ var ViewModel = function(data) {
             businessInfo.display_phone +
             '<br><img src="' + businessInfo.rating_img_url +'">' +
             '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
-        }
-        catch (e) {
-          // User entered locations might not have all the right info available
-          // on Yelp.
-          failedYelpQuery();
+        } else {
+          // businessInfo was undefined.
+          failedYelpQuery('No information found on Yelp about this business.');
         }
       }),
       yelpQuery.fail(function(){
-        failedYelpQuery();
+        failedYelpQuery('There was an error connecting to Yelp.');
       });
     })
   }.bind(this);
