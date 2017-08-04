@@ -302,16 +302,16 @@ var ViewModel = function(data) {
     $( "#" + pushFlickrImagesToDiv ).fadeOut();
 
     // By default, show flickr images on right.
-    pushFlickrImagesToDiv = 'flickrContainerRight';
+    pushFlickrImagesToDiv = 'flickr-container-right';
     pushFlickrImagesToObservable = self.flickrResultsRight;
-    $("#flickrContainerRight").css('display', 'inline');
-    $("#flickrContainerBottom").css('display', 'none');
+    $("#flickr-container-right").css('display', 'inline');
+    $("#flickr-container-bottom").css('display', 'none');
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
-      $("#flickrContainerRight").css('display', 'none');
-      $("#flickrContainerBottom").css('display', 'inline');
-      pushFlickrImagesToDiv = 'flickrContainerBottom';
+      $("#flickr-container-right").css('display', 'none');
+      $("#flickr-container-bottom").css('display', 'inline');
+      pushFlickrImagesToDiv = 'flickr-container-bottom';
       pushFlickrImagesToObservable = self.flickrResultsBottom;
     }
 
@@ -324,9 +324,9 @@ var ViewModel = function(data) {
     // Add padding to $flickrResultsRight to keep from overlapping
     // with #floating-panel.
     if (availableWidth < 768) {
-      $( "#flickrResultsRight" ).addClass('add-padding');
+      $( "#flickr-results-right" ).addClass('add-padding');
     } else {
-      $( "#flickrResultsRight" ).removeClass('add-padding');
+      $( "#flickr-results-right" ).removeClass('add-padding');
     }
 
     // Set options and pan map after rotation.
@@ -1170,6 +1170,7 @@ var ViewModel = function(data) {
         var numberOfPhotosToShow = 10;
       }
 
+      // Todo: replace with alertify
       if (newData.photos.total < 0) {
         self.flickrContainerRight(
           '<span class="error text-center">' +
@@ -1201,7 +1202,7 @@ var ViewModel = function(data) {
       // After all the images from Flickr are loaded, add a link to go to
       // Flickr to see more images.
       flickrResultsString += '' +
-        '<div class="flickrLinkForMoreImages">' +
+        '<div class="flickr-more-images">' +
         '<a href="https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery + '" target="_new">' +
         '<span class="glyphicon glyphicon-new-window" aria-hidden="true">' +
@@ -1282,7 +1283,7 @@ var ViewModel = function(data) {
           alertify.error('There was an error connecting to Yelp.', 6);
         }
         self.infowindow.setContent(
-          '<div class="infoWindowTitle">' + query + '</div>' +
+          '<div class="infowindow-title">' + query + '</div>' +
           '<div><br><em>Information from Yelp not available.</em></div>'
         );
       }
@@ -1298,7 +1299,7 @@ var ViewModel = function(data) {
 
         try {
           self.infowindow.setContent(
-            '<div class="infoWindowTitle">' +
+            '<div class="infowindow-title">' +
               '<a href="' + businessInfo.url + '">' +
                 businessInfo.name +
               '</a>' +
