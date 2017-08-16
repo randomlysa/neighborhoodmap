@@ -853,18 +853,6 @@ var ViewModel = function(data) {
 
       window.location.hash = '';
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
-
-      // callingFunction is undefined unless it is called from inside
-      // openInfowWindow. If another infoWindow is about to open, never slide
-      // down the location panel.
-      if (callingFunction === undefined) {
-        // Don't slide down the location list on mobile browsers.
-        // It hides the map.
-        if (!jQuery.browser.mobile || availableWidth < 992 ) {
-          $("#collapse-locations").slideDown();
-        }
-      }
-
     };
   }.bind(this);
 
