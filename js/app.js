@@ -601,11 +601,12 @@ var ViewModel = function(data) {
     self.addRemoveLocationsAndMapMarkers('');
   };
 
+  // Set up click, right click, edit mode options / handling.
 
-  // Custom left click and right click options.
-  // Left click:
-  google.maps.event.addDomListener(map, 'click',
-    function(event) {
+  // Default click action: close infoWindow, close addNewLocation menu, and
+  // optionally stop other POI windows from opening.
+  var defaultClickAction = function() {
+    google.maps.event.addDomListener(map, 'click', function(event) {
       // Close an infoWindow by clicking on an empty area on the map.
       self.closeInfoWindow();
       self.addNewLocation('cancel');
@@ -616,34 +617,50 @@ var ViewModel = function(data) {
       if (event.placeId && self.settingDisablePOIClickEvent()) {
         event.stop();
       }
+    });
+  };
 
-    }.bind(this)
-  );
-
-  // Right click:
-  // Add a marker by right clicking on the map when Edit Mode enabled.
-  // https://developers.google.com/maps/documentation/javascript/examples/event-arguments
-  var addRightClickHandler = function(){
-    google.maps.event.addDomListener(map, 'rightclick',
+  var clickToOpenAddNewLocationMenu = function(bindRightClickTo){
+    google.maps.event.addDomListener(map, bindRightClickTo,
       function(e) { self.openAddNewLocationMenu(e); }.bind(this)
     );
   }
 
-  var removeRightClickHandler = function() {
-    google.maps.event.clearListeners(map, 'rightclick');
+  var removeClickToOpenAddNewLocationMenu = function(bindRightClickTo) {
+    google.maps.event.clearListeners(map, bindRightClickTo);
   }
 
-  if (self.settingEnableEditMode()){
-    addRightClickHandler();
-  } else {
-    removeRightClickHandler();
+  // Default click for mobile and desktop.
+  defaultClickAction();
+
+  // Check state of edit mode (right click)  on desktop.
+  if (!jQuery.browser.mobile && self.settingEnableEditMode()) {
+      clickToOpenAddNewLocationMenu('rightclick');
   }
 
+  // Check state of edit mode on mobile (override default click.)
+  if (jQuery.browser.mobile && self.settingEnableEditMode()) {
+      clickToOpenAddNewLocationMenu('click');
+  }
+
+  // Watch for changes for edit mode.
   self.settingEnableEditMode.subscribe(function(){
-    if (self.settingEnableEditMode()){
-      addRightClickHandler();
-    } else {
-      removeRightClickHandler();
+    // Enable on mobile
+    if (jQuery.browser.mobile && self.settingEnableEditMode()){
+      clickToOpenAddNewLocationMenu('click');
+    }
+    // Disable on mobile.
+    if (jQuery.browser.mobile && !self.settingEnableEditMode()){
+      google.maps.event.clearListeners(map, 'click');
+      defaultClickAction();
+    }
+    // Enable on desktop.
+    if (!jQuery.browser.mobile && self.settingEnableEditMode()){
+      clickToOpenAddNewLocationMenu('rightclick');
+    }
+    // Disable on desktop.
+    if (!jQuery.browser.mobile && !self.settingEnableEditMode()){
+      google.maps.event.clearListeners(map, 'rightclick');
     }
   });
 
