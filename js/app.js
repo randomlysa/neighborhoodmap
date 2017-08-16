@@ -996,6 +996,10 @@ var ViewModel = function(data) {
   // by right clicking.
   self.openAddNewLocationMenu = function(e) {
     var self = this;
+    if (jQuery.browser.mobile) {
+      $("#collapse-locations").slideUp();
+    }
+
 
     // Before opening a new menu, check if any marker.notSubmitted = true.
     // This means the menu was opened, but not submitted or cancelled.
