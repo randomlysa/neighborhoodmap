@@ -779,35 +779,18 @@ var ViewModel = function(data) {
     // Remove items from filteredLocationsList.
     self.filteredLocationsList.removeAll();
 
-    function filterLocationList(arrayToFilter, arrayToPushTo) {
-      arrayToFilter.forEach( function(mapItem) {
-        // Add items that match the letters that were input.
-        if (inputText &&
-            mapItem.title.toLowerCase().includes(inputText.toLowerCase()))
-        {
-          // $( '#collapse-locations').css('display', 'inline');
-            arrayToPushTo.push( new Location(mapItem) );
-        }
-        // Add favorites if settingAlwaysShowFavorites is true.
-        else if (inputText &&
-            self.settingAlwaysShowFavorites() === true &&
+    // If input text, add items that match the text orfavorites if always show
+    // favorites = true.
+    if (inputText) {
+      initialLocations.forEach(function(mapItem){
+        if(mapItem.title.toLowerCase().includes(inputText.toLowerCase()) ||
+          self.settingAlwaysShowFavorites() == true &&
             mapItem.favorite === true)
         {
-          arrayToPushTo.push( new Location(mapItem) );
-        }
-        else if (!inputText) {
-        // No letters input, return all items.
-          // if (jQuery.browser.mobile) {
-          //   $( '#collapse-locations').css('display', 'none');
-          // }
-          arrayToPushTo.push( new Location(mapItem) );
+            self.filteredLocationsList().push( new Location(mapItem) );
         }
       });
-    };
-    // Filter non-favorites (runs always)
-    // push items from initialLocations that match input text to
-    // self.filteredLocationsList.
-    filterLocationList (initialLocations, self.filteredLocationsList);
+    }
 
     // Sort list alphabetically.
     self.sortList(self.filteredLocationsList);
