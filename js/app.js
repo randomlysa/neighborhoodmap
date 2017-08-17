@@ -1166,6 +1166,7 @@ var ViewModel = function(data) {
         var showPhotosDiv = false;
         alertify.error('No photos found on Flickr.', 6);
       } else {
+        showPhotosDiv = true;
         for (var i = 0; i < numberOfPhotosToShow; i++) {
           var farm = newData.photos.photo[i].farm;
           var server_id = newData.photos.photo[i].server;
