@@ -982,7 +982,6 @@ var ViewModel = function(data) {
 
     self.closeInfoWindow();
 
-    var positionInPixels = e.pixel;
     // Default to the traditional location icon.
     self.imageIconObservable = ko.observable(
       'images/mapicons/ic_place_black_24dp_1x.png'
@@ -1004,6 +1003,7 @@ var ViewModel = function(data) {
     // and is being closed. To do this, keep track of when the menu is open.
     openAddNewLocationMenuStatus = 'open';
 
+    var positionInPixels = e.pixel;
     // Add some padding between the marker and menu.
     positionInPixels.y += 20;
 
