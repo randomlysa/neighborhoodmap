@@ -595,10 +595,8 @@ var ViewModel = function(data) {
   // Runs when esc key is pressed.
   self.escapeKeyBinding = function() {
     self.addNewLocation('cancel');
-    $("#main-search-input").val('').focus();
-    // Using val('') doesn't trigger addRemoveLocationsAndMapMarkers so run it
-    // manually with an empty string.
-    self.addRemoveLocationsAndMapMarkers('');
+    $("#main-search-input").focus();
+    self.mapSearchInputText('')
   };
 
   // Set up click, right click, edit mode options / handling.
