@@ -1181,7 +1181,7 @@ var ViewModel = function(data) {
             '<img src="https://farm' + farm + '.staticflickr.com/' +
               server_id + '/' + id + '_' + secret + '_' +
               flickrImageSizeSuffix + '.jpg" ' +
-
+              'class="flickr-thumb" ' +
           '</a>';
           flickrResultsString += (flickrThumbnailWithLink);
         }
@@ -1200,13 +1200,24 @@ var ViewModel = function(data) {
 
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
-      pushFlickrImagesToObservable(flickrResultsString);
+
+
 
       // Show the area that will display flickr images.
       if (showPhotosDiv) {
-        $( "#" + pushFlickrImagesToDiv ).fadeIn();
-      }
+        // add images to the observable.
+        pushFlickrImagesToObservable(flickrResultsString);
 
+        var imagesLoaded = 0;
+        // https://stackoverflow.com/a/20614371
+        $(".flickr-thumb").on('load', function(image, item) {
+          imagesLoaded++;
+          if (imagesLoaded === numberOfPhotosToShow) {
+            // fade in after all images have loaded...
+            $( "#" + pushFlickrImagesToDiv ).fadeIn();
+          }
+        })
+      }
     });
   }.bind(this); // End of searchFlickr().
 
