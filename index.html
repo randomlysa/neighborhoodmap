@@ -23,7 +23,9 @@
         <div id="floating-panel" class="col-xs-12 content-width">
 
           <div id="floating-panel-header">
-            <input id="main-search-input" data-bind="textInput: mapSearchInputText" placeholder="filter locations" autofocus />
+            <input id="main-search-input"
+              data-bind="textInput: mapSearchInputText, event: { keyup: setTimeForLastKeyup }"
+              placeholder="filter locations" autofocus />
 
             <button type="button" class="btn btn-small" id="toggle-location-list"
               aria-label="Toggle Location List" data-bind="click: collapseLocationDiv">

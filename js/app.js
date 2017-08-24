@@ -564,12 +564,28 @@ var ViewModel = function(data) {
     allTitlesForAutoComplete.push(Location.title);
   });
   var inputMapLocation = document.getElementById("main-search-input");
-  new Awesomplete(inputMapLocation, {
+  var awesomplete = new Awesomplete(inputMapLocation, {
     list: allTitlesForAutoComplete
   });
+
   inputMapLocation.addEventListener("awesomplete-selectcomplete",
     function(item) { self.openInfoWindow(item.target.value); }.bind(this)
   );
+
+  // Run a check to close awesomplete if no text input for three seconds.
+  self.lastKeyupTimeWas = ko.observable('');
+  self.setTimeForLastKeyup = function() {
+    var d = new Date();
+    self.lastKeyupTimeWas(d.getTime())
+  }
+
+  var checkToCloseAwesompleteDropdown = setInterval(function() {
+    var now = new Date();
+    var timeDifference = now.getTime() - self.lastKeyupTimeWas();
+    if (timeDifference > 3000) {
+      awesomplete.close()
+    }
+  }, 1000)
 
   // http://knockoutjs.com/examples/animatedTransitions.html
   // Here's a custom Knockout binding that makes elements shown/hidden via
