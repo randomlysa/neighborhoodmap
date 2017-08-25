@@ -304,7 +304,15 @@ var ViewModel = function(data) {
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickr-container-right';
     pushFlickrImagesToObservable = self.flickrResultsRight;
-    $("#flickr-container-right").css('display', 'inline');
+
+    // Set container right to be mobile (75px) or desktop (150px) wide.
+    if (jQuery.browser.mobile) {
+      $("#flickr-container-right").addClass('flickr-container-right-mobile');
+    } else {
+      $("#flickr-container-right").addClass('flickr-container-right-desktop');
+    }
+
+    $("#flickr-container-right").css('display', 'inline').fadeOut();
     $("#flickr-container-bottom").css('display', 'none');
 
     // Only exception, mobile tall orientation.
