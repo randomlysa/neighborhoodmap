@@ -137,7 +137,8 @@ var ViewModel = function(data) {
       return settings[setting];
     // Settings exist and setting does not exist.
     } else {
-      return true;
+      if (setting === 'enableEditMode') { return false; }
+      else { return true; }
     }
   };
 
