@@ -353,7 +353,7 @@ var ViewModel = function(data) {
 
   $( window ).resize(self.checkOrientation);
 
-  // Toggle location list. This is needed for the button near the div.
+  // Toggle location list. Used by #collapse-locations.
   self.collapseLocationDiv = function() {
       $( "#collapse-locations" ).slideToggle();
       if (jQuery.browser.mobile) {
