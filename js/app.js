@@ -409,34 +409,29 @@ var ViewModel = function(data) {
         ['Favorite', 'Visited', 'Everything Else', 'Favorite and Visited']
     };
 
-    // Object to look up list name and convert it to observable name.
-    var convertNameToList = {
-      'Favorite and Visited': 'locationsListFavoriteAndVisited',
-      'Favorite': 'locationsListFavorite',
-      'Visited': 'locationsListVisited',
-      'Everything Else': 'locationsListEverythingElse'
-    };
-
     var order = localStorage.getItem(sortableName);
-
-
     // If order is null, the list hasn't been saved to storage.
     // Set to the default list.
     if (order == null) {
-      var orderAsArray = sortableListDefaultItems[sortableName];
-      self[sortableName]( orderAsArray );
+      var sortOrderOfLocationLists = sortableListDefaultItems[sortableName];
+      self[sortableName]( sortOrderOfLocationLists );
     }
     // Order has been set in storage. Get the order for the UI Observable.
     else {
-      var orderAsArray = order.split(',');
+      var sortOrderOfLocationLists = order.split(',');
       self[sortableName].removeAll();
-      self[sortableName]( orderAsArray );
+      self[sortableName]( sortOrderOfLocationLists );
     }
 
-    // Always update the observable
+    // Always update the observable.
     self.sortOrderOfLocationsObservable.removeAll();
-    orderAsArray.forEach( function(list) {
-      self.sortOrderOfLocationsObservable.push(convertNameToList[list]);
+    sortOrderOfLocationLists.forEach( function(friendlyListName) {
+      // Convert the name of the list to the observable name.
+      // "Everything Else" becomes "locationsListEverythingElse"
+      var listName = "locationsList" + friendlyListName
+        .replace("and", "And")
+        .replace(/ /g, "");
+      self.sortOrderOfLocationsObservable.push( listName );
     });
   };
 
