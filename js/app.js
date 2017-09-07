@@ -362,33 +362,36 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Observable arrays for different item types.
-  [
-    'favoriteAndBeenhereLocationsList',
-    'favoriteLocationsList',
-    'beenhereLocationsList',
-    'otherLocationsList',
-  ].forEach( function(list) {
-    self[list] = ko.observableArray();
+  var obserablesForLocations = {
+    'Favorite and Visited': 'locationsListFavoriteAndVisited',
+    'Favorite': 'locationsListFavorite',
+    'Visited': 'locationsListVisited',
+    'Everything Else': 'locationsListEverythingElse'
+  };
+
+  // Make observableArrays from previous object.
+  _.forEach(obserablesForLocations, function(item) {
+    self[item] = ko.observableArray();
   });
 
   // Set up the different lists from initialLocations.
   self.setupLocationLists = function() {
-    self.favoriteAndBeenhereLocationsList.removeAll();
-    self.favoriteLocationsList.removeAll();
-    self.beenhereLocationsList.removeAll();
-    self.otherLocationsList.removeAll();
+    self.locationsListFavoriteAndVisited.removeAll();
+    self.locationsListFavorite.removeAll();
+    self.locationsListVisited.removeAll();
+    self.locationsListEverythingElse.removeAll();
     initialLocations.forEach( function(mapItem) {
       if (mapItem.favorite === true && mapItem.beenhere === true) {
-        self.favoriteAndBeenhereLocationsList.push( new Location(mapItem) );
+        self.locationsListFavoriteAndVisited.push( new Location(mapItem) );
       }
       else if (mapItem.favorite === true) {
-        self.favoriteLocationsList.push( new Location(mapItem) );
+        self.locationsListFavorite.push( new Location(mapItem) );
       }
       else if (mapItem.beenhere === true) {
-        self.beenhereLocationsList.push( new Location(mapItem) );
+        self.locationsListVisited.push( new Location(mapItem) );
       }
       else {
-        self.otherLocationsList.push( new Location(mapItem) );
+        self.locationsListEverythingElse.push( new Location(mapItem) );
       }
     });
   };
@@ -408,10 +411,10 @@ var ViewModel = function(data) {
 
     // Object to look up list name and convert it to observable name.
     var convertNameToList = {
-      'Favorite and Visited': 'favoriteAndBeenhereLocationsList',
-      'Favorite': 'favoriteLocationsList',
-      'Visited': 'beenhereLocationsList',
-      'Everything Else': 'otherLocationsList'
+      'Favorite and Visited': 'locationsListFavoriteAndVisited',
+      'Favorite': 'locationsListFavorite',
+      'Visited': 'locationsListVisited',
+      'Everything Else': 'locationsListEverythingElse'
     };
 
     var order = localStorage.getItem(sortableName);
@@ -478,10 +481,10 @@ var ViewModel = function(data) {
 
     // Used by whichList to lookup what LocationsList the item is is.
     var itemToListLookup = {
-      'truetrue' : 'favoriteAndBeenhereLocationsList',
-      'truefalse' : 'favoriteLocationsList',
-      'falsetrue' : 'beenhereLocationsList',
-      'falsefalse' : 'otherLocationsList',
+      'truetrue' : 'locationsListFavoriteAndVisited',
+      'truefalse' : 'locationsListFavorite',
+      'falsetrue' : 'locationsListVisited',
+      'falsefalse' : 'locationsListEverythingElse',
     };
 
     // Check what list the item currently belongs to based on favorite/beenhere.
@@ -530,10 +533,10 @@ var ViewModel = function(data) {
       // Delete
       function() {
         [
-          'favoriteAndBeenhereLocationsList',
-          'favoriteLocationsList',
-          'beenhereLocationsList',
-          'otherLocationsList',
+          'locationsListFavoriteAndVisited',
+          'locationsListFavorite',
+          'locationsListVisited',
+          'locationsListEverythingElse',
         ].forEach(function(list){
           // Check for item in the array.
           var mapItemLocationInArray = self[list]().indexOf(mapItem);
@@ -1109,7 +1112,7 @@ var ViewModel = function(data) {
         'type': self.selectedType()
       };
       initialLocations.push(newLocationToAdd);
-      self.otherLocationsList.push(new Location(newLocationToAdd));
+      self.locationsListEverythingElse.push(new Location(newLocationToAdd));
 
       // Get and update the marker that was just made.
       var lastMarker = markersArray[markersArray.length - 1];
@@ -1379,7 +1382,7 @@ var ViewModel = function(data) {
   };
 
   self.disableClearAllFavoritesButton = ko.computed(function() {
-    if (self.favoriteLocationsList().length > 0) { return false; }
+    if (self.locationsListFavorite().length > 0) { return false; }
     else {return true;}
   });
 };
