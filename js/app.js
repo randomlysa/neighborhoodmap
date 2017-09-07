@@ -527,18 +527,12 @@ var ViewModel = function(data) {
     alertify.confirm("Delete location: " + mapItem.title + "?",
       // Delete
       function() {
-        [
-          'locationsListFavoriteAndVisited',
-          'locationsListFavorite',
-          'locationsListVisited',
-          'locationsListEverythingElse',
-        ].forEach(function(list){
-          // Check for item in the array.
-          var mapItemLocationInArray = self[list]().indexOf(mapItem);
-          if (mapItemLocationInArray !== -1) {
-            self[list].remove(mapItem);
-            self.saveToStorage();
-          }
+          _.forEach(obserablesForLocations, function(arrayOfLocations) {
+            // Check for item in the array.
+            if (self[arrayOfLocations]().indexOf(mapItem) !== -1) {
+              self[arrayOfLocations].remove(mapItem);
+              self.saveToStorage();
+            };
         });
         alertify.notify('Location <b>' + mapItem.title + '</b> deleted.');
       },
