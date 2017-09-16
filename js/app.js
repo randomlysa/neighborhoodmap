@@ -1317,26 +1317,21 @@ var ViewModel = function(data) {
               '<strong>Yelp reports this business is closed.</strong><br>';
           }
 
-          self.infowindow.setContent(
-            '<div class="infowindow-title">' +
-              '<a href="' + businessInfo.url + '">' +
-                businessInfo.name +
-              '</a>' +
+          // Template based on / inpired by:
+          // https://jonsuh.com/blog/javascript-templating-without-a-library/
+          var template = $.get("infoWindowTemplate.html");
+          var outputHtml = '';
+          template.done(function(templateHtml) {
+            outputHtml += templateHtml.replace(/{{url}}/g, businessInfo["url"])
+              .replace(/{{name}}/g, businessInfo["name"])
+              .replace(/{{businessIsClosedText}}/g, businessIsClosedText)
+              .replace(/{{categories}}/g, businessInfo["categories"][0][0])
+              .replace(/{{display_phone}}/g, businessInfo["display_phone"])
+              .replace(/{{rating_img_url}}/g, businessInfo["rating_img_url"])
+              .replace(/{{review_count}}/g, businessInfo["review_count"]);
 
-              '<a href="' + businessInfo.url + ' " target="_new">' +
-                '<span class="glyphicon glyphicon-new-window" ' +
-                'aria-hidden="true"></span>' +
-              '</a>' +
-            '</div>' +
-
-            businessIsClosedText +
-            businessInfo.categories[0][0] + '<br>' +
-
-            '<span class="glyphicon glyphicon-earphone" ' +
-            'aria-hidden="true"></span>' +
-            businessInfo.display_phone +
-            '<br><img src="' + businessInfo.rating_img_url +'">' +
-            '<br>Rating based on ' + businessInfo.review_count + ' reviews.');
+            self.infowindow.setContent(outputHtml);
+          }); // template.done
         } else {
           // businessInfo was undefined.
           failedYelpQuery('No information found on Yelp about this business.');
