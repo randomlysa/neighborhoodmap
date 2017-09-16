@@ -347,7 +347,7 @@ var ViewModel = function(data) {
       newLatLng = defaultMapCenter;
     }
 
-    self.panMap(newLatLng, panByX , panByY);
+    self.panMap(newLatLng, panByX, panByY);
 
   }.bind(this);
 
@@ -903,7 +903,7 @@ var ViewModel = function(data) {
     // floating-panel-header, especially on iPhone 5 size screens.
     panByY = -135;
 
-    self.panMap(newLatLng, panByX , panByY);
+    self.panMap(newLatLng, panByX, panByY);
 
     // Bounce the marker for 2800 ms. This seems to be when it reaches the
     // down position.
