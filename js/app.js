@@ -847,9 +847,11 @@ var ViewModel = function(data) {
 
       window.location.hash = '';
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
+      map.setZoom(previousZoomLevel);
     };
   }.bind(this);
 
+  var previousZoomLevel;
   self.currentMarkerLocation = '';
   self.infowindow =  new google.maps.InfoWindow({disableAutoPan: true});
   self.openInfoWindow = function(title) {
@@ -886,6 +888,9 @@ var ViewModel = function(data) {
     var lng = self.currentMarkerLocation[1];
     var newLatLng = {lat: lat, lng: lng};
     var panByX, panByY;
+
+    previousZoomLevel = map.getZoom();
+    map.setZoom(18);
 
     // For mobile landscape, panByX to center infoWindow in the open space left
     // by the flickr div on the right.
