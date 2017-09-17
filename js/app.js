@@ -1255,9 +1255,8 @@ var ViewModel = function(data) {
   self.yelpInfoWindowContent = ko.observable();
   self.searchYelp = function(query) {
     var self = this;
-    // $(document).ready fixes Yelp not working on Firefox (and maybe others)
-    // when loading the page with a location in the hash.
-    $(document).ready(function() {
+    getConfig.then(function() {
+      console.log('then');
       var configBase = getConfig.responseJSON.config;
       var yelp_url = 'https://api.yelp.com/v2/search';
       var infowindowContent;
