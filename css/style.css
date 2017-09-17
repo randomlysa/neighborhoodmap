@@ -84,6 +84,7 @@ a:hover {
     max-height: calc(100% - 70px);
     overflow-y: auto;
     padding-bottom: 10px;
+    border-radius: 0 0 20px 0;
 }
 
 @media (min-width: 768px) {
@@ -147,7 +148,7 @@ a:hover {
     /* Center the glyphicon link for more images. */
     text-align: center;
     height: 100%;
-    overflow-x: scroll;
+    overflow-y: scroll;
 }
 
 .flickr-container-right-mobile {
