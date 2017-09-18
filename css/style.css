@@ -234,6 +234,10 @@ label {
     text-align: center;
 }
 
+.sort-group span {
+    cursor: pointer;
+}
+
 .list-group {
     /* Make sure empty groups still show a "drop area." */
     min-height: 30px;
