@@ -300,8 +300,9 @@ var ViewModel = function(data) {
     }
 
     // Check and save to a variable the current Flickr images.
+    var previousFlickrImages;
     if (pushFlickrImagesToObservable) {
-      var previousFlickrImages = pushFlickrImagesToObservable();
+      previousFlickrImages = pushFlickrImagesToObservable();
     }
 
     $( "#" + pushFlickrImagesToDiv ).fadeOut();
@@ -1094,9 +1095,10 @@ var ViewModel = function(data) {
 
   self.addNewLocation = function(data) {
     var addLocationDiv = $('#add-location-menu');
+    var lastMarker;
 
     if (data === 'cancel') {
-      var lastMarker = markersArray[markersArray.length - 1];
+      lastMarker = markersArray[markersArray.length - 1];
       if (lastMarker.notSubmitted === true) {
         // Remove marker from array.
         markersArray.pop();
@@ -1124,7 +1126,7 @@ var ViewModel = function(data) {
       self.locationsListEverythingElse.push(new Location(newLocationToAdd));
 
       // Get and update the marker that was just made.
-      var lastMarker = markersArray[markersArray.length - 1];
+      lastMarker = markersArray[markersArray.length - 1];
       lastMarker.title = self.newLocationTitle();
       lastMarker.notSubmitted = false;
       self.addListenerToMarker(lastMarker);
@@ -1178,23 +1180,26 @@ var ViewModel = function(data) {
     request.done(function(data){
       var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
       var numberOfPhotoResults = newData.photos.photo.length;
+      var flickrImageSizeSuffix;
 
       if (jQuery.browser.mobile) {
         // Size suffix info: https://www.flickr.com/services/api/misc.urls.html
-        var flickrImageSizeSuffix = 's'; // small square, 75x75
+        flickrImageSizeSuffix = 's'; // small square, 75x75
       } else {
-        var flickrImageSizeSuffix = 'q'; // large square, 150x150
+        flickrImageSizeSuffix = 'q'; // large square, 150x150
       }
 
       // Determine numberOfPhotosToShow
+      var numberOfPhotosToShow;
       if (numberOfPhotoResults < 10) {
-        var numberOfPhotosToShow = numberOfPhotoResults;
+        numberOfPhotosToShow = numberOfPhotoResults;
       } else {
-        var numberOfPhotosToShow = 10;
+        numberOfPhotosToShow = 10;
       }
 
+      var showPhotosDiv;
       if (newData.photos.total === '0') {
-        var showPhotosDiv = false;
+        showPhotosDiv = false;
         alertify.error('No photos found on Flickr.', 6);
       } else {
         showPhotosDiv = true;
@@ -1273,7 +1278,6 @@ var ViewModel = function(data) {
     getConfig.then(function() {
       var configBase = getConfig.responseJSON.config;
       var yelp_url = 'https://api.yelp.com/v2/search';
-      var infowindowContent;
 
       var parameters = {
         oauth_consumer_key: configBase.YELP_KEY,
@@ -1335,13 +1339,13 @@ var ViewModel = function(data) {
           var template = $.get("infoWindowTemplate.html");
           var outputHtml = '';
           template.done(function(templateHtml) {
-            outputHtml += templateHtml.replace(/{{url}}/g, businessInfo["url"])
-              .replace(/{{name}}/g, businessInfo["name"])
+            outputHtml += templateHtml.replace(/{{url}}/g, businessInfo.url)
+              .replace(/{{name}}/g, businessInfo.name)
               .replace(/{{businessIsClosedText}}/g, businessIsClosedText)
-              .replace(/{{categories}}/g, businessInfo["categories"][0][0])
-              .replace(/{{display_phone}}/g, businessInfo["display_phone"])
-              .replace(/{{rating_img_url}}/g, businessInfo["rating_img_url"])
-              .replace(/{{review_count}}/g, businessInfo["review_count"]);
+              .replace(/{{categories}}/g, businessInfo.categories[0][0])
+              .replace(/{{display_phone}}/g, businessInfo.display_phone)
+              .replace(/{{rating_img_url}}/g, businessInfo.rating_img_url)
+              .replace(/{{review_count}}/g, businessInfo.review_count);
 
             self.infowindow.setContent(outputHtml);
           }); // template.done
@@ -1351,7 +1355,7 @@ var ViewModel = function(data) {
         }
       }),
       yelpQuery.fail(function(){
-        failedYelpQuery('There was an error connecting to Yelp.')
+        failedYelpQuery('There was an error connecting to Yelp.');
       });
     });
   }.bind(this);
