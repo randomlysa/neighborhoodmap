@@ -10,7 +10,7 @@ var randomID = function() {
     id = id + (Math.floor(Math.random() * 10));
   }
   return id;
-}
+};
 
 // Check local storage for map-knockoutjs, which might hold
 // locations and settings.
@@ -251,7 +251,7 @@ var ViewModel = function(data) {
 
   // Find title in specified array and return the index.
   self.matchTitle = function(title, array) {
-    return _.findIndex(array, function(o) { return o.title === title})
+    return _.findIndex(array, function(o) { return o.title === title; });
   };
 
   // Sort a list.
@@ -418,15 +418,16 @@ var ViewModel = function(data) {
     };
 
     var order = localStorage.getItem(sortableName);
+    var sortOrderOfLocationLists;
     // If order is null, the list hasn't been saved to storage.
     // Set to the default list.
-    if (order == null) {
-      var sortOrderOfLocationLists = sortableListDefaultItems[sortableName];
+    if (order === null) {
+      sortOrderOfLocationLists = sortableListDefaultItems[sortableName];
       self[sortableName]( sortOrderOfLocationLists );
     }
     // Order has been set in storage. Get the order for the UI Observable.
     else {
-      var sortOrderOfLocationLists = order.split(',');
+      sortOrderOfLocationLists = order.split(',');
       self[sortableName].removeAll();
       self[sortableName]( sortOrderOfLocationLists );
     }
@@ -463,6 +464,7 @@ var ViewModel = function(data) {
   // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function(mapItem, event, property) {
     var self = this;
+    var propertyToUpdate;
 
     // For clearAllFavorites, there is no event.target.innerText
     if (event) {
@@ -470,16 +472,16 @@ var ViewModel = function(data) {
 
       // Which property to toggle.
       if (innerText === 'favorite_border' || innerText === 'favorite') {
-        var propertyToUpdate = 'favorite';
+        propertyToUpdate = 'favorite';
       }
       if (innerText === 'beenhere') {
-        var propertyToUpdate = 'beenhere';
+        propertyToUpdate = 'beenhere';
       }
     }
 
     // For clearAllFavorites.
     if (property) {
-      var propertyToUpdate = property;
+      propertyToUpdate = property;
     }
 
     // Used by whichList to lookup what LocationsList the item is is.
@@ -540,7 +542,7 @@ var ViewModel = function(data) {
             if (self[arrayOfLocations]().indexOf(mapItem) !== -1) {
               self[arrayOfLocations].remove(mapItem);
               self.saveToStorage();
-            };
+            }
         });
         alertify.notify('Location <b>' + mapItem.title + '</b> deleted.');
       },
@@ -548,7 +550,7 @@ var ViewModel = function(data) {
       function() {
         alertify.notify('Location <b>' + mapItem.title + '</b> not deleted.');
       });
-  }
+  };
 
   // Clear all favorites.
   self.clearAllFavorites = function() {
@@ -581,16 +583,16 @@ var ViewModel = function(data) {
   self.lastKeyupTimeWas = ko.observable('');
   self.setTimeForLastKeyup = function() {
     var d = new Date();
-    self.lastKeyupTimeWas(d.getTime())
-  }
+    self.lastKeyupTimeWas(d.getTime());
+  };
 
   var checkToCloseAwesompleteDropdown = setInterval(function() {
     var now = new Date();
     var timeDifference = now.getTime() - self.lastKeyupTimeWas();
     if (timeDifference > 3000) {
-      awesomplete.close()
+      awesomplete.close();
     }
-  }, 1000)
+  }, 1000);
 
   // http://knockoutjs.com/examples/animatedTransitions.html
   // Here's a custom Knockout binding that makes elements shown/hidden via
@@ -617,7 +619,7 @@ var ViewModel = function(data) {
   self.escapeKeyBinding = function() {
     self.addNewLocation('cancel');
     $("#main-search-input").focus();
-    self.mapSearchInputText('')
+    self.mapSearchInputText('');
   };
 
   // Set up click, right click, edit mode options / handling.
@@ -643,11 +645,11 @@ var ViewModel = function(data) {
     google.maps.event.addDomListener(map, bindRightClickTo,
       function(e) { self.openAddNewLocationMenu(e); }.bind(this)
     );
-  }
+  };
 
   var removeClickToOpenAddNewLocationMenu = function(bindRightClickTo) {
     google.maps.event.clearListeners(map, bindRightClickTo);
-  }
+  };
 
   // Default click for mobile and desktop.
   defaultClickAction();
@@ -687,7 +689,7 @@ var ViewModel = function(data) {
   self.helpMoreInfo = function() {
     var helpText = $("#helpMoreInfoText").html();
     alertify.alert(helpText).set('label', 'Got it!');
-  }
+  };
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
@@ -711,14 +713,15 @@ var ViewModel = function(data) {
       var coords = location.coordinates;
       var title = location.title;
       var type = location.type;
+      var imageIcon;
 
       var latLng = new google.maps.LatLng(coords[0],coords[1]);
 
       if (self.settingDisplayCustomMapMarkers() === true) {
-        var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+        imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
       if (self.settingDisplayCustomMapMarkers() === false) {
-       var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+       imageIcon = 'images/mapicons/' + iconToImage.Default + '.png';
       }
 
       var marker = new google.maps.Marker({
@@ -736,12 +739,13 @@ var ViewModel = function(data) {
     for (var i = 0; i < initialLocations.length; i++) {
       var location = initialLocations[i];
       var type = location.type;
+      var imageIcon;
 
       if (self.settingDisplayCustomMapMarkers() === true) {
-        var imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
+        imageIcon = 'images/mapicons/' + iconToImage[type] + '.png';
       }
       if (self.settingDisplayCustomMapMarkers() === false) {
-       var imageIcon = 'images/mapicons/' + iconToImage['Default'] + '.png';
+        imageIcon = 'images/mapicons/' + iconToImage.Default + '.png';
       }
 
       markersArray[i].setOptions({ icon: imageIcon});
@@ -803,7 +807,7 @@ var ViewModel = function(data) {
     if (inputText) {
       initialLocations.forEach(function(mapItem){
         if(mapItem.title.toLowerCase().includes(inputText.toLowerCase()) ||
-          self.settingAlwaysShowFavorites() == true &&
+          self.settingAlwaysShowFavorites() === true &&
             mapItem.favorite === true)
         {
             self.filteredLocationsList().push( new Location(mapItem) );
@@ -827,7 +831,6 @@ var ViewModel = function(data) {
       // self.dynamicLocationsListTitles. If it is not, remove the marker
       // from the map. Otherwise, set the marker to this map.
       markersArray.forEach( function(item, position) {
-        var title = markersArray[position].title;
         var result = dynamicLocationsListTitles.indexOf(item.title);
         if (result === -1) {
           markersArray[position].setMap(null);
@@ -856,7 +859,7 @@ var ViewModel = function(data) {
       window.location.hash = '';
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
       map.setZoom(previousZoomLevel);
-    };
+    }
   }.bind(this);
 
   var previousZoomLevel;
@@ -945,18 +948,20 @@ var ViewModel = function(data) {
   // Opens next/previous location using keyboard shortcuts.
   this.cycleThroughLocations = function(data, event ) {
     var whichKey = event.originalEvent.key;
+    var title;
 
     // Check if any open infoWindows exist.
     if (!!openInfoWindows.length) {
       // Get title of open infoWindow.
-      var title = openInfoWindows[openInfoWindows.length - 1].title;
+      title = openInfoWindows[openInfoWindows.length - 1].title;
     } else {
       // Otherwise get the title from the locations list.
-      title = self.dynamicLocationsList()[0].title
+      title = self.dynamicLocationsList()[0].title;
     }
 
     // Find title in dynamicLocationsList and get the index.
     var index = self.matchTitle(title, self.dynamicLocationsList());
+    var nextIndex;
     // Subtract one from length since arrays are zero based.
     var indexLength = self.dynamicLocationsList().length - 1;
 
@@ -965,22 +970,22 @@ var ViewModel = function(data) {
       if (index === 0) {
         nextIndex = indexLength;
       } else {
-        var nextIndex = index - 1;
+        nextIndex = index - 1;
       }
     }
 
     if (whichKey === 'ArrowRight') {
       // Loop around.
       if (index === indexLength) {
-        var nextIndex = 0;
+        nextIndex = 0;
       } else {
-        var nextIndex = index + 1;
+        nextIndex = index + 1;
       }
     }
 
     // Open the next item in dynamicLocationsList.
     self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
-  }
+  };
 
   // Must be declared outside the function or the binding will fail when the
   // page is loaded.
@@ -1020,7 +1025,7 @@ var ViewModel = function(data) {
       if(self.availableTypes().indexOf(location.type) === -1) {
         self.availableTypes.push(location.type);
       }
-    })
+    });
     // A custom location type that will not try to lookup info on Yelp.
     // Temporarily disabled.
     // self.availableTypes.push('Custom / Ignore Yelp');
@@ -1075,7 +1080,7 @@ var ViewModel = function(data) {
       }
       if (self.settingDisplayCustomMapMarkers() === false) {
         self.imageIconObservable(
-        'images/mapicons/' + iconToImage['Default'] + '.png'
+        'images/mapicons/' + iconToImage.Default + '.png'
         );
       }
 
@@ -1085,7 +1090,7 @@ var ViewModel = function(data) {
       lastMarker.setMap(null);
       lastMarker.setMap(map);
     });
-  }
+  };
 
   self.addNewLocation = function(data) {
     var addLocationDiv = $('#add-location-menu');
@@ -1105,7 +1110,7 @@ var ViewModel = function(data) {
       }
       openAddNewLocationMenuStatus = 'closed';
     } else if(!self.newLocationTitle()) {
-      alertify.warning('Please enter a name for the location.')
+      alertify.warning('Please enter a name for the location.');
     } else {
       // Object to add to initialLocations
       var newLocationToAdd = {
@@ -1136,7 +1141,7 @@ var ViewModel = function(data) {
 
       self.saveToStorage();
     }
-  }
+  };
 
   // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.
 
@@ -1244,7 +1249,7 @@ var ViewModel = function(data) {
             // fade in after all images have loaded...
             $( "#" + pushFlickrImagesToDiv ).fadeIn();
           }
-        })
+        });
       }
     });
   }.bind(this); // End of searchFlickr().
@@ -1346,9 +1351,9 @@ var ViewModel = function(data) {
         }
       }),
       yelpQuery.fail(function(){
-        failedYelpQuery('There was an error connecting to Yelp.');
+        failedYelpQuery('There was an error connecting to Yelp.')
       });
-    })
+    });
   }.bind(this);
 
   // Search Flickr, Yelp, and display results in the user interface.
