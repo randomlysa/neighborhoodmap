@@ -94,7 +94,7 @@ var Location = function(data) {
   self.favorite = ko.observable(data.favorite);
   // Determine if the item is a favorite and return the correct icon.
   self.favoriteText = ko.pureComputed( function() {
-    return self.favorite() === true ? "bookmark" : "bookmark_border";
+    return self.favorite() === true ? "favorite" : "favorite_border";
   }, self);
   // Default the beenhere icon to false.
   if (data.beenhere === undefined) { data.beenhere = false; }
