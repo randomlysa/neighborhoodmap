@@ -469,7 +469,7 @@ var ViewModel = function(data) {
       var innerText = event.target.innerText.trim();
 
       // Which property to toggle.
-      if (innerText === 'bookmark_border' || innerText === 'bookmark') {
+      if (innerText === 'favorite_border' || innerText === 'favorite') {
         var propertyToUpdate = 'favorite';
       }
       if (innerText === 'beenhere') {
