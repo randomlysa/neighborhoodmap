@@ -275,13 +275,14 @@ var ViewModel = function(data) {
   // Checks the page orientation and adjusts the user interface, mainly setting
   // which flickr div opens (bottom or right), that the flickr div does not
   // overlap with the filter/header div, and re-pan the map to the marker.
-  var pushFlickrImagesToObservable, pushFlickrImagesToDiv, orientation,
-      availableWidth, availableHeight;
+  var pushFlickrImagesToObservable, pushFlickrImagesToDiv, previousOrientation,
+      orientation, availableWidth, availableHeight;
   self.flickrResults = ko.observable('');
   self.flickrResultsRight = ko.observable('');
   self.flickrResultsBottom = ko.observable('');
   self.checkOrientation = function() {
     var self = this;
+    previousOrientation = orientation;
     availableWidth = $(document).width();
     availableHeight = $(window).height();
 
@@ -289,6 +290,13 @@ var ViewModel = function(data) {
       orientation = 'tall';
     } else {
       orientation = 'wide';
+    }
+
+    // If the window was resized, checkOrientation runs. This can cause the
+    // Flickr images to disappear by resizing the window. If the orientation
+    // didn't change, exit this function.
+    if (previousOrientation === orientation) {
+      return;
     }
 
     // Check and save to a variable the current Flickr images.
