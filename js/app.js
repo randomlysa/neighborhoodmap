@@ -28,7 +28,7 @@ if (!initialLocations) {
       'type': 'Attraction'
     },
     {
-      'title': 'Frost Ice Loft',
+      'title': 'Drink',
       'coordinates': [42.360325,-71.053310],
       'type': 'Bar'
     },
