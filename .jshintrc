@@ -1,0 +1,9 @@
+{
+    "globals": {
+        "$": false,
+        "jQuery": false,
+        "ko": false,
+        "map": false,
+        "alertify": false
+    }
+}
