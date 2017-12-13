@@ -406,6 +406,10 @@ var ViewModel = function() {
       }
     }); // forEach initialLocations
 
+    // Sort each list.
+    // Todo: make optional for each list?
+    _.forEach(observablesForLocations, function(item) {
+      self.sortList(self[item]);
     });
   }; // setupLocationLists.
 
