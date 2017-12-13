@@ -102,9 +102,9 @@ var Location = function(data) {
   self.beenhereCSS = ko.computed( function() {
     return self.beenhere() ? '' : 'md-dark md-inactive';
   });
-};
+}; // Location
 
-var ViewModel = function(data) {
+var ViewModel = function() {
   var self = this;
 
   // init stuff.
@@ -140,11 +140,11 @@ var ViewModel = function(data) {
       if (setting === 'enableEditMode') { return false; }
       else { return true; }
     }
-  };
+  }; // getSetting.
 
   // Save settings and locations infomation.
   self.saveToStorage = function() {
-    window.setTimeout(function(){
+    window.setTimeout(function() {
       // Save locations and settings.
       // Delayed 400 ms to allow observables to update.
       localStorage.setItem('map-knockoutjs', ko.toJSON({
@@ -153,7 +153,7 @@ var ViewModel = function(data) {
         })
       );
     }, 400);
-  };
+  }; // saveToStorage.
 
   self.toggleAndSaveSetting = function(vm, data) {
     var self = this;
@@ -173,10 +173,11 @@ var ViewModel = function(data) {
 
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
-  }.bind(this);
+  }.bind(this); // toggleAndSaveSetting.
 
   // Is an IIFE, otherwise self.settingDisplayErrorMessage() doesn't exist
   // when it needs to.
+  // Todo: add to init?
   self.getAllSettings = (function() {
     // List all settings.
     var allSettings = [
@@ -196,7 +197,7 @@ var ViewModel = function(data) {
         self.getSetting(setting)
       );
     });
-  })();
+  })(); // getAllSettings.
 
   // Helper functions: set up key bindings, check for mobile browser,
   // matchTitle, sortList, panMap, checkOrientation, collapseLocationDiv,
@@ -236,7 +237,7 @@ var ViewModel = function(data) {
         ko.bindingHandlers.event.init(element, newValueAccessor, allBindingsAccessor, data, bindingContext);
       }
     };
-  }
+  } // keyhandlerBindingFactory.
 
   // Custom bindings for keys.
   ko.bindingHandlers.rightArrowKey = keyhandlerBindingFactory(RIGHTARROW_KEY);
@@ -252,17 +253,17 @@ var ViewModel = function(data) {
   // Find title in specified array and return the index.
   self.matchTitle = function(title, array) {
     return _.findIndex(array, function(o) { return o.title === title; });
-  };
+  }; // matchTitle.
 
   // Sort a list.
+  // Todo: use lodash?
   self.sortList = function(list) {
     list.sort(function(left, right) {
       var sortByA = left.title;
       var sortByB = right.title;
       return sortByA == sortByB ? 0 : (sortByA < sortByB ? -1 : 1);
     });
-  };
-
+  }; // sortList.
 
   // Pans the map, with some changes to x, y in certain cases.
   self.panMap = function(newLatLng, x, y) {
@@ -270,7 +271,7 @@ var ViewModel = function(data) {
       map.setCenter(newLatLng);
       map.panBy(x, y);
     }, 15);
-  }.bind(this);
+  }.bind(this); // panMap.
 
   // Checks the page orientation and adjusts the user interface, mainly setting
   // which flickr div opens (bottom or right), that the flickr div does not
@@ -358,8 +359,9 @@ var ViewModel = function(data) {
 
     self.panMap(newLatLng, panByX, panByY);
 
-  }.bind(this);
+  }.bind(this); // checkOrientation.
 
+  // Todo: can I move this to init?
   $( window ).resize(self.checkOrientation);
 
   // Toggle location list. Used by #collapse-locations.
@@ -368,7 +370,7 @@ var ViewModel = function(data) {
       if (jQuery.browser.mobile) {
         $( "#more-info-right").removeClass('open');
       }
-  }.bind(this);
+  }.bind(this); // collapseLocationDiv.
 
   // Observable arrays for different item types.
   var observablesForLocations = {
@@ -378,7 +380,7 @@ var ViewModel = function(data) {
     'Everything Else': 'locationsListEverythingElse'
   };
 
-  // Make observableArrays from previous object.
+  // Make observableArrays from observablesForLocations.
   _.forEach(observablesForLocations, function(item) {
     self[item] = ko.observableArray();
   });
@@ -403,8 +405,9 @@ var ViewModel = function(data) {
         self.locationsListEverythingElse.push( new Location(mapItem) );
       }
     });
-  };
+  }; // setupLocationLists.
 
+  // Todo: move to init?
   self.setupLocationLists();
 
   // Save and get sortable lists.
@@ -443,7 +446,7 @@ var ViewModel = function(data) {
         .replace(/ /g, "");
       self.sortOrderOfLocationsObservable.push( listName );
     });
-  };
+  }; // getSortable.
 
   self.saveSortable = function(sortable) {
     var sortableName = sortable.sourceParentNode.id;
@@ -451,7 +454,7 @@ var ViewModel = function(data) {
     localStorage.setItem(sortableName, sortOrder);
     // To update the observable.
     self.getSortable();
-  };
+  }; // saveSortable.
 
   // Update this observable when the list is sorted.
   self.sortOrderOfLocationsObservable = ko.observableArray('');
@@ -460,7 +463,6 @@ var ViewModel = function(data) {
   self.topSortableList = ko.observableArray();
   // Create topSortableList from storage or use defaults if storage is empty.
   self.getSortable();
-
 
   // Toggle property (currently favorite or beenhere) on a Location.
   Location.prototype.toggleProperty = function(mapItem, event, property) {
@@ -531,7 +533,7 @@ var ViewModel = function(data) {
     self[whichList()].push(mapItem);
 
     self.saveToStorage();
-  }.bind(this);
+  }.bind(this); // Location.prototype.toggleProperty.
 
   // Delete a location.
   Location.prototype.deleteLocation = function(mapItem) {
@@ -551,7 +553,7 @@ var ViewModel = function(data) {
       function() {
         alertify.notify('Location <b>' + mapItem.title + '</b> not deleted.');
       });
-  };
+  }; // Location.prototype.deleteLocation.
 
   // Clear all favorites.
   self.clearAllFavorites = function() {
@@ -564,7 +566,7 @@ var ViewModel = function(data) {
         }
       });
     });
-  }.bind(this);
+  }.bind(this); // clearAllFavorites
 
   // Make an array of all titles from initialLocations for autocomplete to work.
   var allTitlesForAutoComplete = [];
@@ -585,7 +587,7 @@ var ViewModel = function(data) {
   self.setTimeForLastKeyup = function() {
     var d = new Date();
     self.lastKeyupTimeWas(d.getTime());
-  };
+  }; // setTimeForLastKeyup
 
   var checkToCloseAwesompleteDropdown = setInterval(function() {
     var now = new Date();
@@ -593,7 +595,7 @@ var ViewModel = function(data) {
     if (timeDifference > 3000) {
       awesomplete.close();
     }
-  }, 1000);
+  }, 1000); // checkToCloseAwesompleteDropdown.
 
   // http://knockoutjs.com/examples/animatedTransitions.html
   // Here's a custom Knockout binding that makes elements shown/hidden via
@@ -614,14 +616,14 @@ var ViewModel = function(data) {
         var value = valueAccessor();
         ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
     }
-  };
+  }; // ko.bindingHandlers.fadeVisible.
 
   // Runs when esc key is pressed.
   self.escapeKeyBinding = function() {
     self.addNewLocation('cancel');
     $("#main-search-input").focus();
     self.mapSearchInputText('');
-  };
+  }; // escapeKeyBinding.
 
   // Set up click, right click, edit mode options / handling.
 
@@ -640,19 +642,20 @@ var ViewModel = function(data) {
         event.stop();
       }
     });
-  };
+  }; // defaultClickAction.
 
   var clickToOpenAddNewLocationMenu = function(bindRightClickTo){
     google.maps.event.addDomListener(map, bindRightClickTo,
       function(e) { self.openAddNewLocationMenu(e); }.bind(this)
     );
-  };
+  }; // clickToOpenAddNewLocationMenu
 
   var removeClickToOpenAddNewLocationMenu = function(bindRightClickTo) {
     google.maps.event.clearListeners(map, bindRightClickTo);
-  };
+  }; // removeClickToOpenAddNewLocationMenu
 
   // Default click for mobile and desktop.
+  // Todo: move to init?
   defaultClickAction();
 
   // Check state of edit mode (right click)  on desktop.
@@ -666,7 +669,7 @@ var ViewModel = function(data) {
   }
 
   // Watch for changes for edit mode.
-  self.settingEnableEditMode.subscribe(function(){
+  self.settingEnableEditMode.subscribe(function() {
     // Enable on mobile
     if (jQuery.browser.mobile && self.settingEnableEditMode()){
       clickToOpenAddNewLocationMenu('click');
@@ -684,13 +687,13 @@ var ViewModel = function(data) {
     if (!jQuery.browser.mobile && !self.settingEnableEditMode()){
       google.maps.event.clearListeners(map, 'rightclick');
     }
-  });
+  }); // settingEnableEditMode.subscribe
 
   // Show help / more info
   self.helpMoreInfo = function() {
     var helpText = $("#helpMoreInfoText").html();
     alertify.alert(helpText).set('label', 'Got it!');
-  };
+  }; // helpMoreInfo
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
   // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
@@ -734,7 +737,7 @@ var ViewModel = function(data) {
 
       markersArray.push(marker);
     } // close for loop
-  };
+  }; // loadMapMarkers.
 
   self.updateMarkerIcons = function() {
     for (var i = 0; i < initialLocations.length; i++) {
@@ -751,7 +754,7 @@ var ViewModel = function(data) {
 
       markersArray[i].setOptions({ icon: imageIcon});
     }
-  };
+  }; // updateMarkerIcons.
 
   self.mapSearchInputText = ko.observable("");
 
@@ -772,7 +775,7 @@ var ViewModel = function(data) {
     } else {
       return null;
     }
-  }).extend({ rateLimit: 150 });
+  }).extend({ rateLimit: 150 }); // groupLocations (ko.computed.)
 
   // Return a filtered list if text has been entered into the textbox or a
   // list of locations grouped according to the order in the UI.
@@ -782,7 +785,7 @@ var ViewModel = function(data) {
     } else {
       return self.groupLocations();
     }
-  }, self).extend({ rateLimit: 200 });
+  }, self).extend({ rateLimit: 200 }); // dynamicLocationsList (ko.computed)
 
   // Add listener to all markers, or to a single new marker that is added by
   // the user.
@@ -795,7 +798,7 @@ var ViewModel = function(data) {
         self.openInfoWindow(title, 'map');
       });
     });
-  };
+  }; // addListenerToMarker.
 
   self.addRemoveLocationsAndMapMarkers = function(inputText, updateMarkers) {
     var self = this;
@@ -840,7 +843,7 @@ var ViewModel = function(data) {
         }
       });
     }
-  }.bind(this);
+  }.bind(this); // addRemoveLocationsAndMapMarkers.
 
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
   // Check mapSearchInputText for inputText and update makeMapList
@@ -852,6 +855,7 @@ var ViewModel = function(data) {
 
   // Keep track of open infoWindow(s). Used to close the previous infoWindow.
   var openInfoWindows = [];
+  // Todo: better name?
   self.closeInfoWindow = function(callingFunction) {
     // Check if there's at least one openInfoWindows.
     if (openInfoWindows.length > 0) {
@@ -861,7 +865,7 @@ var ViewModel = function(data) {
       $( "#" + pushFlickrImagesToDiv ).fadeOut();
       map.setZoom(previousZoomLevel);
     }
-  }.bind(this);
+  }.bind(this); // closeInfoWindow.
 
   var previousZoomLevel;
   self.currentMarkerLocation = '';
@@ -943,11 +947,11 @@ var ViewModel = function(data) {
     if (jQuery.browser.mobile || availableWidth < 992) {
       $("#collapse-locations").slideUp();
     }
-  }.bind(this);
+  }.bind(this); // openInfoWindow.
 
 
   // Opens next/previous location using keyboard shortcuts.
-  this.cycleThroughLocations = function(data, event ) {
+  self.cycleThroughLocations = function(data, event ) {
     var whichKey = event.originalEvent.key;
     var title;
 
@@ -986,7 +990,7 @@ var ViewModel = function(data) {
 
     // Open the next item in dynamicLocationsList.
     self.openInfoWindow(self.dynamicLocationsList()[nextIndex].title);
-  };
+  }; // cycleThroughLocations.
 
   // Must be declared outside the function or the binding will fail when the
   // page is loaded.
@@ -1002,7 +1006,6 @@ var ViewModel = function(data) {
     if (jQuery.browser.mobile) {
       $("#collapse-locations").slideUp();
     }
-
 
     // Before opening a new menu, check if any marker.notSubmitted = true.
     // This means the menu was opened, but not submitted or cancelled.
@@ -1091,7 +1094,7 @@ var ViewModel = function(data) {
       lastMarker.setMap(null);
       lastMarker.setMap(map);
     });
-  };
+  }; // openAddNewLocationMenu.
 
   self.addNewLocation = function(data) {
     var addLocationDiv = $('#add-location-menu');
@@ -1143,7 +1146,7 @@ var ViewModel = function(data) {
 
       self.saveToStorage();
     }
-  };
+  }; // addNewLocation.
 
   // API functions: searchFlickr, searchYelp, searchAPIsAndDisplayResults.
 
@@ -1172,7 +1175,7 @@ var ViewModel = function(data) {
     var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
 
     var request = $.ajax(fullFlickrAPIsearch);
-    request.fail(function(){
+    request.fail(function() {
       if (self.settingDisplayErrorMessage()) {
         alertify.error('There was an error connecting to Flickr.', 6);
       }
@@ -1239,8 +1242,6 @@ var ViewModel = function(data) {
       self.flickrSearchURL('https://www.flickr.com/search/?text=' +
         flickrAPISearchQuery);
 
-
-
       // Show the area that will display flickr images.
       if (showPhotosDiv) {
         // add images to the observable.
@@ -1257,7 +1258,7 @@ var ViewModel = function(data) {
         });
       }
     });
-  }.bind(this); // End of searchFlickr().
+  }.bind(this); // searchFlickr.
 
   /**
    * Generates a random number and returns it as a string for OAuthentication
@@ -1354,17 +1355,17 @@ var ViewModel = function(data) {
           failedYelpQuery('No information found on Yelp about this business.');
         }
       }),
-      yelpQuery.fail(function(){
+      yelpQuery.fail(function() {
         failedYelpQuery('There was an error connecting to Yelp.');
       });
     });
-  }.bind(this);
+  }.bind(this); // searchYelp.
 
   // Search Flickr, Yelp, and display results in the user interface.
   self.searchAPIsAndDisplayResults = function(title) {
     self.searchFlickr(title);
     self.searchYelp(title);
-  }.bind(this);
+  }.bind(this); // searchAPIsAndDisplayResults.
 
   // urlHash, init
   var urlHash = window.location.hash;
@@ -1391,4 +1392,4 @@ var ViewModel = function(data) {
     if (self.locationsListFavorite().length > 0) { return false; }
     else {return true;}
   });
-};
+}; // ViewModel
