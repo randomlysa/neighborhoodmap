@@ -371,7 +371,7 @@ var ViewModel = function(data) {
   }.bind(this);
 
   // Observable arrays for different item types.
-  var obserablesForLocations = {
+  var observablesForLocations = {
     'Favorite and Visited': 'locationsListFavoriteAndVisited',
     'Favorite': 'locationsListFavorite',
     'Visited': 'locationsListVisited',
@@ -379,7 +379,7 @@ var ViewModel = function(data) {
   };
 
   // Make observableArrays from previous object.
-  _.forEach(obserablesForLocations, function(item) {
+  _.forEach(observablesForLocations, function(item) {
     self[item] = ko.observableArray();
   });
 
@@ -538,7 +538,7 @@ var ViewModel = function(data) {
     alertify.confirm("Delete location: " + mapItem.title + "?",
       // Delete
       function() {
-          _.forEach(obserablesForLocations, function(arrayOfLocations) {
+          _.forEach(observablesForLocations, function(arrayOfLocations) {
             // Check for item in the array.
             if (self[arrayOfLocations]().indexOf(mapItem) !== -1) {
               self[arrayOfLocations].remove(mapItem);
