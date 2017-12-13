@@ -1,7 +1,7 @@
 'use strict';
 
 // Get API info.
-var getConfig = $.getJSON("js/config_secret.json");
+var getConfig = $.getJSON('js/config_secret.json');
 
 // Generate random ID for a location.
 var randomID = function() {
@@ -93,13 +93,13 @@ var Location = function(data) {
   self.type = data.type;
   self.favorite = ko.observable(data.favorite);
   // Determine if the item is a favorite and return the correct icon.
-  self.favoriteText = ko.pureComputed( function() {
-    return self.favorite() === true ? "favorite" : "favorite_border";
+  self.favoriteText = ko.pureComputed(function() {
+    return self.favorite() === true ? 'favorite' : 'favorite_border';
   }, self);
   // Default the beenhere icon to false.
   if (data.beenhere === undefined) { data.beenhere = false; }
   self.beenhere = ko.observable(data.beenhere);
-  self.beenhereCSS = ko.computed( function() {
+  self.beenhereCSS = ko.computed(function() {
     return self.beenhere() ? '' : 'md-dark md-inactive';
   });
 }; // Location
@@ -190,7 +190,7 @@ var ViewModel = function() {
     ];
 
     // Get gettings from storage.
-    allSettings.forEach( function(setting) {
+    allSettings.forEach(function(setting) {
       // convert setting into settingSettingName
       var settingName = 'setting' + setting[0].toUpperCase() + setting.slice(1);
       self[settingName] = ko.observable(
@@ -267,7 +267,7 @@ var ViewModel = function() {
 
   // Pans the map, with some changes to x, y in certain cases.
   self.panMap = function(newLatLng, x, y) {
-    window.setTimeout( function() {
+    window.setTimeout(function() {
       map.setCenter(newLatLng);
       map.panBy(x, y);
     }, 15);
@@ -306,7 +306,7 @@ var ViewModel = function() {
       previousFlickrImages = pushFlickrImagesToObservable();
     }
 
-    $( "#" + pushFlickrImagesToDiv ).fadeOut();
+    $('#' + pushFlickrImagesToDiv).fadeOut();
 
     // By default, show flickr images on right.
     pushFlickrImagesToDiv = 'flickr-container-right';
@@ -314,18 +314,18 @@ var ViewModel = function() {
 
     // Set container right to be mobile (75px) or desktop (150px) wide.
     if (jQuery.browser.mobile) {
-      $("#flickr-container-right").addClass('flickr-container-right-mobile');
+      $('#flickr-container-right').addClass('flickr-container-right-mobile');
     } else {
-      $("#flickr-container-right").addClass('flickr-container-right-desktop');
+      $('#flickr-container-right').addClass('flickr-container-right-desktop');
     }
 
-    $("#flickr-container-right").css('display', 'inline').fadeOut();
-    $("#flickr-container-bottom").css('display', 'none');
+    $('#flickr-container-right').css('display', 'inline').fadeOut();
+    $('#flickr-container-bottom').css('display', 'none');
 
     // Only exception, mobile tall orientation.
     if (jQuery.browser.mobile && orientation === 'tall') {
-      $("#flickr-container-right").css('display', 'none');
-      $("#flickr-container-bottom").css('display', 'inline');
+      $('#flickr-container-right').css('display', 'none');
+      $('#flickr-container-bottom').css('display', 'inline');
       pushFlickrImagesToDiv = 'flickr-container-bottom';
       pushFlickrImagesToObservable = self.flickrResultsBottom;
     }
@@ -339,9 +339,9 @@ var ViewModel = function() {
     // Add padding to $flickrResultsRight to keep from overlapping
     // with #floating-panel.
     if (availableWidth < 768) {
-      $( "#flickr-results-right" ).addClass('add-padding');
+      $('#flickr-results-right').addClass('add-padding');
     } else {
-      $( "#flickr-results-right" ).removeClass('add-padding');
+      $('#flickr-results-right').removeClass('add-padding');
     }
 
     // Set options and pan map after rotation.
@@ -362,13 +362,13 @@ var ViewModel = function() {
   }.bind(this); // checkOrientation.
 
   // Todo: can I move this to init?
-  $( window ).resize(self.checkOrientation);
+  $(window).resize(self.checkOrientation);
 
   // Toggle location list. Used by #collapse-locations.
   self.collapseLocationDiv = function() {
-      $( "#collapse-locations" ).slideToggle();
+      $('#collapse-locations').slideToggle();
       if (jQuery.browser.mobile) {
-        $( "#more-info-right").removeClass('open');
+        $('#more-info-right').removeClass('open');
       }
   }.bind(this); // collapseLocationDiv.
 
@@ -391,18 +391,18 @@ var ViewModel = function() {
     self.locationsListFavorite.removeAll();
     self.locationsListVisited.removeAll();
     self.locationsListEverythingElse.removeAll();
-    initialLocations.forEach( function(mapItem) {
+    initialLocations.forEach(function(mapItem) {
       if (mapItem.favorite === true && mapItem.beenhere === true) {
-        self.locationsListFavoriteAndVisited.push( new Location(mapItem) );
+        self.locationsListFavoriteAndVisited.push(new Location(mapItem));
       }
       else if (mapItem.favorite === true) {
-        self.locationsListFavorite.push( new Location(mapItem) );
+        self.locationsListFavorite.push(new Location(mapItem));
       }
       else if (mapItem.beenhere === true) {
-        self.locationsListVisited.push( new Location(mapItem) );
+        self.locationsListVisited.push(new Location(mapItem));
       }
       else {
-        self.locationsListEverythingElse.push( new Location(mapItem) );
+        self.locationsListEverythingElse.push(new Location(mapItem));
       }
     });
   }; // setupLocationLists.
@@ -427,24 +427,24 @@ var ViewModel = function() {
     // Set to the default list.
     if (order === null) {
       sortOrderOfLocationLists = sortableListDefaultItems[sortableName];
-      self[sortableName]( sortOrderOfLocationLists );
+      self[sortableName](sortOrderOfLocationLists);
     }
     // Order has been set in storage. Get the order for the UI Observable.
     else {
       sortOrderOfLocationLists = order.split(',');
       self[sortableName].removeAll();
-      self[sortableName]( sortOrderOfLocationLists );
+      self[sortableName](sortOrderOfLocationLists);
     }
 
     // Always update the observable.
     self.sortOrderOfLocationsObservable.removeAll();
-    sortOrderOfLocationLists.forEach( function(friendlyListName) {
+    sortOrderOfLocationLists.forEach(function(friendlyListName) {
       // Convert the name of the list to the observable name.
-      // "Everything Else" becomes "locationsListEverythingElse"
-      var listName = "locationsList" + friendlyListName
-        .replace("and", "And")
-        .replace(/ /g, "");
-      self.sortOrderOfLocationsObservable.push( listName );
+      // 'Everything Else' becomes 'locationsListEverythingElse'
+      var listName = 'locationsList' + friendlyListName
+        .replace('and', 'And')
+        .replace(/ /g, '');
+      self.sortOrderOfLocationsObservable.push(listName);
     });
   }; // getSortable.
 
@@ -498,7 +498,7 @@ var ViewModel = function() {
     // Check what list the item currently belongs to based on favorite/beenhere.
     var whichList = function() {
       return itemToListLookup[
-        Boolean(mapItem.favorite()) + "" + Boolean(mapItem.beenhere())
+        Boolean(mapItem.favorite()) + '' + Boolean(mapItem.beenhere())
       ];
     };
 
@@ -537,7 +537,7 @@ var ViewModel = function() {
 
   // Delete a location.
   Location.prototype.deleteLocation = function(mapItem) {
-    alertify.confirm("Delete location: " + mapItem.title + "?",
+    alertify.confirm('Delete location: ' + mapItem.title + '?',
       // Delete
       function() {
           _.forEach(observablesForLocations, function(arrayOfLocations) {
@@ -558,9 +558,9 @@ var ViewModel = function() {
   // Clear all favorites.
   self.clearAllFavorites = function() {
     var self = this;
-    alertify.confirm("Clear all favorites?", function() {
+    alertify.confirm('Clear all favorites?', function() {
       // Loop through all locations, pass favorites to toggleFavorite.
-      self.dynamicLocationsList().forEach( function(mapItem) {
+      self.dynamicLocationsList().forEach(function(mapItem) {
         if (mapItem.favorite() === true) {
           Location.prototype.toggleProperty(mapItem, '', 'favorite');
         }
@@ -570,15 +570,15 @@ var ViewModel = function() {
 
   // Make an array of all titles from initialLocations for autocomplete to work.
   var allTitlesForAutoComplete = [];
-  initialLocations.forEach( function(Location) {
+  initialLocations.forEach(function(Location) {
     allTitlesForAutoComplete.push(Location.title);
   });
-  var inputMapLocation = document.getElementById("main-search-input");
+  var inputMapLocation = document.getElementById('main-search-input');
   var awesomplete = new Awesomplete(inputMapLocation, {
     list: allTitlesForAutoComplete
   });
 
-  inputMapLocation.addEventListener("awesomplete-selectcomplete",
+  inputMapLocation.addEventListener('awesomplete-selectcomplete',
     function(item) { self.openInfoWindow(item.target.value); }.bind(this)
   );
 
@@ -605,7 +605,7 @@ var ViewModel = function() {
         // Initially set the element to be instantly visible/hidden
         // depending on the value.
         var value = valueAccessor();
-        // Use "unwrapObservable" so we can handle values that may or may
+        // Use 'unwrapObservable' so we can handle values that may or may
         // not be observable.
         $(element).toggle(ko.unwrap(value));
 
@@ -621,7 +621,7 @@ var ViewModel = function() {
   // Runs when esc key is pressed.
   self.escapeKeyBinding = function() {
     self.addNewLocation('cancel');
-    $("#main-search-input").focus();
+    $('#main-search-input').focus();
     self.mapSearchInputText('');
   }; // escapeKeyBinding.
 
@@ -691,7 +691,7 @@ var ViewModel = function() {
 
   // Show help / more info
   self.helpMoreInfo = function() {
-    var helpText = $("#helpMoreInfoText").html();
+    var helpText = $('#helpMoreInfoText').html();
     alertify.alert(helpText).set('label', 'Got it!');
   }; // helpMoreInfo
 
@@ -756,13 +756,13 @@ var ViewModel = function() {
     }
   }; // updateMarkerIcons.
 
-  self.mapSearchInputText = ko.observable("");
+  self.mapSearchInputText = ko.observable('');
 
   // For the user interface, a list that can be filtered when text is typed.
   self.filteredLocationsList = ko.observableArray();
 
   // Return all the lists in the order specified in the UI.
-  self.groupLocations = ko.computed( function() {
+  self.groupLocations = ko.computed(function() {
     // Don't concat the arrays until all four arrays are created.
     if (self.sortOrderOfLocationsObservable().length === 4) {
       var selfSOOLO = self.sortOrderOfLocationsObservable();
@@ -779,7 +779,7 @@ var ViewModel = function() {
 
   // Return a filtered list if text has been entered into the textbox or a
   // list of locations grouped according to the order in the UI.
-  self.dynamicLocationsList = ko.computed( function() {
+  self.dynamicLocationsList = ko.computed(function() {
     if (self.mapSearchInputText()) {
       return self.filteredLocationsList();
     } else {
@@ -792,7 +792,7 @@ var ViewModel = function() {
   self.addListenerToMarker = function(x, marker) {
     // If marker doesn't exist, run the function on markersArray.
     marker = marker || markersArray;
-    markersArray.forEach( function(marker, position ) {
+    markersArray.forEach(function(marker, position ) {
       var title = markersArray[position].title;
       marker.addListener('click', function() {
         self.openInfoWindow(title, 'map');
@@ -814,7 +814,7 @@ var ViewModel = function() {
           self.settingAlwaysShowFavorites() === true &&
             mapItem.favorite === true)
         {
-            self.filteredLocationsList().push( new Location(mapItem) );
+            self.filteredLocationsList().push(new Location(mapItem));
         }
       });
     }
@@ -827,14 +827,14 @@ var ViewModel = function() {
     if (typeof markersArray !== 'undefined') {
       // Make an array of self.dynamicLocationsList titles.
       var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach( function(Location) {
+      self.dynamicLocationsList().forEach(function(Location) {
         dynamicLocationsListTitles.push(Location.title);
       });
 
       // Loop through markers array and check if the marker title is in
       // self.dynamicLocationsListTitles. If it is not, remove the marker
       // from the map. Otherwise, set the marker to this map.
-      markersArray.forEach( function(item, position) {
+      markersArray.forEach(function(item, position) {
         var result = dynamicLocationsListTitles.indexOf(item.title);
         if (result === -1) {
           markersArray[position].setMap(null);
@@ -862,7 +862,7 @@ var ViewModel = function() {
       openInfoWindows[openInfoWindows.length - 1].infoWindow.close();
 
       window.location.hash = '';
-      $( "#" + pushFlickrImagesToDiv ).fadeOut();
+      $('#' + pushFlickrImagesToDiv).fadeOut();
       map.setZoom(previousZoomLevel);
     }
   }.bind(this); // closeInfoWindow.
@@ -892,7 +892,7 @@ var ViewModel = function() {
     // Without this check, if random text is entered for the url hash,
     // the list of locations disappears and the app is unuseable.
     if (itemindex === -1) {
-      alertify.error('Location "' + title + '" Not Found!', 3);
+      alertify.error('Location ' + title + ' Not Found!', 3);
       // Clear location hash.
       window.location.hash = '';
       return;
@@ -945,7 +945,7 @@ var ViewModel = function() {
     // 2. Search yelp for business info and update yelpInfoWindowContent.
     self.searchAPIsAndDisplayResults(title);
     if (jQuery.browser.mobile || availableWidth < 992) {
-      $("#collapse-locations").slideUp();
+      $('#collapse-locations').slideUp();
     }
   }.bind(this); // openInfoWindow.
 
@@ -1004,7 +1004,7 @@ var ViewModel = function() {
   self.openAddNewLocationMenu = function(e) {
     var self = this;
     if (jQuery.browser.mobile) {
-      $("#collapse-locations").slideUp();
+      $('#collapse-locations').slideUp();
     }
 
     // Before opening a new menu, check if any marker.notSubmitted = true.
@@ -1061,7 +1061,7 @@ var ViewModel = function() {
     $('#add-location-menu').css(
       {'top': positionInPixels.y, 'left': positionInPixels.x}
     ).fadeIn('slow');
-    $("#new-location-input").focus();
+    $('#new-location-input').focus();
 
     // Put the marker on the map.
     var marker = new google.maps.Marker({
@@ -1167,10 +1167,10 @@ var ViewModel = function() {
     // Clear previous image results.
     pushFlickrImagesToObservable('');
     // Set the return format (json) and api_key for all API requests.
-    var flickrAPIbase = "https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance";
+    var flickrAPIbase = 'https://api.flickr.com/services/rest/?format=json&api_key=f4dbf30dea5b300071f0d6c721b8a3b5&sort=relevance';
     // Replace spaces in title with %20, and append %20Boston for better results.
-    var flickrAPISearchQuery = query.replace(/ /g, "%20") + "%20Boston";
-    var flickrAPIsearch = "&method=flickr.photos.search&text=" +
+    var flickrAPISearchQuery = query.replace(/ /g, '%20') + '%20Boston';
+    var flickrAPIsearch = '&method=flickr.photos.search&text=' +
       flickrAPISearchQuery;
     var fullFlickrAPIsearch = flickrAPIbase + flickrAPIsearch;
 
@@ -1181,7 +1181,7 @@ var ViewModel = function() {
       }
     });
     request.done(function(data){
-      var newData = JSON.parse(data.replace("jsonFlickrApi(", "").slice(0, -1));
+      var newData = JSON.parse(data.replace('jsonFlickrApi(', '').slice(0, -1));
       var numberOfPhotoResults = newData.photos.photo.length;
       var flickrImageSizeSuffix;
 
@@ -1249,11 +1249,11 @@ var ViewModel = function() {
 
         var imagesLoaded = 0;
         // https://stackoverflow.com/a/20614371
-        $(".flickr-thumb").on('load', function(image, item) {
+        $('.flickr-thumb').on('load', function(image, item) {
           imagesLoaded++;
           if (imagesLoaded === numberOfPhotosToShow) {
             // fade in after all images have loaded...
-            $( "#" + pushFlickrImagesToDiv ).fadeIn();
+            $('#' + pushFlickrImagesToDiv).fadeIn();
           }
         });
       }
@@ -1305,7 +1305,7 @@ var ViewModel = function() {
         url: yelp_url,
         data: parameters,
         cache: true,  // This is crucial to include as well to prevent jQuery
-        // from adding on a cache-buster parameter "_=23489489749837",
+        // from adding on a cache-buster parameter '_=23489489749837',
         // invalidating our oauth-signature
         dataType: 'jsonp'
       };
@@ -1337,7 +1337,7 @@ var ViewModel = function() {
 
           // Template based on / inpired by:
           // https://jonsuh.com/blog/javascript-templating-without-a-library/
-          var template = $.get("infoWindowTemplate.html");
+          var template = $.get('infoWindowTemplate.html');
           var outputHtml = '';
           template.done(function(templateHtml) {
             outputHtml += templateHtml.replace(/{{url}}/g, businessInfo.url)
