@@ -502,8 +502,9 @@ var ViewModel = function() {
       ];
     };
 
-    // Remove item from the list it is in.
+    // Remove and fadeOut item from the list it is in.
     self[whichList()].remove(mapItem);
+    $('#' + mapItem.id).fadeOut();
 
     // Find item in initialLocations, because initialLocations is what
     // is saved to local storage.
@@ -529,9 +530,12 @@ var ViewModel = function() {
       initialLocationsMapItemToUpdate[propertyToUpdate] = true;
     }
 
-    // Add item to the list it now belongs to.
+    // Add item to the list it now belongs to, sort the list, and fadeIn item.
     self[whichList()].push(mapItem);
+    self.sortList(self[whichList()]);
+    $('#' + mapItem.id).fadeIn();
 
+    // Update storage.
     self.saveToStorage();
   }.bind(this); // Location.prototype.toggleProperty.
 

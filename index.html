@@ -95,7 +95,7 @@
 
         <div id="collapse-locations" class="col-xs-12 content-width">
           <div data-bind="foreach: dynamicLocationsList">
-            <div>
+            <div data-bind="attr: { id: id }">
               <span data-bind="click: Location.prototype.toggleProperty">
                 <i class="link material-icons md-18" data-bind="text: favoriteText"></i>
               </span>
