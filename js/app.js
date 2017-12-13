@@ -404,6 +404,8 @@ var ViewModel = function() {
       else {
         self.locationsListEverythingElse.push(new Location(mapItem));
       }
+    }); // forEach initialLocations
+
     });
   }; // setupLocationLists.
 
@@ -823,7 +825,7 @@ var ViewModel = function() {
       });
     }
 
-    // Sort list alphabetically.
+    // Sort filtered list alphabetically.
     self.sortList(self.filteredLocationsList);
 
     // Add/remove markers from the map.
