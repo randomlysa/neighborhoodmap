@@ -816,9 +816,7 @@ var ViewModel = function() {
     });
   }; // addListenerToMarker.
 
-  // Add/remove markers from the map.
-  // Runs when text is input to the search box or when a location is
-  // created/deleted in edit mode.
+  // Add/remove markers from the map when text is input to the search box.
   self.addRemoveMarkers = function() {
     // Check if markersArray has been created.
     if (typeof markersArray !== 'undefined') {
@@ -836,7 +834,7 @@ var ViewModel = function() {
     }
   }
 
-  // Updates filteredLocationsList to match input text.
+  // Updates filteredLocationsList to show locations matching input text.
   self.addRemoveLocations = function(inputText, updateMarkers) {
     var self = this;
 
