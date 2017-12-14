@@ -113,7 +113,7 @@ var ViewModel = function() {
     self.groupLocations();
     self.loadMapMarkers();
     self.addListenerToMarker(this);
-    self.addRemoveLocationsAndMapMarkers();
+    self.addRemoveLocations();
     self.checkOrientation();
     // Prevents duplication of favorites.
     if (!self.settingAlwaysShowFavorites) {
@@ -168,8 +168,8 @@ var ViewModel = function() {
       self.updateMarkerIcons();
     }
 
-    // Send currently input text to addRemoveLocationsAndMapMarkers.
-    self.addRemoveLocationsAndMapMarkers(self.mapSearchInputText(), redrawMapMarkers);
+    // Send currently input text to addRemoveLocations.
+    self.addRemoveLocations(self.mapSearchInputText(), redrawMapMarkers);
 
     // to toggle the checkbox: http://stackoverflow.com/a/11296375
     return true;
@@ -706,7 +706,7 @@ var ViewModel = function() {
   }; // helpMoreInfo
 
   // Main functions: loadMapMarkers, updateMarkerIcons, addListenerToMarker,
-  // addRemoveLocationsAndMapMarkers, closeInfoWindow, openInfoWindow,
+  // addRemoveLocations, closeInfoWindow, openInfoWindow,
   // cycleThroughLocations, openAddNewLocationMenu, addNewLocation.
 
   // Keep track of markers.
@@ -810,7 +810,34 @@ var ViewModel = function() {
     });
   }; // addListenerToMarker.
 
-  self.addRemoveLocationsAndMapMarkers = function(inputText, updateMarkers) {
+  // Add/remove markers from the map.
+  // Runs when text is input to the search box or when a location is
+  // created/deleted in edit mode.
+  self.addRemoveMarkers = function() {
+    // First check if markersArray has been created.
+    if (typeof markersArray !== 'undefined') {
+      // Make an array of self.dynamicLocationsList titles.
+      var dynamicLocationsListTitles = [];
+      self.dynamicLocationsList().forEach(function(Location) {
+        dynamicLocationsListTitles.push(Location.title);
+      });
+
+      // Loop through markers array and check if the marker title is in
+      // self.dynamicLocationsListTitles. If it is not, remove the marker
+      // from the map. Otherwise, set the marker to this map.
+      markersArray.forEach(function(item, position) {
+        var result = dynamicLocationsListTitles.indexOf(item.title);
+        if (result === -1) {
+          markersArray[position].setMap(null);
+        } else {
+          markersArray[position].setMap(map);
+        }
+      });
+    }
+  }
+
+  // Updates filteredLocationsList to match input text.
+  self.addRemoveLocations = function(inputText, updateMarkers) {
     var self = this;
 
     // Remove items from filteredLocationsList.
@@ -832,35 +859,17 @@ var ViewModel = function() {
     // Sort filtered list alphabetically.
     self.sortList(self.filteredLocationsList);
 
-    // Add/remove markers from the map.
-    // First check if markersArray has been created.
-    if (typeof markersArray !== 'undefined') {
-      // Make an array of self.dynamicLocationsList titles.
-      var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach(function(Location) {
-        dynamicLocationsListTitles.push(Location.title);
-      });
+    // Run add/remove markers.
+    self.addRemoveMarkers();
 
-      // Loop through markers array and check if the marker title is in
-      // self.dynamicLocationsListTitles. If it is not, remove the marker
-      // from the map. Otherwise, set the marker to this map.
-      markersArray.forEach(function(item, position) {
-        var result = dynamicLocationsListTitles.indexOf(item.title);
-        if (result === -1) {
-          markersArray[position].setMap(null);
-        } else {
-          markersArray[position].setMap(map);
-        }
-      });
-    }
-  }.bind(this); // addRemoveLocationsAndMapMarkers.
+  }.bind(this); // addRemoveLocations.
 
   // http://stackoverflow.com/questions/12229751/knockout-js-triggers-based-on-changes-in-an-observable
   // Check mapSearchInputText for inputText and update makeMapList
   // (after 300 ms delay) based on inputText.
   self.mapSearchInputText.extend({ rateLimit: 300 });
   self.mapSearchInputText.subscribe(function(inputText) {
-    self.addRemoveLocationsAndMapMarkers(inputText);
+    self.addRemoveLocations(inputText);
   }, this);
 
   // Keep track of open infoWindow(s). Used to close the previous infoWindow.
