@@ -550,10 +550,16 @@ var ViewModel = function() {
     alertify.confirm('Delete location: ' + mapItem.title + '?',
       // Delete
       function() {
+          // Loop through all location arrays.
           _.forEach(observablesForLocations, function(arrayOfLocations) {
             // Check for item in the array.
             if (self[arrayOfLocations]().indexOf(mapItem) !== -1) {
               self[arrayOfLocations].remove(mapItem);
+              // Find index of marker in markersArray and setMap(null) / remove.
+              const markerIndex = _.findIndex(markersArray,
+                {'title': mapItem.title}
+              );
+              markersArray[markerIndex].setMap(null);
               self.saveToStorage();
             }
         });
