@@ -1094,7 +1094,7 @@ var ViewModel = function() {
     markersArray.push(marker);
 
     // Update the map icon when a new option is selected.
-    self.selectedType.subscribe(function(icon) {
+    self.subscribeToIconUpdates = self.selectedType.subscribe(function(icon) {
       // Set the marker icon.
       if (self.settingDisplayCustomMapMarkers() === true) {
         self.imageIconObservable(
@@ -1157,6 +1157,10 @@ var ViewModel = function() {
       alertify.success('Location Added!', 3);
       addLocationDiv.fadeOut('slow');
       openAddNewLocationMenuStatus = 'closed';
+
+      // Cancel the subscription to subscribeToIconUpdates, otherwise when
+      // observables are cleared, the location icon will be set to undefined.
+      self.subscribeToIconUpdates.dispose();
 
       // Clear observables.
       self.newLocationTitle('');
