@@ -814,23 +814,17 @@ var ViewModel = function() {
   // Runs when text is input to the search box or when a location is
   // created/deleted in edit mode.
   self.addRemoveMarkers = function() {
-    // First check if markersArray has been created.
+    // Check if markersArray has been created.
     if (typeof markersArray !== 'undefined') {
-      // Make an array of self.dynamicLocationsList titles.
-      var dynamicLocationsListTitles = [];
-      self.dynamicLocationsList().forEach(function(Location) {
-        dynamicLocationsListTitles.push(Location.title);
-      });
-
       // Loop through markers array and check if the marker title is in
-      // self.dynamicLocationsListTitles. If it is not, remove the marker
-      // from the map. Otherwise, set the marker to this map.
-      markersArray.forEach(function(item, position) {
-        var result = dynamicLocationsListTitles.indexOf(item.title);
-        if (result === -1) {
-          markersArray[position].setMap(null);
-        } else {
+      // self.dynamicLocationsList.
+      markersArray.forEach(function(marker, position) {
+        // Set marker to map.
+        if (_.find(self.dynamicLocationsList(), {'title': marker.title})) {
           markersArray[position].setMap(map);
+        // Remove marker.
+        } else {
+          markersArray[position].setMap(null);
         }
       });
     }
